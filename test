@@ -1,20 +1,20 @@
-Name:	"Password : "
+Name:	""
 ControlType:	UIA_EditControlTypeId (0xC354)
 LocalizedControlType:	"edit"
-BoundingRectangle:	{l:301 t:259 r:444 b:280}
+BoundingRectangle:	{l:301 t:286 r:444 b:307}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	false
 AccessKey:	""
 ProcessId:	18400
-RuntimeId:	[2A.708BE]
-AutomationId:	"txt_UserId"
+RuntimeId:	[2A.70914]
+AutomationId:	"txt_Password"
 FrameworkId:	"WinForm"
 ClassName:	"WindowsForms10.EDIT.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x708BE
-ProviderDescription:	"[pid:18316,providerId:0x708BE Main:Nested [pid:18400,providerId:0x708BE Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
+NativeWindowHandle:	0x70914
+ProviderDescription:	"[pid:18316,providerId:0x70914 Main:Nested [pid:18400,providerId:0x70914 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	true
 HelpText:	""
 IsDialog:	false
 LegacyIAccessible.ChildId:	0
@@ -22,12 +22,10 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Password : "
+LegacyIAccessible.Name:	""
 LegacyIAccessible.Role:	editable text (0x2A)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
+LegacyIAccessible.State:	focusable,protected (0x20100000)
 Value.IsReadOnly:	false
-Value.Value:	""
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -65,11 +63,11 @@ IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	"Password : " text
-Previous:	"" edit
+Next:	"Password : " edit
+Previous:	"Submit" button
 Other Props:	Object has no additional properties
 Children:	Container has no children
-Ancestors:	"14:19:14" pane
+Ancestors:	"14:21:54" pane
 	"Risk Management System - Login" window
 	"Desktop 1" pane
 	[ No Parent ]
