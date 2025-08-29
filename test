@@ -1,19 +1,19 @@
-Name:	"User Id : "
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:185 t:259 r:252 b:272}
+Name:	"Password : "
+ControlType:	UIA_EditControlTypeId (0xC354)
+LocalizedControlType:	"edit"
+BoundingRectangle:	{l:301 t:259 r:444 b:280}
 IsEnabled:	true
 IsOffscreen:	false
-IsKeyboardFocusable:	false
+IsKeyboardFocusable:	true
 HasKeyboardFocus:	false
 AccessKey:	""
 ProcessId:	18400
-RuntimeId:	[2A.60972]
-AutomationId:	"lbl_UserId"
+RuntimeId:	[2A.708BE]
+AutomationId:	"txt_UserId"
 FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x60972
-ProviderDescription:	"[pid:18316,providerId:0x60972 Main:Nested [pid:18400,providerId:0x60972 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+ClassName:	"WindowsForms10.EDIT.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x708BE
+ProviderDescription:	"[pid:18316,providerId:0x708BE Main:Nested [pid:18400,providerId:0x708BE Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
@@ -22,10 +22,12 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"User Id : "
-LegacyIAccessible.Role:	text (0x29)
-LegacyIAccessible.State:	read only (0x40)
+LegacyIAccessible.Name:	"Password : "
+LegacyIAccessible.Role:	editable text (0x2A)
+LegacyIAccessible.State:	focusable (0x100000)
 LegacyIAccessible.Value:	""
+Value.IsReadOnly:	false
+Value.Value:	""
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -56,18 +58,18 @@ IsTextPattern2Available:	false
 IsTogglePatternAvailable:	false
 IsTransformPatternAvailable:	false
 IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
+IsValuePatternAvailable:	true
 IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	[null]
-Previous:	"Password : " text
+Next:	"Password : " text
+Previous:	"" edit
 Other Props:	Object has no additional properties
 Children:	Container has no children
-Ancestors:	"14:17:04" pane
+Ancestors:	"14:19:14" pane
 	"Risk Management System - Login" window
 	"Desktop 1" pane
 	[ No Parent ]
