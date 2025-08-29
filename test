@@ -1,20 +1,20 @@
-Name:	""
-ControlType:	UIA_EditControlTypeId (0xC354)
-LocalizedControlType:	"edit"
-BoundingRectangle:	{l:301 t:286 r:444 b:307}
+Name:	"Login Via :"
+ControlType:	UIA_TextControlTypeId (0xC364)
+LocalizedControlType:	"text"
+BoundingRectangle:	{l:186 t:232 r:260 b:245}
 IsEnabled:	true
 IsOffscreen:	false
-IsKeyboardFocusable:	true
+IsKeyboardFocusable:	false
 HasKeyboardFocus:	false
 AccessKey:	""
 ProcessId:	18400
-RuntimeId:	[2A.70914]
-AutomationId:	"txt_Password"
+RuntimeId:	[2A.6098A]
+AutomationId:	"lbl_LoginMethod"
 FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.EDIT.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x70914
-ProviderDescription:	"[pid:18316,providerId:0x70914 Main:Nested [pid:18400,providerId:0x70914 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	true
+ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x6098A
+ProviderDescription:	"[pid:18316,providerId:0x6098A Main:Nested [pid:18400,providerId:0x6098A Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
 HelpText:	""
 IsDialog:	false
 LegacyIAccessible.ChildId:	0
@@ -22,6 +22,52 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	""
-LegacyIAccessible.Role:	editable text (0x2A)
-LegacyIAccessible.State:	focusable,protected (0x20100000)
+LegacyIAccessible.Name:	"Login Via :"
+LegacyIAccessible.Role:	text (0x29)
+LegacyIAccessible.State:	read only (0x40)
+LegacyIAccessible.Value:	""
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	false
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"" combo box
+Previous:	"Enviornment :" text
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"14:11:35" pane
+	"Risk Management System - Login" window
+	"Desktop 1" pane
+	[ No Parent ]
