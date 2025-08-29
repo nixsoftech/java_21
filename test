@@ -1,19 +1,19 @@
-Name:	"Login Via :"
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:186 t:232 r:260 b:245}
+Name:	""
+ControlType:	UIA_ComboBoxControlTypeId (0xC353)
+LocalizedControlType:	"combo box"
+BoundingRectangle:	{l:301 t:232 r:444 b:253}
 IsEnabled:	true
 IsOffscreen:	false
-IsKeyboardFocusable:	false
+IsKeyboardFocusable:	true
 HasKeyboardFocus:	false
 AccessKey:	""
 ProcessId:	18400
-RuntimeId:	[2A.6098A]
-AutomationId:	"lbl_LoginMethod"
+RuntimeId:	[2A.60526]
+AutomationId:	"cmb_loginMethod"
 FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x6098A
-ProviderDescription:	"[pid:18316,providerId:0x6098A Main:Nested [pid:18400,providerId:0x6098A Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+ClassName:	"WindowsForms10.COMBOBOX.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x60526
+ProviderDescription:	"[pid:18316,providerId:0x60526 Main:Nested [pid:18400,providerId:0x60526 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
@@ -22,10 +22,12 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Login Via :"
-LegacyIAccessible.Role:	text (0x29)
-LegacyIAccessible.State:	read only (0x40)
-LegacyIAccessible.Value:	""
+LegacyIAccessible.Name:	""
+LegacyIAccessible.Role:	combo box (0x2E)
+LegacyIAccessible.State:	collapsed,focusable (0x100400)
+LegacyIAccessible.Value:	"RMS"
+Value.IsReadOnly:	false
+Value.Value:	"RMS"
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -56,18 +58,19 @@ IsTextPattern2Available:	false
 IsTogglePatternAvailable:	false
 IsTransformPatternAvailable:	false
 IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
+IsValuePatternAvailable:	true
 IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"" combo box
-Previous:	"Enviornment :" text
+FirstChild:	"" text
+LastChild:	"Open" button
+Next:	"Cancel" button
+Previous:	"Login Via :" text
 Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"14:11:35" pane
+Children:	"" text
+	"Open" button
+Ancestors:	"14:15:00" pane
 	"Risk Management System - Login" window
 	"Desktop 1" pane
 	[ No Parent ]
