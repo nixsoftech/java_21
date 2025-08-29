@@ -1,0 +1,63 @@
+Environment list item
+Name:	"Enviornment :"
+ControlType:	UIA_ComboBoxControlTypeId (0xC353)
+LocalizedControlType:	"combo box"
+BoundingRectangle:	{l:301 t:205 r:444 b:226}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	3336
+RuntimeId:	[2A.6093E]
+AutomationId:	"cmb_Envionrnment"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.COMBOBOX.app.0.bb8560_r20_ad1"
+==============================
+Login Via
+Name:	"Login Via :"
+ControlType:	UIA_TextControlTypeId (0xC364)
+LocalizedControlType:	"text"
+BoundingRectangle:	{l:186 t:232 r:260 b:245}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	3336
+RuntimeId:	[2A.40904]
+AutomationId:	"lbl_LoginMethod"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
+===================
+UserId
+Name:	"User Id : "
+ControlType:	UIA_TextControlTypeId (0xC364)
+LocalizedControlType:	"text"
+BoundingRectangle:	{l:185 t:259 r:252 b:272}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	3336
+RuntimeId:	[2A.608BE]
+AutomationId:	"lbl_UserId"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
+=================
+Password
+Name:	"Password : "
+ControlType:	UIA_EditControlTypeId (0xC354)
+LocalizedControlType:	"edit"
+BoundingRectangle:	{l:301 t:259 r:444 b:280}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	3336
+RuntimeId:	[2A.50972]
+AutomationId:	"txt_UserId"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.EDIT.app.0.bb8560_r20_ad1"
