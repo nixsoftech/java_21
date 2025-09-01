@@ -1,7 +1,39 @@
-C:\Users\Test3\Desktop\automation\rms>test-case1.py
+test-case1.py
 Starting WinAppDriver...
+Windows Application Driver Beta listening for requests at: http://127.0.0.1:4723/
+Press ENTER to exit.
 Launching RMS Application...
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 25, in <module>
-    options = webdriver.ChromeOptions()  # Using Options instead of desired_caps
-AttributeError: module 'appium.webdriver' has no attribute 'ChromeOptions'
+
+
+==========================================
+POST /session HTTP/1.1
+Accept: application/json
+Accept-Encoding: identity
+Connection: keep-alive
+Content-Length: 157
+Content-Type: application/json;charset=UTF-8
+Host: 127.0.0.1:4723
+User-Agent: appium/5.1.1 (selenium/4.30.0 (python windows))
+X-Idempotency-Key: a395d750-47b9-42f3-b9ec-617f2066c9e3
+
+
+HTTP/1.1 400 Bad Request
+ConTraceback (most recent call last):
+te  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 23, in <module>
+nt-Length: 96
+Conte    driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
+nt  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\appium\webdriver\webdriver.py", line 238, in __init__
+-Type: application/js    super().__init__(
+o  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\selenium\webdriver\remote\webdriver.py", line 250, in __init__
+n
+
+    self.start_session(capabilities)
+{  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\appium\webdriver\webdriver.py", line 329, in start_session
+"status":1    response = self.execute(RemoteCommand.NEW_SESSION, w3c_caps)
+00  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\selenium\webdriver\remote\webdriver.py", line 429, in execute
+,"val    self.error_handler.check_response(response)
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+ue":{"error":    raise exception_class(message, screen, stacktrace)
+"selenium.common.exceptions.WebDriverException: Message: Missing command parameter: appId
+i
+nvalid argument","message":"Missing command parameter: appId"}}
