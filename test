@@ -1,7 +1,34 @@
+import subprocess
 import time
+import atexit
+import signal
 from appium import webdriver
 from appium.options.windows import WindowsOptions
 from appium.webdriver.common.appiumby import AppiumBy
+
+# -------------------------
+# Start WinAppDriver
+# -------------------------
+print("Starting WinAppDriver...")
+winappdriver_proc = subprocess.Popen(
+    [r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe", "127.0.0.1", "4723"],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    shell=True
+)
+
+# Ensure it gets killed on exit
+def cleanup():
+    print("Stopping WinAppDriver...")
+    try:
+        winappdriver_proc.send_signal(signal.CTRL_BREAK_EVENT)  # graceful stop
+        winappdriver_proc.terminate()
+    except Exception:
+        pass
+
+atexit.register(cleanup)
+
+time.sleep(2)  # give WinAppDriver time to start
 
 # -------------------------
 # Launch RMS Application
@@ -9,38 +36,39 @@ from appium.webdriver.common.appiumby import AppiumBy
 options = WindowsOptions()
 options.platform_name = "Windows"
 options.device_name = "WindowsPC"
-options.app = r"C:\Path\To\RMS.exe"   # <-- update with your RMS.exe path
+options.app = r"C:\Path\To\RMS.exe"   # <-- update this path
 
 driver = webdriver.Remote(
     command_executor="http://127.0.0.1:4723",
     options=options
 )
 
-time.sleep(3)  # wait for app to load fully
+time.sleep(3)
 
 # -------------------------
 # Interact with Login Form
 # -------------------------
-
-# 1. Select environment (UAT)
-env_dropdown = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "cmbEnvironment")  # update with Inspect ID
+env_dropdown = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "cmbEnvironment")  # Inspect ID
 env_dropdown.click()
 time.sleep(1)
+
 uat_option = driver.find_element(AppiumBy.NAME, "UAT")
 uat_option.click()
 
-# 2. Enter username
-username_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtUsername")  # update with Inspect ID
+username_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtUsername")
 username_box.clear()
 username_box.send_keys("testuser")
 
-# 3. Enter password
-password_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtPassword")  # update with Inspect ID
+password_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtPassword")
 password_box.clear()
 password_box.send_keys("P@ssw0rd")
 
-# 4. Click login button
-login_btn = driver.find_element(AppiumBy.NAME, "Login")  # update with Inspect Name or AutomationId
+login_btn = driver.find_element(AppiumBy.NAME, "Login")
 login_btn.click()
 
-print("✅ Login flow completed via WinAppDriver")
+print("✅ Login flow completed")
+
+# -------------------------
+# Quit session
+# -------------------------
+driver.quit()
