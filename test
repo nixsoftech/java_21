@@ -1,74 +1,58 @@
 import subprocess
-import psutil
 import time
 from appium import webdriver
-from selenium.webdriver.common.by import By
+from appium.options.windows import WindowsOptions
 
-# ===== Configurable Settings =====
-WINAPPDRIVER_PATH = r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
-APP_PATH = r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-
-ENVIRONMENT = "UAT"
-LOGIN_VIA = "RMS"
-USER_ID = "your_user_id"
-PASSWORD = "your_password"
-
-# ===== Start WinAppDriver =====
+# Start WinAppDriver
 print("Starting WinAppDriver...")
-winapp_proc = subprocess.Popen([WINAPPDRIVER_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+subprocess.Popen([r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"])
+time.sleep(3)
 
-time.sleep(2)  # give it time to start
+# Define application path
+app_path = r"C:\Path\To\RMS.exe"
 
-# ===== Launch the Application via Appium =====
+# Setup Appium options
+options = WindowsOptions()
+options.app = app_path
+options.platform_name = "Windows"
+options.device_name = "WindowsPC"
+
+# Connect to WinAppDriver
 print("Launching RMS Application...")
-
-options = webdriver.ChromeOptions()  # Using Options instead of desired_caps
-options.set_capability("platformName", "Windows")
-options.set_capability("deviceName", "WindowsPC")
-options.set_capability("app", APP_PATH)
-
 driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
-time.sleep(3)  # wait for app to open
+time.sleep(3)
 
-# ===== Interact with Controls =====
+# === Perform Login Flow ===
 
-# Select Environment
-env_combo = driver.find_element(By.ACCESSIBILITY_ID, "cmb_Envionrnment")
-env_combo.click()
+# 1. Select Environment = UAT
+env_dropdown = driver.find_element("accessibility id", "cmb_Environment")
+env_dropdown.click()
 time.sleep(1)
-driver.find_element(By.NAME, ENVIRONMENT).click()
+uat_option = driver.find_element("name", "UAT")  # Select item by visible text
+uat_option.click()
 
-# Select Login Via
-login_combo = driver.find_element(By.ACCESSIBILITY_ID, "cmb_loginMethod")
-login_combo.click()
+# 2. Select Login Via = RMS
+loginvia_dropdown = driver.find_element("accessibility id", "cmb_LoginVia")
+loginvia_dropdown.click()
 time.sleep(1)
-driver.find_element(By.NAME, LOGIN_VIA).click()
+rms_option = driver.find_element("name", "RMS")
+rms_option.click()
 
-# Enter User Id
-user_id_box = driver.find_element(By.ACCESSIBILITY_ID, "txt_UserId")
-user_id_box.clear()
-user_id_box.send_keys(USER_ID)
+# 3. Enter UserId
+userid_box = driver.find_element("accessibility id", "txt_UserId")
+userid_box.send_keys("myUserId")
 
-# Enter Password
-password_box = driver.find_element(By.ACCESSIBILITY_ID, "txt_Password")
-password_box.clear()
-password_box.send_keys(PASSWORD)
+# 4. Enter Password
+password_box = driver.find_element("accessibility id", "txt_Password")
+password_box.send_keys("myPassword")
 
-# Click Submit
-submit_btn = driver.find_element(By.ACCESSIBILITY_ID, "btn_Submit")
+# 5. Click Submit
+submit_btn = driver.find_element("accessibility id", "btn_Submit")
 submit_btn.click()
 
-print("Login automation completed!")
+print("Login flow executed successfully.")
 
-# ===== Cleanup =====
-time.sleep(5)  # Let it process login
+time.sleep(5)  # wait to see result
+
 driver.quit()
-
-# Kill RMS process (if still running)
-for proc in psutil.process_iter(attrs=['pid', 'name']):
-    if "RMS FE.exe" in proc.info['name']:
-        proc.kill()
-
-# Kill WinAppDriver
-winapp_proc.terminate()
-print("Application and WinAppDriver closed.")
+print("Automation finished.")
