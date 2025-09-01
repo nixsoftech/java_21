@@ -1,73 +1,46 @@
-import os
-import subprocess
 import time
-import win32gui
-import win32process
-import win32con
-import win32api
-
+from appium import webdriver
+from appium.options.windows import WindowsOptions
+from appium.webdriver.common.appiumby import AppiumBy
 
 # -------------------------
-# Find window handle by PID
+# Launch RMS Application
 # -------------------------
-def get_hwnd(pid):
-    hwnds = []
+options = WindowsOptions()
+options.platform_name = "Windows"
+options.device_name = "WindowsPC"
+options.app = r"C:\Path\To\RMS.exe"   # <-- update with your RMS.exe path
 
-    def callback(hwnd, _):
-        # Get process id for this window
-        _, found_pid = win32process.GetWindowThreadProcessId(hwnd)
-        if found_pid == pid and win32gui.IsWindowVisible(hwnd):
-            hwnds.append(hwnd)
-        return True
+driver = webdriver.Remote(
+    command_executor="http://127.0.0.1:4723",
+    options=options
+)
 
-    win32gui.EnumWindows(callback, None)
-    return hwnds[0] if hwnds else None
-
+time.sleep(3)  # wait for app to load fully
 
 # -------------------------
-# Launch RMS application
+# Interact with Login Form
 # -------------------------
-print("Launching RMS Application...")
-app_path = r"C:\Path\To\RMS.exe"   # <-- update this
-app_proc = subprocess.Popen(app_path)
 
-# Wait for process to start
-time.sleep(3)
-
-# Get window handle
-hwnd = get_hwnd(app_proc.pid)
-if not hwnd:
-    raise Exception("Could not find RMS application window.")
-
-# Bring window to foreground
-win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
-win32gui.SetForegroundWindow(hwnd)
-
-
-# -------------------------
-# Automate login (example)
-# -------------------------
+# 1. Select environment (UAT)
+env_dropdown = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "cmbEnvironment")  # update with Inspect ID
+env_dropdown.click()
 time.sleep(1)
+uat_option = driver.find_element(AppiumBy.NAME, "UAT")
+uat_option.click()
 
-# Type username
-username = "testuser"
-for ch in username:
-    win32api.SendMessage(hwnd, win32con.WM_CHAR, ord(ch), 0)
-time.sleep(0.5)
+# 2. Enter username
+username_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtUsername")  # update with Inspect ID
+username_box.clear()
+username_box.send_keys("testuser")
 
-# Press TAB to move to password field
-win32api.SendMessage(hwnd, win32con.WM_KEYDOWN, win32con.VK_TAB, 0)
-win32api.SendMessage(hwnd, win32con.WM_KEYUP, win32con.VK_TAB, 0)
-time.sleep(0.5)
+# 3. Enter password
+password_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtPassword")  # update with Inspect ID
+password_box.clear()
+password_box.send_keys("P@ssw0rd")
 
-# Type password
-password = "P@ssw0rd"
-for ch in password:
-    win32api.SendMessage(hwnd, win32con.WM_CHAR, ord(ch), 0)
-time.sleep(0.5)
+# 4. Click login button
+login_btn = driver.find_element(AppiumBy.NAME, "Login")  # update with Inspect Name or AutomationId
+login_btn.click()
 
-# Press ENTER to login
-win32api.SendMessage(hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
-win32api.SendMessage(hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
-
-print("Login flow completed.")
+print("✅ Login flow completed via WinAppDriver")
