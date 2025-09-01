@@ -1,1 +1,13 @@
-pip install --no-index --find-links=pywin32_offline pywin32
+C:\Users\Test3\Desktop\automation\rms>test-case1.py
+Starting WinAppDriver...
+Windows Application Driver Beta listening for requests at: http://127.0.0.1:4723/
+Press ENTER to exit.
+Launching RMS Application...
+Traceback (most recent call last):
+  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 34, in <module>
+    hwnd = get_hwnd(app_proc.pid)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 31, in get_hwnd
+    win32gui.EnumWindows(callback, None)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 28, in callback
+    _, found_pid = win32gui.GetWindowThreadProcessId(hwnd)
+AttributeError: module 'win32gui' has no attribute 'GetWindowThreadProcessId'
