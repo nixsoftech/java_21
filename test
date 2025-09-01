@@ -1,73 +1,74 @@
-Name:	"Submit"
-ControlType:	UIA_ButtonControlTypeId (0xC350)
-LocalizedControlType:	"button"
-BoundingRectangle:	{l:214 t:315 r:292 b:338}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
-AccessKey:	"Alt+s"
-ProcessId:	18400
-RuntimeId:	[2A.60984]
-AutomationId:	"btn_Submit"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x60984
-ProviderDescription:	"[pid:18316,providerId:0x60984 Main:Nested [pid:18400,providerId:0x60984 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	"Press"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	"Alt+s"
-LegacyIAccessible.Name:	"Submit"
-LegacyIAccessible.Role:	push button (0x2B)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"" edit
-Previous:	"Cancel" button
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"14:23:14" pane
-	"Risk Management System - Login" window
-	"Desktop 1" pane
-	[ No Parent ]
+import subprocess
+import psutil
+import time
+from appium import webdriver
+from selenium.webdriver.common.by import By
+
+# ===== Configurable Settings =====
+WINAPPDRIVER_PATH = r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+APP_PATH = r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+
+ENVIRONMENT = "UAT"
+LOGIN_VIA = "RMS"
+USER_ID = "your_user_id"
+PASSWORD = "your_password"
+
+# ===== Start WinAppDriver =====
+print("Starting WinAppDriver...")
+winapp_proc = subprocess.Popen([WINAPPDRIVER_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+time.sleep(2)  # give it time to start
+
+# ===== Launch the Application via Appium =====
+print("Launching RMS Application...")
+
+options = webdriver.ChromeOptions()  # Using Options instead of desired_caps
+options.set_capability("platformName", "Windows")
+options.set_capability("deviceName", "WindowsPC")
+options.set_capability("app", APP_PATH)
+
+driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
+time.sleep(3)  # wait for app to open
+
+# ===== Interact with Controls =====
+
+# Select Environment
+env_combo = driver.find_element(By.ACCESSIBILITY_ID, "cmb_Envionrnment")
+env_combo.click()
+time.sleep(1)
+driver.find_element(By.NAME, ENVIRONMENT).click()
+
+# Select Login Via
+login_combo = driver.find_element(By.ACCESSIBILITY_ID, "cmb_loginMethod")
+login_combo.click()
+time.sleep(1)
+driver.find_element(By.NAME, LOGIN_VIA).click()
+
+# Enter User Id
+user_id_box = driver.find_element(By.ACCESSIBILITY_ID, "txt_UserId")
+user_id_box.clear()
+user_id_box.send_keys(USER_ID)
+
+# Enter Password
+password_box = driver.find_element(By.ACCESSIBILITY_ID, "txt_Password")
+password_box.clear()
+password_box.send_keys(PASSWORD)
+
+# Click Submit
+submit_btn = driver.find_element(By.ACCESSIBILITY_ID, "btn_Submit")
+submit_btn.click()
+
+print("Login automation completed!")
+
+# ===== Cleanup =====
+time.sleep(5)  # Let it process login
+driver.quit()
+
+# Kill RMS process (if still running)
+for proc in psutil.process_iter(attrs=['pid', 'name']):
+    if "RMS FE.exe" in proc.info['name']:
+        proc.kill()
+
+# Kill WinAppDriver
+winapp_proc.terminate()
+print("Application and WinAppDriver closed.")
