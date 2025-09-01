@@ -7,43 +7,45 @@ app = Application(backend="uia").start(
     r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
 )
 
-# Wait for Login window to appear
+# Wait for Login window
 try:
     dlg = app.window(title_re=".*Risk Management System - Login")
-    dlg.wait("visible", timeout=20)   # wait up to 20s
+    dlg.wait("visible", timeout=20)
 except TimeoutError:
     print("Login window not found!")
     exit(1)
 
-time.sleep(1)  # small pause to ensure elements are ready
+time.sleep(1)
 
-# Type username
-dlg.child_window(auto_id="txt_UserId", control_type="Edit").wait("enabled", timeout=10)
-dlg.child_window(auto_id="txt_UserId", control_type="Edit").type_keys("QA1")
-
+# Fill login fields
+dlg.child_window(auto_id="txt_UserId", control_type="Edit").wait("enabled", timeout=10).type_keys("QA1")
+time.sleep(0.5)
+dlg.child_window(auto_id="txt_Password", control_type="Edit").wait("enabled", timeout=10).type_keys("change@1212")
 time.sleep(0.5)
 
-# Type password
-dlg.child_window(auto_id="txt_Password", control_type="Edit").wait("enabled", timeout=10)
-dlg.child_window(auto_id="txt_Password", control_type="Edit").type_keys("change@1212")
-
-time.sleep(0.5)
-
-# Select Environment
 env_combo = dlg.child_window(auto_id="cmb_Envionrnment", control_type="ComboBox")
-env_combo.wait("enabled", timeout=10)
-env_combo.select("PROD")   # change to your actual value
+env_combo.wait("enabled", timeout=10).select("PROD")
 time.sleep(0.5)
 
-# Select Login Via
 login_combo = dlg.child_window(auto_id="cmb_loginMethod", control_type="ComboBox")
-login_combo.wait("enabled", timeout=10)
-login_combo.select("RMS")  # change to your actual value
+login_combo.wait("enabled", timeout=10).select("RMS")
 time.sleep(0.5)
 
 # Click Submit
-submit_btn = dlg.child_window(auto_id="btn_Submit", control_type="Button")
-submit_btn.wait("enabled", timeout=10)
-submit_btn.click_input()
+dlg.child_window(auto_id="btn_Submit", control_type="Button").wait("enabled", timeout=10).click_input()
+print("Clicked Submit... waiting for popup")
+
+# === Handle popup ===
+try:
+    popup = app.window(title_re=".*")  # catch any popup
+    popup.wait("visible", timeout=10)
+
+    # Click "Yes" button
+    yes_btn = popup.child_window(title="Yes", control_type="Button")
+    yes_btn.wait("enabled", timeout=5).click_input()
+    print("Clicked Yes on popup ✅")
+
+except TimeoutError:
+    print("No popup appeared.")
 
 print("Login automation done ✅")
