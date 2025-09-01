@@ -1,0 +1,85 @@
+Name:	"Risk Management System - Login"
+ControlType:	UIA_WindowControlTypeId (0xC370)
+LocalizedControlType:	"window"
+BoundingRectangle:	{l:750 t:190 r:1171 b:491}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	16160
+RuntimeId:	[2A.708AE]
+AutomationId:	"frmLogin"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.Window.8.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x708AE
+ProviderDescription:	"[pid:17020,providerId:0x708AE Main:Nested [pid:16160,providerId:0x708AE Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Risk Management System - Login"
+LegacyIAccessible.Role:	client (0xA)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+Transform.CanMove:	true
+Transform.CanResize:	false
+Transform.CanRotate:	false
+Window.CanMaximize:	false
+Window.CanMinimize:	false
+Window.IsModal:	false
+Window.IsTopmost:	false
+Window.WindowInteractionState:	ReadyForUserInteraction (2)
+Window.WindowVisualState:	Normal (0)
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	true
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	false
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	true
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	"RMS_Version_5.18.0" text
+LastChild:	(null) title bar
+Next:	"C:\Windows\System32\cmd.exe" window
+Previous:	"*new 5 - Notepad++" window
+Other Props:	Object has no additional properties
+Children:	"RMS_Version_5.18.0" text
+	"14:15:27" pane
+	"14:15:27" pane
+	"14:15:27" text
+	"01-Sep-2025" text
+	(null) title bar
+Ancestors:	"Desktop 1" pane
+	[ No Parent ]
