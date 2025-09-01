@@ -1,16 +1,45 @@
 import subprocess
 import time
-import atexit
-import signal
 import win32gui
 import win32process
+import psutil
+import atexit
 from appium import webdriver
-from appium.options.windows import WindowsOptions
-from appium.webdriver.common.appiumby import AppiumBy
-
 
 # -------------------------
-# Helper: find hwnd for a process
+# 1. Start WinAppDriver
+# -------------------------
+print("Starting WinAppDriver...")
+winappdriver_proc = subprocess.Popen(
+    [r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    shell=True
+)
+
+def cleanup():
+    print("Stopping WinAppDriver...")
+    winappdriver_proc.terminate()
+
+atexit.register(cleanup)
+
+time.sleep(2)  # give WinAppDriver a moment to start
+
+# -------------------------
+# 2. Launch RMS Application
+# -------------------------
+print("Launching RMS Application...")
+app_proc = subprocess.Popen(
+    [r"C:\Path\To\RMS.exe"],  # <-- change this to your RMS exe path
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    shell=True
+)
+
+time.sleep(3)  # wait for window to appear
+
+# -------------------------
+# 3. Get HWND for launched app
 # -------------------------
 def get_hwnd(pid):
     hwnds = []
@@ -24,81 +53,44 @@ def get_hwnd(pid):
     win32gui.EnumWindows(callback, None)
     return hwnds[0] if hwnds else None
 
-
-# -------------------------
-# Start WinAppDriver
-# -------------------------
-print("Starting WinAppDriver...")
-winappdriver_proc = subprocess.Popen(
-    [r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe", "127.0.0.1", "4723"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    shell=True
-)
-
-def cleanup():
-    print("Stopping WinAppDriver...")
-    try:
-        winappdriver_proc.terminate()
-    except Exception:
-        pass
-
-atexit.register(cleanup)
-time.sleep(2)  # give WinAppDriver time to start
-
-
-# -------------------------
-# Launch RMS app
-# -------------------------
-print("Launching RMS Application...")
-app_path = r"C:\Path\To\RMS.exe"   # <-- update this path
-proc = subprocess.Popen(app_path)
-
-time.sleep(3)  # wait for app to show window
-
-hwnd = get_hwnd(proc.pid)
+hwnd = get_hwnd(app_proc.pid)
 if not hwnd:
-    raise Exception("Could not find RMS main window")
+    raise RuntimeError("Could not find RMS app window")
 
 hex_hwnd = hex(hwnd)
 print(f"Attaching to window handle: {hex_hwnd}")
 
-
 # -------------------------
-# Attach WinAppDriver session
+# 4. Attach to app with WinAppDriver
 # -------------------------
-options = WindowsOptions()
-options.platform_name = "Windows"
-options.device_name = "WindowsPC"
-options.app_top_level_window = hex_hwnd
+caps = {
+    "platformName": "Windows",
+    "deviceName": "WindowsPC",
+    "appTopLevelWindow": hex_hwnd
+}
 
 driver = webdriver.Remote(
     command_executor="http://127.0.0.1:4723",
-    options=options
+    desired_capabilities=caps
 )
 
 time.sleep(2)
 
+# -------------------------
+# 5. Automate Login Flow
+# -------------------------
+print("Performing login flow...")
+
+# Example (replace with your Inspect tool details!)
+driver.find_element("accessibility id", "EnvComboBox").send_keys("UAT")
+driver.find_element("accessibility id", "UserNameTextBox").send_keys("your_user")
+driver.find_element("accessibility id", "PasswordTextBox").send_keys("your_pass")
+driver.find_element("accessibility id", "LoginButton").click()
+
+print("Login flow completed.")
 
 # -------------------------
-# Perform Login Flow
+# 6. Keep app open for verification
 # -------------------------
-env_dropdown = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "cmbEnvironment")
-env_dropdown.click()
-time.sleep(1)
-
-uat_option = driver.find_element(AppiumBy.NAME, "UAT")
-uat_option.click()
-
-username_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtUsername")
-username_box.send_keys("testuser")
-
-password_box = driver.find_element(AppiumBy.ACCESSIBILITY_ID, "txtPassword")
-password_box.send_keys("P@ssw0rd")
-
-login_btn = driver.find_element(AppiumBy.NAME, "Login")
-login_btn.click()
-
-print("✅ Login flow completed")
-
+time.sleep(5)
 driver.quit()
