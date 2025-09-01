@@ -1,21 +1,22 @@
-from pywinauto import Application
-import time
+from pywinauto.application import Application
 
-# Launch app
-app = Application(backend="uia").start(
-    r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-)
+# Launch your application
+app = Application(backend="uia").start(r"C:\path\to\RMS.exe")
 
-# Wait until login window appears
-dlg = app.window(title="Risk Management System - Login")
-dlg.wait("visible", timeout=20)
+# Connect to the Login window
+dlg = app.window(title_re=".*Risk Management System - Login")
 
-# Enter username & password
-dlg.child_window(auto_id="txtUser", control_type="Edit").type_keys("QA1")
-dlg.child_window(auto_id="txtPassword", control_type="Edit").type_keys("change@1212")
+# Type username
+dlg.child_window(auto_id="txt_UserId", control_type="Edit").type_keys("QA1")
 
-# Click login button
-dlg.child_window(auto_id="btnLogin", control_type="Button").click()
+# Type password
+dlg.child_window(auto_id="txt_Password", control_type="Edit").type_keys("mypassword")
 
-print("✅ Login completed")
-time.sleep(5)
+# Select Environment (example: PROD)
+dlg.child_window(auto_id="cmb_Envionrnment", control_type="ComboBox").select("PROD")
+
+# Select Login Via (example: RMS)
+dlg.child_window(auto_id="cmb_loginMethod", control_type="ComboBox").select("RMS")
+
+# Click Submit
+dlg.child_window(auto_id="btn_Submit", control_type="Button").click()
