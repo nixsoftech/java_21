@@ -1,111 +1,21 @@
-import subprocess
+from pywinauto import Application
 import time
-import psutil
-import os
-import signal
-from appium import webdriver
-from selenium.webdriver.common.options import ArgOptions
-import win32gui
 
-# --- CONFIG ---
-WINAPPDRIVER_PATH = r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
-RMS_APP_PATH = r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-RMS_WINDOW_TITLE = "Risk Management System - Login"
-USERNAME = "QA1"
-PASSWORD = "change@1212"
+# Launch app
+app = Application(backend="uia").start(
+    r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+)
 
-# --- START WINAPPDRIVER ---
-def start_winappdriver():
-    print("Starting WinAppDriver...")
-    return subprocess.Popen([WINAPPDRIVER_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+# Wait until login window appears
+dlg = app.window(title="Risk Management System - Login")
+dlg.wait("visible", timeout=20)
 
-# --- STOP WINAPPDRIVER ---
-def stop_winappdriver(proc):
-    print("Stopping WinAppDriver...")
-    if proc and proc.poll() is None:
-        proc.terminate()
-        try:
-            proc.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            proc.kill()
+# Enter username & password
+dlg.child_window(auto_id="txtUser", control_type="Edit").type_keys("QA1")
+dlg.child_window(auto_id="txtPassword", control_type="Edit").type_keys("change@1212")
 
-# --- LAUNCH RMS ---
-def launch_rms():
-    print("Launching RMS Application...")
-    return subprocess.Popen([RMS_APP_PATH], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+# Click login button
+dlg.child_window(auto_id="btnLogin", control_type="Button").click()
 
-# --- FIND RMS WINDOW ---
-def find_window(title):
-    def callback(hwnd, result):
-        if win32gui.IsWindowVisible(hwnd):
-            if title.lower() in win32gui.GetWindowText(hwnd).lower():
-                result.append(hwnd)
-    result = []
-    win32gui.EnumWindows(callback, result)
-    return result[0] if result else None
-
-# --- ATTACH SESSION ---
-def attach_session_by_hwnd(hwnd):
-    hex_hwnd = format(hwnd, "x")
-    print(f"Attaching to window handle: 0x{hex_hwnd}")
-
-    opts = ArgOptions()
-    opts.set_capability("platformName", "Windows")
-    opts.set_capability("deviceName", "WindowsPC")
-    opts.set_capability("appTopLevelWindow", hex_hwnd)
-
-    return webdriver.Remote(
-        command_executor="http://127.0.0.1:4723",
-        options=opts
-    )
-
-# --- MAIN ---
-def main():
-    winapp_proc = None
-    rms_proc = None
-    try:
-        # Start WinAppDriver
-        winapp_proc = start_winappdriver()
-        time.sleep(3)
-
-        # Launch RMS
-        rms_proc = launch_rms()
-        time.sleep(5)
-
-        # Find window
-        hwnd = None
-        for _ in range(10):
-            hwnd = find_window(RMS_WINDOW_TITLE)
-            if hwnd:
-                break
-            time.sleep(1)
-
-        if not hwnd:
-            raise RuntimeError("Could not find RMS app window")
-
-        # Attach session
-        driver = attach_session_by_hwnd(hwnd)
-
-        # --- LOGIN FLOW ---
-        print("Performing login flow...")
-        username_field = driver.find_element("accessibility id", "txtUser")   # check AutomationId
-        password_field = driver.find_element("accessibility id", "txtPassword")
-        login_button = driver.find_element("accessibility id", "btnLogin")
-
-        username_field.send_keys(USERNAME)
-        password_field.send_keys(PASSWORD)
-        login_button.click()
-
-        print("Login completed.")
-
-        time.sleep(5)  # keep session alive for observation
-
-    finally:
-        if rms_proc:
-            print("Closing RMS Application...")
-            rms_proc.terminate()
-        stop_winappdriver(winapp_proc)
-
-
-if __name__ == "__main__":
-    main()
+print("✅ Login completed")
+time.sleep(5)
