@@ -1,0 +1,23 @@
+C:\Users\Test3>pip show selenium
+Name: selenium
+Version: 4.30.0
+Summary: Official Python bindings for Selenium WebDriver
+Home-page: https://www.selenium.dev
+Author:
+Author-email:
+License: Apache 2.0
+Location: c:\users\test3\appdata\roaming\python\python310\site-packages
+Requires: urllib3, certifi, websocket-client, typing_extensions, trio, trio-websocket
+Required-by: Appium-Python-Client
+
+C:\Users\Test3>pip show Appium-Python-client
+Name: Appium-Python-Client
+Version: 5.1.1
+Summary: Python client for Appium
+Home-page: http://appium.io/
+Author: Isaac Murchie
+Author-email: isaac@saucelabs.com
+License: Apache 2.0
+Location: c:\users\test3\appdata\roaming\python\python310\site-packages
+Requires: selenium
+Required-by:
