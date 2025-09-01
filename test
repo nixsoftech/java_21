@@ -6,7 +6,6 @@ import win32gui
 import win32process
 
 from appium import webdriver
-from appium.options.windows import WindowsOptions
 from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,7 +24,6 @@ UI_WAIT_TIMEOUT_SEC     = 25
 
 def start_winappdriver():
     print("Starting WinAppDriver...")
-    # Start as a detached process so we can kill it on exit
     proc = subprocess.Popen(
         [WINAPPDRIVER_PATH, "127.0.0.1", "4723"],
         stdout=subprocess.PIPE,
@@ -35,44 +33,36 @@ def start_winappdriver():
     def _cleanup():
         try:
             print("Stopping WinAppDriver...")
-            # try graceful, then hard kill
             proc.send_signal(signal.CTRL_BREAK_EVENT if hasattr(signal, "CTRL_BREAK_EVENT") else signal.SIGTERM)
             time.sleep(0.8)
             proc.terminate()
         except Exception:
             pass
     atexit.register(_cleanup)
-    # give it a moment to bind port
     time.sleep(2)
     return proc
 
 def launch_rms():
     print("Launching RMS Application...")
-    # Launch the app; no shell here since we point directly to an EXE path
     return subprocess.Popen([APP_PATH])
 
 def get_main_hwnd_for_pid(pid):
-    """Return the first visible top-level window handle for a process id."""
     found = []
-
     def enum_cb(hwnd, _):
         try:
             _, win_pid = win32process.GetWindowThreadProcessId(hwnd)
             if win_pid == pid and win32gui.IsWindowVisible(hwnd):
-                # top-level windows have no owner; filter out tool windows if needed
                 if win32gui.GetParent(hwnd) == 0:
                     found.append(hwnd)
         except Exception:
             pass
         return True
-
     win32gui.EnumWindows(enum_cb, None)
     return found[0] if found else None
 
 def wait_for_hwnd(pid, timeout_s):
-    started = time.time()
-    hwnd = None
-    while time.time() - started < timeout_s:
+    start = time.time()
+    while time.time() - start < timeout_s:
         hwnd = get_main_hwnd_for_pid(pid)
         if hwnd:
             return hwnd
@@ -80,20 +70,17 @@ def wait_for_hwnd(pid, timeout_s):
     return None
 
 def attach_session_by_hwnd(hwnd):
-    # WinAppDriver expects hex string WITHOUT the 0x prefix
     hex_hwnd = format(hwnd, "x")
     print(f"Attaching to window handle: 0x{hex_hwnd}")
 
-    opts = WindowsOptions()
-    # DO NOT set opts.app here (we are attaching to an already-running window)
-    opts.set_capability("platformName", "Windows")
-    opts.set_capability("deviceName", "WindowsPC")
-    opts.set_capability("appTopLevelWindow", hex_hwnd)
+    desired_caps = {}
+    desired_caps["platformName"] = "Windows"
+    desired_caps["deviceName"] = "WindowsPC"
+    desired_caps["appTopLevelWindow"] = hex_hwnd
 
-    # Appium 2.x style: pass options=
     return webdriver.Remote(
         command_executor="http://127.0.0.1:4723",
-        options=opts
+        desired_capabilities=desired_caps
     )
 
 def wait_and_find(driver, by, value, timeout=UI_WAIT_TIMEOUT_SEC, clickable=False):
@@ -103,27 +90,20 @@ def wait_and_find(driver, by, value, timeout=UI_WAIT_TIMEOUT_SEC, clickable=Fals
     return wait.until(EC.presence_of_element_located((by, value)))
 
 def main():
-    # 1) Start WinAppDriver
     start_winappdriver()
-
-    # 2) Launch RMS
     app_proc = launch_rms()
 
-    # 3) Wait for top-level window
     hwnd = wait_for_hwnd(app_proc.pid, WINDOW_FIND_TIMEOUT_SEC)
     if not hwnd:
-        raise RuntimeError("Could not find RMS app window (waited {}s)".format(WINDOW_FIND_TIMEOUT_SEC))
+        raise RuntimeError("Could not find RMS app window")
 
-    # 4) Attach WinAppDriver session to that window
     driver = attach_session_by_hwnd(hwnd)
 
     try:
         print("Filling login form...")
 
-        # Some WinForms combo boxes need a click before typing
-        # Try both common IDs you mentioned previously. We'll try cboEnvironment then cmbEnvironment.
+        # Environment dropdown
         try_ids = ["cboEnvironment", "cmbEnvironment"]
-
         env_elem = None
         for eid in try_ids:
             try:
@@ -132,17 +112,14 @@ def main():
             except Exception:
                 continue
         if not env_elem:
-            raise RuntimeError("Environment combobox not found. Checked IDs: " + ", ".join(try_ids))
+            raise RuntimeError("Environment combobox not found")
 
         env_elem.click()
-        # Either typing UAT selects it, or we click the UAT list item by Name.
         env_elem.send_keys(ENVIRONMENT)
         time.sleep(0.6)
         try:
-            uat_option = driver.find_element(AppiumBy.NAME, ENVIRONMENT)
-            uat_option.click()
+            driver.find_element(AppiumBy.NAME, ENVIRONMENT).click()
         except Exception:
-            # If no explicit list item appears, sending keys likely selected it.
             pass
 
         # Username
@@ -160,7 +137,7 @@ def main():
         login_btn.click()
 
         print("✅ Login flow completed successfully!")
-        time.sleep(5)  # leave it visible for a moment
+        time.sleep(5)
 
     finally:
         driver.quit()
