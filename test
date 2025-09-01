@@ -1,96 +1,169 @@
 import subprocess
 import time
+import atexit
+import signal
 import win32gui
 import win32process
-import psutil
-import atexit
+
 from appium import webdriver
+from appium.options.windows import WindowsOptions
+from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# -------------------------
-# 1. Start WinAppDriver
-# -------------------------
-print("Starting WinAppDriver...")
-winappdriver_proc = subprocess.Popen(
-    [r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    shell=True
-)
+# --- Config ----------------------------------------------------
+WINAPPDRIVER_PATH = r"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+APP_PATH          = r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
 
-def cleanup():
-    print("Stopping WinAppDriver...")
-    winappdriver_proc.terminate()
+ENVIRONMENT = "UAT"
+USERNAME    = "QA1"
+PASSWORD    = "change@1212"
 
-atexit.register(cleanup)
+WINDOW_FIND_TIMEOUT_SEC = 45
+UI_WAIT_TIMEOUT_SEC     = 25
+# ---------------------------------------------------------------
 
-time.sleep(2)  # give WinAppDriver a moment to start
+def start_winappdriver():
+    print("Starting WinAppDriver...")
+    # Start as a detached process so we can kill it on exit
+    proc = subprocess.Popen(
+        [WINAPPDRIVER_PATH, "127.0.0.1", "4723"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True
+    )
+    def _cleanup():
+        try:
+            print("Stopping WinAppDriver...")
+            # try graceful, then hard kill
+            proc.send_signal(signal.CTRL_BREAK_EVENT if hasattr(signal, "CTRL_BREAK_EVENT") else signal.SIGTERM)
+            time.sleep(0.8)
+            proc.terminate()
+        except Exception:
+            pass
+    atexit.register(_cleanup)
+    # give it a moment to bind port
+    time.sleep(2)
+    return proc
 
-# -------------------------
-# 2. Launch RMS Application
-# -------------------------
-print("Launching RMS Application...")
-app_proc = subprocess.Popen(
-    [r"C:\Path\To\RMS.exe"],  # <-- change this to your RMS exe path
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    shell=True
-)
+def launch_rms():
+    print("Launching RMS Application...")
+    # Launch the app; no shell here since we point directly to an EXE path
+    return subprocess.Popen([APP_PATH])
 
-time.sleep(3)  # wait for window to appear
+def get_main_hwnd_for_pid(pid):
+    """Return the first visible top-level window handle for a process id."""
+    found = []
 
-# -------------------------
-# 3. Get HWND for launched app
-# -------------------------
-def get_hwnd(pid):
-    hwnds = []
-
-    def callback(hwnd, _):
-        _, found_pid = win32process.GetWindowThreadProcessId(hwnd)
-        if found_pid == pid and win32gui.IsWindowVisible(hwnd):
-            hwnds.append(hwnd)
+    def enum_cb(hwnd, _):
+        try:
+            _, win_pid = win32process.GetWindowThreadProcessId(hwnd)
+            if win_pid == pid and win32gui.IsWindowVisible(hwnd):
+                # top-level windows have no owner; filter out tool windows if needed
+                if win32gui.GetParent(hwnd) == 0:
+                    found.append(hwnd)
+        except Exception:
+            pass
         return True
 
-    win32gui.EnumWindows(callback, None)
-    return hwnds[0] if hwnds else None
+    win32gui.EnumWindows(enum_cb, None)
+    return found[0] if found else None
 
-hwnd = get_hwnd(app_proc.pid)
-if not hwnd:
-    raise RuntimeError("Could not find RMS app window")
+def wait_for_hwnd(pid, timeout_s):
+    started = time.time()
+    hwnd = None
+    while time.time() - started < timeout_s:
+        hwnd = get_main_hwnd_for_pid(pid)
+        if hwnd:
+            return hwnd
+        time.sleep(1)
+    return None
 
-hex_hwnd = hex(hwnd)
-print(f"Attaching to window handle: {hex_hwnd}")
+def attach_session_by_hwnd(hwnd):
+    # WinAppDriver expects hex string WITHOUT the 0x prefix
+    hex_hwnd = format(hwnd, "x")
+    print(f"Attaching to window handle: 0x{hex_hwnd}")
 
-# -------------------------
-# 4. Attach to app with WinAppDriver
-# -------------------------
-caps = {
-    "platformName": "Windows",
-    "deviceName": "WindowsPC",
-    "appTopLevelWindow": hex_hwnd
-}
+    opts = WindowsOptions()
+    # DO NOT set opts.app here (we are attaching to an already-running window)
+    opts.set_capability("platformName", "Windows")
+    opts.set_capability("deviceName", "WindowsPC")
+    opts.set_capability("appTopLevelWindow", hex_hwnd)
 
-driver = webdriver.Remote(
-    command_executor="http://127.0.0.1:4723",
-    desired_capabilities=caps
-)
+    # Appium 2.x style: pass options=
+    return webdriver.Remote(
+        command_executor="http://127.0.0.1:4723",
+        options=opts
+    )
 
-time.sleep(2)
+def wait_and_find(driver, by, value, timeout=UI_WAIT_TIMEOUT_SEC, clickable=False):
+    wait = WebDriverWait(driver, timeout)
+    if clickable:
+        return wait.until(EC.element_to_be_clickable((by, value)))
+    return wait.until(EC.presence_of_element_located((by, value)))
 
-# -------------------------
-# 5. Automate Login Flow
-# -------------------------
-print("Performing login flow...")
+def main():
+    # 1) Start WinAppDriver
+    start_winappdriver()
 
-# Example (replace with your Inspect tool details!)
-driver.find_element("accessibility id", "EnvComboBox").send_keys("UAT")
-driver.find_element("accessibility id", "UserNameTextBox").send_keys("your_user")
-driver.find_element("accessibility id", "PasswordTextBox").send_keys("your_pass")
-driver.find_element("accessibility id", "LoginButton").click()
+    # 2) Launch RMS
+    app_proc = launch_rms()
 
-print("Login flow completed.")
+    # 3) Wait for top-level window
+    hwnd = wait_for_hwnd(app_proc.pid, WINDOW_FIND_TIMEOUT_SEC)
+    if not hwnd:
+        raise RuntimeError("Could not find RMS app window (waited {}s)".format(WINDOW_FIND_TIMEOUT_SEC))
 
-# -------------------------
-# 6. Keep app open for verification
-# -------------------------
-time.sleep(5)
-driver.quit()
+    # 4) Attach WinAppDriver session to that window
+    driver = attach_session_by_hwnd(hwnd)
+
+    try:
+        print("Filling login form...")
+
+        # Some WinForms combo boxes need a click before typing
+        # Try both common IDs you mentioned previously. We'll try cboEnvironment then cmbEnvironment.
+        try_ids = ["cboEnvironment", "cmbEnvironment"]
+
+        env_elem = None
+        for eid in try_ids:
+            try:
+                env_elem = wait_and_find(driver, AppiumBy.ACCESSIBILITY_ID, eid, clickable=True)
+                break
+            except Exception:
+                continue
+        if not env_elem:
+            raise RuntimeError("Environment combobox not found. Checked IDs: " + ", ".join(try_ids))
+
+        env_elem.click()
+        # Either typing UAT selects it, or we click the UAT list item by Name.
+        env_elem.send_keys(ENVIRONMENT)
+        time.sleep(0.6)
+        try:
+            uat_option = driver.find_element(AppiumBy.NAME, ENVIRONMENT)
+            uat_option.click()
+        except Exception:
+            # If no explicit list item appears, sending keys likely selected it.
+            pass
+
+        # Username
+        user_box = wait_and_find(driver, AppiumBy.ACCESSIBILITY_ID, "txtUserId", clickable=True)
+        user_box.clear()
+        user_box.send_keys(USERNAME)
+
+        # Password
+        pass_box = wait_and_find(driver, AppiumBy.ACCESSIBILITY_ID, "txtPassword", clickable=True)
+        pass_box.clear()
+        pass_box.send_keys(PASSWORD)
+
+        # Login button
+        login_btn = wait_and_find(driver, AppiumBy.ACCESSIBILITY_ID, "btnLogin", clickable=True)
+        login_btn.click()
+
+        print("✅ Login flow completed successfully!")
+        time.sleep(5)  # leave it visible for a moment
+
+    finally:
+        driver.quit()
+
+if __name__ == "__main__":
+    main()
