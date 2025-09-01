@@ -1,0 +1,7 @@
+C:\Users\Test3\Desktop\automation\rms>test-case1.py
+Starting WinAppDriver...
+Launching RMS Application...
+Traceback (most recent call last):
+  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 25, in <module>
+    options = webdriver.ChromeOptions()  # Using Options instead of desired_caps
+AttributeError: module 'appium.webdriver' has no attribute 'ChromeOptions'
