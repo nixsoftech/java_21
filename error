@@ -1,7 +1,9 @@
-C:\Users\Test3\Desktop\automation\rms>test-case1.py
+test-case1.py
 Starting WinAppDriver...
+Launching RMS Application...
+Attaching to window handle: 0xc088c
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 41, in <module>
+  File "C:\Users\Test3\Desktop\automation\rms\test-case1.py", line 76, in <module>
     driver = webdriver.Remote(
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\appium\webdriver\webdriver.py", line 238, in __init__
     super().__init__(
