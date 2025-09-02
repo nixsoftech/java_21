@@ -1,63 +1,68 @@
-Environment list item
-Name:	"Enviornment :"
-ControlType:	UIA_ComboBoxControlTypeId (0xC353)
-LocalizedControlType:	"combo box"
-BoundingRectangle:	{l:301 t:205 r:444 b:226}
+Name:	"Exit"
+ControlType:	UIA_MenuItemControlTypeId (0xC35B)
+LocalizedControlType:	"menu item"
+BoundingRectangle:	{l:127 t:98 r:169 b:116}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	3336
-RuntimeId:	[2A.6093E]
-AutomationId:	"cmb_Envionrnment"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.COMBOBOX.app.0.bb8560_r20_ad1"
-==============================
-Login Via
-Name:	"Login Via :"
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:186 t:232 r:260 b:245}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	false
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	3336
-RuntimeId:	[2A.40904]
-AutomationId:	"lbl_LoginMethod"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
-===================
-UserId
-Name:	"User Id : "
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:185 t:259 r:252 b:272}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	false
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	3336
-RuntimeId:	[2A.608BE]
-AutomationId:	"lbl_UserId"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.STATIC.app.0.bb8560_r20_ad1"
-=================
-Password
-Name:	"Password : "
-ControlType:	UIA_EditControlTypeId (0xC354)
-LocalizedControlType:	"edit"
-BoundingRectangle:	{l:301 t:259 r:444 b:280}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	3336
-RuntimeId:	[2A.50972]
-AutomationId:	"txt_UserId"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.EDIT.app.0.bb8560_r20_ad1"
+AccessKey:	"Alt+x"
+ProcessId:	3124
+ProviderDescription:	"[pid:3124,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	"Press"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	"Alt+x"
+LegacyIAccessible.Name:	"Exit"
+LegacyIAccessible.Role:	menu item (0xC)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	true
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	false
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	[null]
+Previous:	"Update" menu item
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Main Menu" menu bar
+	"NCDEX RISK MANAGEMENT SYSTEM 6.2.0" window
+	"Desktop 1" pane
+	[ No Parent ]
