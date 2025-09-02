@@ -3,89 +3,95 @@ import logging
 from pywinauto.application import Application
 from pywinauto.timings import TimeoutError
 
-# ---------- Logging Setup ----------
+# ---------------- Logging Setup ----------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("automation_log.txt", mode="w", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.StreamHandler()]
 )
+logger = logging.getLogger(__name__)
 
-# Paths & credentials
-app_path = r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-username = "QA1"
-password = "change@1212"
-
-
-def wait_for_window(app, title_re, timeout=20):
-    """Wait for a window with regex title and return it."""
-    for _ in range(timeout):
+# ---------------- Helper Function ----------------
+def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
+    """Retry typing text into a control until success or retries exhausted."""
+    for attempt in range(1, retries + 1):
         try:
-            win = app.window(title_re=title_re)
-            if win.exists() and win.is_visible():
-                return win
-        except Exception:
-            pass
-        time.sleep(1)
-    raise TimeoutError(f"Window '{title_re}' not found in {timeout}s")
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
+            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
 
-
-def wait_for_control(parent, **criteria):
-    """Wait for a control under a window/dialog."""
-    for _ in range(20):
+def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
+    """Retry selecting a value in a ComboBox until success or retries exhausted."""
+    for attempt in range(1, retries + 1):
         try:
-            ctrl = parent.child_window(**criteria)
-            if ctrl.exists() and ctrl.is_visible():
-                return ctrl
-        except Exception:
-            pass
-        time.sleep(1)
-    raise TimeoutError(f"Control {criteria} not found in time")
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).select(value)
+            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
 
+# ---------------- Main Script ----------------
+try:
+    logger.info("Starting RMS Application...")
+    app = Application(backend="uia").start(
+        r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+    )
 
-def main():
-    logging.info("🚀 Launching RMS...")
-    app = Application(backend="uia").start(app_path)
+    # Wait for Login window
+    dlg = app.window(title_re=".*Risk Management System - Login")
+    dlg.wait("visible", timeout=30)
+    logger.info("Login window found.")
 
-    # ===== Login window =====
-    dlg = wait_for_window(app, ".*Risk Management System - Login.*", timeout=30)
-    logging.info("✅ Login window detected")
+    # Fill login fields with retries
+    safe_type(dlg, "txt_UserId", "Edit", "QA1")
+    safe_type(dlg, "txt_Password", "Edit", "change@1212")
+    safe_select(dlg, "cmb_Envionrnment", "ComboBox", "PROD")
+    safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
 
-    user_edit = wait_for_control(dlg, auto_id="txtUser", control_type="Edit")
-    pass_edit = wait_for_control(dlg, auto_id="txtPassword", control_type="Edit")
-    submit_btn = wait_for_control(dlg, title="Submit", control_type="Button")
+    # Click Submit
+    dlg.child_window(auto_id="btn_Submit", control_type="Button").wait("enabled", timeout=10).click_input()
+    logger.info("Clicked Submit.")
 
-    user_edit.type_keys(username, with_spaces=True)
-    pass_edit.type_keys(password, with_spaces=True)
-    submit_btn.click_input()
-    logging.info("🔑 Submitted login form...")
-
-    # ===== Handle Test/Mock popup =====
+    # Handle login popup (Yes/No)
     try:
-        popup = wait_for_window(app, ".*Do you want to login to test/mock environment.*", timeout=10)
-        yes_btn = wait_for_control(popup, title="Yes", control_type="Button")
-        yes_btn.click_input()
-        logging.info("✅ Clicked 'Yes' on Test/Mock popup")
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=10)
+        yes_btn = popup.child_window(title="Yes", control_type="Button")
+        yes_btn.wait("enabled", timeout=5).click_input()
+        logger.info("Clicked Yes on environment popup.")
     except TimeoutError:
-        logging.info("ℹ️ No Test/Mock popup detected")
+        logger.warning("No popup appeared after login.")
 
-    # ===== Main RMS window =====
-    main_window = wait_for_window(app, ".*Risk Management System.*", timeout=40)
-    logging.info("🎉 Logged in successfully!")
+    # Wait for Main Window
+    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+    main_win.wait("visible", timeout=40)
+    logger.info("Main RMS window is loaded ✅")
 
-    # ===== Exit Application =====
-    logging.info("📤 Closing RMS...")
+    # -------- EXIT FLOW --------
+    # Click Exit menu item
+    exit_menu = main_win.child_window(title="Exit", control_type="MenuItem")
+    exit_menu.wait("enabled", timeout=15).click_input()
+    logger.info("Clicked Exit menu item.")
+
+    # Handle Exit confirmation popup
     try:
-        main_window.menu_select("Exit")
-        exit_popup = wait_for_window(app, ".*Do you want to close the RMS.*", timeout=15)
-        yes_exit = wait_for_control(exit_popup, title="Yes", control_type="Button")
-        yes_exit.click_input()
-        logging.info("✅ RMS closed successfully")
-    except Exception as e:
-        logging.error(f"❌ Error closing RMS: {e}")
+        exit_popup = app.window(title_re=".*")
+        exit_popup.wait("visible", timeout=10)
+        yes_exit_btn = exit_popup.child_window(title="Yes", control_type="Button")
+        yes_exit_btn.wait("enabled", timeout=5).click_input()
+        logger.info("Clicked Yes on Exit confirmation popup ✅")
+    except TimeoutError:
+        logger.warning("No exit confirmation popup appeared.")
 
+    logger.info("Automation script completed successfully.")
 
-if __name__ == "__main__":
-    main()
+except Exception as e:
+    logger.exception(f"Automation failed: {e}")
