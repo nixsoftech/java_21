@@ -89,14 +89,25 @@ def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15
         return False
 
 def click_rms_configuration_and_peak_margin(main_win):
-    """Click RMS Configuration menu and then Peak Margin from dropdown."""
+    """Navigate RMS Configuration → Peak Margin using menu_select (preferred)."""
     try:
-        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-        time.sleep(1)  # allow dropdown to appear
-        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-        logger.info("Opened Peak Margin window.")
+        logger.info("Navigating to RMS Configuration -> Peak Margin...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin window.")
     except Exception as e:
-        logger.error(f"Failed to navigate to Peak Margin: {e}")
+        logger.error(f"menu_select failed: {e}")
+        logger.info("Falling back to manual click method...")
+
+        try:
+            # Fallback: manually click RMS Configuration then Peak Margin
+            safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+            time.sleep(1)
+            peak_item = main_win.child_window(title="Peak Margin", control_type="MenuItem")
+            peak_item.wait("enabled", timeout=5).click_input()
+            logger.info("Clicked Peak Margin manually.")
+        except Exception as e2:
+            logger.error(f"Manual Peak Margin click also failed: {e2}")
+            raise
 
 # ---------------- Main Script ----------------
 def main():
