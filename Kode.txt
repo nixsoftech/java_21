@@ -2,164 +2,163 @@ import os
 import time
 import logging
 from datetime import datetime
-from pywinauto.application import Application
-from pywinauto.timings import TimeoutError
+from pywinauto import Application, timings
+from pywinauto.findwindows import ElementNotFoundError
+import sys
 
-
-# ---------------- Logging Setup ----------------
-script_name = os.path.splitext(os.path.basename(__file__))[0]
-log_dir = os.path.join(os.getcwd(), "logs")
+# === Setup Logging ===
+script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
+log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-
-timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
+log_file = os.path.join(log_dir, f"{script_name}_{datetime.now().strftime('%Y-%m-%d_%H%M')}.log")
 
 logging.basicConfig(
+    filename=log_file,
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
-def safe_click(control, name, retries=3, delay=1):
-    """Safely click a control with retries"""
+def safe_click(control, desc, retries=3, delay=1):
+    """Safely click a control with retries."""
     for attempt in range(retries):
         try:
-            control.wait("enabled", timeout=5).click_input()
-            logger.info(f"Clicked {name}")
+            control.wait("enabled", timeout=5)
+            control.click_input()
+            logger.info(f"Clicked: {desc}")
             return True
-        except Exception as e:
-            logger.warning(f"Retry {attempt+1}/{retries} for {name} (Error: {e})")
+        except (ElementNotFoundError, TimeoutError):
+            logger.warning(f"Retry {attempt+1}/{retries}: Failed to click {desc}")
             time.sleep(delay)
-    logger.error(f"Failed to click {name}")
+    logger.error(f"Failed to click {desc} after {retries} retries")
     return False
-
-
-def handle_popups(app):
-    """Handle multiple possible popups after login"""
-    try:
-        popup = app.window(title_re=".*")
-        popup.wait("visible", timeout=5)
-
-        # Case 1: Intra DLyMGN popup
-        if popup.window_text().startswith("Intra DLyMGN"):
-            logger.info("Detected Intra DLyMGN popup")
-            ok_btn = popup.child_window(title="OK", control_type="Button")
-            safe_click(ok_btn, "OK button on DLyMGN popup")
-
-            # After clicking OK, check if "Do you want to close RMS?" appears
-            try:
-                popup2 = app.window(title_re=".*")
-                popup2.wait("visible", timeout=3)
-                if "Do you want to close the RMS" in popup2.window_text():
-                    no_btn = popup2.child_window(title="No", control_type="Button")
-                    safe_click(no_btn, "No button on Close RMS popup")
-            except TimeoutError:
-                logger.info("No Close RMS popup appeared after DLyMGN")
-        
-        # Case 2: Directly asking to close RMS
-        elif "Do you want to close the RMS" in popup.window_text():
-            logger.info("Detected Close RMS popup")
-            no_btn = popup.child_window(title="No", control_type="Button")
-            safe_click(no_btn, "No button on Close RMS popup")
-        else:
-            logger.info("Other popup detected → dismissing with OK/Yes if present")
-            if popup.child_window(title="OK", control_type="Button").exists():
-                safe_click(popup.child_window(title="OK", control_type="Button"), "Generic OK button")
-            elif popup.child_window(title="Yes", control_type="Button").exists():
-                safe_click(popup.child_window(title="Yes", control_type="Button"), "Generic Yes button")
-    except TimeoutError:
-        logger.info("No popup appeared after login")
 
 
 def login(app):
-    """Perform login with retries for each field"""
-    dlg = app.window(title_re=".*Risk Management System - Login")
-    dlg.wait("visible", timeout=30)
+    """Perform login with retries for slow loading elements."""
+    logger.info("Waiting for login window...")
+    dlg = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+    dlg.wait("visible", timeout=60)
 
-    # Fill Username
-    for _ in range(3):
+    fields = {
+        "Username": "your_username",
+        "Password": "your_password",
+        "Environment": "Production",
+        "Login Via": "VPN"
+    }
+
+    for name, value in fields.items():
+        for attempt in range(5):
+            try:
+                ctrl = dlg.child_window(title=name, control_type="Edit")
+                ctrl.wait("enabled", timeout=5)
+                ctrl.set_text(value)
+                logger.info(f"Set {name}")
+                break
+            except (ElementNotFoundError, TimeoutError):
+                logger.warning(f"Retrying {name} field... ({attempt+1}/5)")
+                time.sleep(2)
+        else:
+            logger.error(f"Failed to set {name}")
+            raise RuntimeError(f"Login field not found: {name}")
+
+    # Click Submit with retries
+    submit_btn = dlg.child_window(title="Submit", control_type="Button")
+    safe_click(submit_btn, "Submit button")
+
+
+def handle_popups(app):
+    """Wait up to 60s for post-login popups and handle them."""
+    logger.info("Waiting up to 60s for popups after login...")
+    start_time = time.time()
+    popup_handled = False
+
+    while time.time() - start_time < 60:
         try:
-            dlg.child_window(auto_id="txt_UserId", control_type="Edit").type_keys("QA1", set_foreground=True)
-            break
-        except TimeoutError:
-            time.sleep(1)
+            popup = app.window(title_re=".*")
+            popup.wait("visible", timeout=5)
+            popup_text = popup.window_text().strip()
+            logger.info(f"Popup detected: {popup_text}")
 
-    # Fill Password
-    for _ in range(3):
-        try:
-            dlg.child_window(auto_id="txt_Password", control_type="Edit").type_keys("change@1212", set_foreground=True)
-            break
-        except TimeoutError:
-            time.sleep(1)
+            if popup_text.startswith("Intra DLyMGN"):
+                logger.info("Handling 'Intra DLyMGN' popup")
+                safe_click(popup.child_window(title="OK", control_type="Button"), "OK button on DLyMGN popup")
 
-    # Select Environment
-    for _ in range(3):
-        try:
-            dlg.child_window(auto_id="cmb_Envionrnment", control_type="ComboBox").select("UAT")
-            break
-        except TimeoutError:
-            time.sleep(1)
+                # Check if "Do you want to close RMS" appears after OK
+                try:
+                    popup2 = app.window(title_re=".*")
+                    popup2.wait("visible", timeout=3)
+                    if "Do you want to close the RMS" in popup2.window_text():
+                        safe_click(popup2.child_window(title="No", control_type="Button"), "No button on Close RMS popup")
+                except TimeoutError:
+                    logger.info("No 'Close RMS' popup appeared after DLyMGN")
 
-    # Select Login via
-    for _ in range(3):
-        try:
-            dlg.child_window(auto_id="cmb_loginMethod", control_type="ComboBox").select("RMS")
-            break
-        except TimeoutError:
-            time.sleep(1)
+                popup_handled = True
+                break
 
-    # Submit
-    safe_click(dlg.child_window(auto_id="btn_Submit", control_type="Button"), "Submit button")
-    handle_popups(app)
+            elif "Do you want to close the RMS" in popup_text:
+                logger.info("Handling 'Close RMS' popup")
+                safe_click(popup.child_window(title="No", control_type="Button"), "No button on Close RMS popup")
+                popup_handled = True
+                break
+
+            elif popup.child_window(title="OK", control_type="Button").exists():
+                safe_click(popup.child_window(title="OK", control_type="Button"), "Generic OK button")
+                popup_handled = True
+                break
+
+        except TimeoutError:
+            time.sleep(3)  # Retry every 3 sec until timeout
+
+    if popup_handled:
+        logger.info("Popup handled successfully")
+    else:
+        logger.info("No popup appeared in 60s, continuing...")
 
 
 def check_rms_running(app):
-    """Check if RMS is running by reading status bar text"""
-    main_window = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_window.wait("visible", timeout=20)
-
+    """Check if RMS status bar shows 'RMS Running'."""
     try:
-        status = main_window.child_window(title_re="RMS Running.*", control_type="Text")
-        if status.exists():
-            logger.info(f"✅ RMS is running: {status.window_text()}")
-            return True
-    except Exception:
-        logger.warning("⚠️ RMS Running status not found")
-    return False
+        status_bar = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*").child_window(
+            control_type="Text", found_index=0
+        )
+        text = status_bar.window_text()
+        logger.info(f"Status bar text: {text}")
+        return "RMS Running" in text
+    except ElementNotFoundError:
+        logger.error("Could not find RMS status text")
+        return False
 
 
 def navigate_peak_margin(app):
-    """Navigate to RMS Configuration → Peak Margin"""
-    main_window = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_window.wait("visible", timeout=20)
+    """Navigate to RMS Configuration -> Peak Margin."""
+    logger.info("Navigating to RMS Configuration -> Peak Margin")
+    dlg = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
 
-    safe_click(main_window.child_window(title="RMS Configuration", control_type="MenuItem"), "RMS Configuration menu")
-    safe_click(main_window.child_window(title="Peak Margin", control_type="MenuItem"), "Peak Margin menu")
+    rms_config = dlg.child_window(title="RMS Configuration", control_type="MenuItem")
+    safe_click(rms_config, "RMS Configuration Menu")
 
-    peak_win = app.window(title_re=".*Peak Margin")
-    peak_win.wait("visible", timeout=15)
-    logger.info("✅ Peak Margin window is open")
+    peak_margin = dlg.child_window(title="Peak Margin", control_type="MenuItem")
+    safe_click(peak_margin, "Peak Margin Menu")
+
+    time.sleep(3)
+    logger.info("Peak Margin window opened")
 
 
 def exit_app(app):
-    """Exit the RMS application"""
-    main_window = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_window.wait("visible", timeout=20)
-
-    safe_click(main_window.child_window(title="Exit", control_type="MenuItem"), "Exit menu")
+    """Exit the RMS application."""
+    logger.info("Exiting RMS application")
+    dlg = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+    dlg.close()
 
     try:
         popup = app.window(title_re=".*")
         popup.wait("visible", timeout=5)
-        yes_btn = popup.child_window(title="Yes", control_type="Button")
-        safe_click(yes_btn, "Yes button on Exit popup")
+        if "Do you want to close the RMS" in popup.window_text():
+            safe_click(popup.child_window(title="Yes", control_type="Button"), "Yes button on exit")
     except TimeoutError:
-        logger.warning("Exit popup not found, app may have closed")
+        logger.info("No exit confirmation popup appeared")
 
 
 def main():
@@ -170,10 +169,11 @@ def main():
 
     try:
         login(app)
+        handle_popups(app)
         if check_rms_running(app):
             navigate_peak_margin(app)
         else:
-            logger.warning("RMS not running → skipping automation")
+            logger.warning("RMS not running — skipping automation tasks")
     finally:
         exit_app(app)
         logger.info("=== Script Finished ===")
