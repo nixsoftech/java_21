@@ -1,71 +1,28 @@
 def handle_peak_margin(app):
-    logger.info("Attaching to main RMS window (Peak Margin screen)...")
-    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_win.wait("ready", timeout=20)
+    logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
+    main_window = app.window(title_re="NCDEX RISK MANAGEMENT SYSTEM.*")
+    main_window.menu_select("RMS Configuration->Peak Margin")
+    logger.info("Successfully opened Peak Margin section.")
 
-    # Wait briefly for Peak Margin UI to load
-    time.sleep(2)
-
-    logger.info("Looking for Add button by AutomationId...")
+    logger.info("Waiting for Peak Margin grid or controls to load...")
     try:
-        add_btn = main_win.child_window(auto_id="btn_Add", control_type="Button")
-        add_btn.wait("enabled ready", timeout=10)
-        safe_click(add_btn)
-        logger.info("Clicked Add button.")
+        # Wait until the Peak Margin DataGrid or Pane appears inside the main window
+        grid = main_window.child_window(control_type="DataGrid")
+        grid.wait("exists enabled visible", timeout=30)
+        logger.info("Peak Margin grid is now visible.")
     except TimeoutError:
-        logger.error("Add button not found. Dumping controls for debugging:")
-        logger.error(main_win.print_control_identifiers())
+        logger.error("Peak Margin grid not found within 30 seconds.")
+        # Dump controls for debugging
+        main_window.print_control_identifiers()
         raise
 
-    # Locate Peak Margin grid using its AutomationId from Inspect dump
+    # Now click the Add button
     try:
-        grid = main_win.child_window(auto_id="grd_PeakMargin", control_type="Table")
-        grid.wait("exists ready", timeout=10)
-        logger.info("Found Peak Margin grid.")
-    except TimeoutError:
-        logger.error("Grid not found. Dumping controls for debugging:")
-        logger.error(main_win.print_control_identifiers())
+        add_btn = main_window.child_window(title="Add", control_type="Button")
+        add_btn.wait("enabled", timeout=10).click_input()
+        logger.info("Clicked 'Add' button in Peak Margin.")
+    except Exception as e:
+        logger.error(f"Failed to click 'Add' button: {e}")
+        # Dump available controls so we can refine search if needed
+        main_window.print_control_identifiers()
         raise
-
-    rows = wait_for_rows(grid, timeout=10)
-    logger.info(f"Detected {len(rows)} rows after clicking Add.")
-
-    # Detect column headers dynamically
-    header = grid.children(control_type="Header")[0]
-    headers = [h.window_text().strip() for h in header.children()]
-    logger.info(f"Detected headers: {headers}")
-
-    col_index = {name.lower(): idx for idx, name in enumerate(headers)}
-    start_idx = col_index.get("start time")
-    end_idx = col_index.get("end time")
-    status_idx = col_index.get("status")
-
-    if start_idx is None or end_idx is None or status_idx is None:
-        logger.error(f"Could not find required columns. Headers detected: {headers}")
-        raise RuntimeError(f"Missing required columns in Peak Margin grid.")
-
-    last_row = rows[-1]
-
-    # Generate Start/End times
-    start_hour = 17
-    minute = random.choice([0, 15, 30, 45])
-    start_time = datetime.time(start_hour, minute)
-    end_time = (datetime.datetime.combine(datetime.date.today(), start_time)
-                + datetime.timedelta(minutes=15)).time()
-    start_str, end_str = start_time.strftime("%H:%M:%S"), end_time.strftime("%H:%M:%S")
-
-    enter_cell_value(last_row.children()[start_idx], start_str)
-    enter_cell_value(last_row.children()[end_idx], end_str)
-
-    logger.info("Looking for Save button by AutomationId...")
-    try:
-        save_btn = main_win.child_window(auto_id="btn_Save", control_type="Button")
-        save_btn.wait("enabled ready", timeout=10)
-        safe_click(save_btn)
-        logger.info("Clicked Save button.")
-    except TimeoutError:
-        logger.error("Save button not found. Dumping controls for debugging:")
-        logger.error(main_win.print_control_identifiers())
-        raise
-
-    wait_for_status(last_row.children()[status_idx], expected="Pending", timeout=15)
