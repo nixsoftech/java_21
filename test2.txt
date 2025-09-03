@@ -1,28 +1,35 @@
 def handle_peak_margin(app):
-    logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
-    main_window = app.window(title_re="NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_window.menu_select("RMS Configuration->Peak Margin")
-    logger.info("Successfully opened Peak Margin section.")
+    """Handles the Peak Margin screen: waits for it, clicks Add, waits for grid to be visible."""
+    main_win = app.window(title_re=".*Main.*")  # adjust if needed
+    
+    # Step 1: Wait for Peak Margin dialog
+    peak_margin = app.window(title="Peak Margin", auto_id="mnuPeakMargin", control_type="Window")
+    peak_margin.wait("exists enabled visible ready", timeout=30)
+    peak_margin.set_focus()
 
-    logger.info("Waiting for Peak Margin grid or controls to load...")
-    try:
-        # Wait until the Peak Margin DataGrid or Pane appears inside the main window
-        grid = main_window.child_window(control_type="DataGrid")
-        grid.wait("exists enabled visible", timeout=30)
-        logger.info("Peak Margin grid is now visible.")
-    except TimeoutError:
-        logger.error("Peak Margin grid not found within 30 seconds.")
-        # Dump controls for debugging
-        main_window.print_control_identifiers()
-        raise
+    print("✅ Peak Margin window detected.")
 
-    # Now click the Add button
-    try:
-        add_btn = main_window.child_window(title="Add", control_type="Button")
-        add_btn.wait("enabled", timeout=10).click_input()
-        logger.info("Clicked 'Add' button in Peak Margin.")
-    except Exception as e:
-        logger.error(f"Failed to click 'Add' button: {e}")
-        # Dump available controls so we can refine search if needed
-        main_window.print_control_identifiers()
-        raise
+    # Step 2: Click Add button
+    add_btn = peak_margin.child_window(title="Add", auto_id="cmdAdd", control_type="Button")
+    add_btn.wait("exists enabled visible", timeout=10)
+    add_btn.click_input()
+    print("✅ Clicked Add button.")
+
+    # Step 3: Wait for grid to be visible
+    grid = peak_margin.child_window(title="DataGridView", auto_id="grdPeakMargin", control_type="Table")
+    grid.wait("exists enabled visible", timeout=20)
+    print("✅ Data grid detected.")
+
+    # (Optional) Step 4: Interact with first row
+    first_row = grid.child_window(title="Row 0", control_type="Custom")
+    if first_row.exists(timeout=5):
+        first_row.click_input()
+        print("✅ Selected Row 0.")
+    else:
+        print("⚠ No rows found after Add click.")
+
+    # (Optional) you can send keystrokes to enter data here
+    # from pywinauto.keyboard import send_keys
+    # send_keys("10:00{TAB}10:30{TAB}30{TAB}Y{TAB}Active{TAB}Test remark{TAB}")
+
+    return True
