@@ -23,6 +23,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 # ---------------- Helper Functions ----------------
 def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
     for attempt in range(1, retries + 1):
@@ -36,6 +37,7 @@ def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
             time.sleep(delay)
     raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
 
+
 def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
     for attempt in range(1, retries + 1):
         try:
@@ -48,6 +50,7 @@ def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
             time.sleep(delay)
     raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
 
+
 def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
     for attempt in range(1, retries + 1):
         try:
@@ -55,6 +58,7 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
                 ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
             else:
                 ctrl = window.child_window(title=title, control_type=control_type)
+
             ctrl.wait("enabled", timeout=5).click_input()
             logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
             return True
@@ -63,21 +67,6 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
             time.sleep(delay)
     raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
 
-def handle_popup(app, text_match=None, button_title="OK", timeout=30):
-    """Wait for popup and click specified button if text matches (or always if no text_match)."""
-    try:
-        popup = app.window(title_re=".*")
-        popup.wait("visible", timeout=timeout)
-        popup_text = popup.window_text()
-        if text_match is None or text_match in popup_text:
-            logger.info(f"Popup appeared: {popup_text}")
-            safe_click(popup, title=button_title, control_type="Button")
-            logger.info(f"Clicked '{button_title}' on popup")
-            return True
-        logger.info(f"Popup text '{popup_text}' does not match '{text_match}'")
-    except TimeoutError:
-        logger.info(f"No popup appeared within {timeout}s")
-    return False
 
 # ---------------- Main Script ----------------
 try:
@@ -94,36 +83,65 @@ try:
     # Fill login fields with retries
     safe_type(dlg, "txt_UserId", "Edit", "QA1")
     safe_type(dlg, "txt_Password", "Edit", "change@1212")
-    safe_select(dlg, "cmb_Envionrnment", "ComboBox", "PROD")
+    safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
     safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
 
     # Click Submit
     safe_click(dlg, auto_id="btn_Submit", control_type="Button")
     logger.info("Clicked Submit.")
 
-    # Handle environment popup (YES)
-    handle_popup(app, text_match="Do you want to login to test/mock environment", button_title="Yes", timeout=15)
+    # ---------------- Popup Handling ----------------
+    logger.info("Waiting for environment popup or login window to close...")
 
-    # Wait for Main Window
+    try:
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=60)
+
+        popup_text = popup.window_text()
+        logger.info(f"Popup detected: '{popup_text}'")
+
+        try:
+            buttons = popup.descendants(control_type="Button")
+            button_names = [b.window_text() for b in buttons]
+            logger.info(f"Popup buttons found: {button_names}")
+        except Exception:
+            button_names = []
+
+        if "Yes" in button_names:
+            safe_click(popup, title="Yes", control_type="Button")
+            logger.info("Clicked Yes on popup.")
+        elif "OK" in button_names:
+            safe_click(popup, title="OK", control_type="Button")
+            logger.info("Clicked OK on popup.")
+        else:
+            logger.warning("No Yes/OK button detected. Continuing anyway...")
+
+    except TimeoutError:
+        logger.info("No popup appeared within 60s. Waiting for login window to close...")
+        try:
+            dlg.wait_not("visible", timeout=60)
+        except TimeoutError:
+            logger.error("Login window did not close within 60s - login may have failed!")
+            raise
+
+    # ---------------- Wait for Main RMS Window ----------------
     main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_win.wait("visible", timeout=40)
+    main_win.wait("visible", timeout=60)
     logger.info("Main RMS window is loaded.")
 
-    # Handle DLyMGN popup (if appears within 60s)
-    handle_popup(app, text_match="Intra DLyMGN File Gen Got abandoned at Primary", button_title="OK", timeout=60)
-
-    # ---- AUTOMATION TEST CASE ----
-    try:
-        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-        logger.info("Navigated to Peak Margin window.")
-    except Exception as e:
-        logger.warning(f"Failed to open Peak Margin: {e}")
-
-    # ---- EXIT FLOW ----
+    # ---------------- Exit Flow ----------------
     safe_click(main_win, title="Exit", control_type="MenuItem")
-    handle_popup(app, text_match="Do you want to close the RMS", button_title="Yes", timeout=15)
-    logger.info("Application exited successfully ✅")
+    logger.info("Clicked Exit menu item.")
+
+    try:
+        exit_popup = app.window(title_re=".*")
+        exit_popup.wait("visible", timeout=15)
+        safe_click(exit_popup, title="Yes", control_type="Button")
+        logger.info("Clicked Yes on Exit confirmation popup")
+    except TimeoutError:
+        logger.warning("No exit confirmation popup appeared.")
+
+    logger.info("Automation script completed successfully ✅")
 
 except Exception as e:
     logger.exception(f"Automation failed: {e}")
