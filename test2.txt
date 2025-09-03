@@ -1,35 +1,53 @@
-def handle_peak_margin(app):
-    """Handles the Peak Margin screen: waits for it, clicks Add, waits for grid to be visible."""
-    main_win = app.window(title_re=".*Main.*")  # adjust if needed
-    
-    # Step 1: Wait for Peak Margin dialog
-    peak_margin = app.window(title="Peak Margin", auto_id="mnuPeakMargin", control_type="Window")
-    peak_margin.wait("exists enabled visible ready", timeout=30)
-    peak_margin.set_focus()
+def handle_peak_margin(main_win):
+    """Handles Peak Margin screen directly inside the main window."""
+    try:
+        logger.info("Looking for Peak Margin section inside main RMS window...")
+        
+        # Step 1: Wait for Add button (proves that Peak Margin is loaded)
+        add_btn = main_win.child_window(title="Add", auto_id="cmdAdd", control_type="Button")
+        add_btn.wait("exists enabled visible", timeout=20)
+        add_btn.click_input()
+        logger.info("Clicked Add button in Peak Margin.")
 
-    print("✅ Peak Margin window detected.")
+        # Step 2: Focus on the grid (we assume new row is created at last)
+        grid = main_win.child_window(control_type="Table", found_index=0)  # DataGridView
+        grid.wait("exists enabled visible", timeout=10)
+        grid.set_focus()
+        logger.info("Focused on Peak Margin grid.")
 
-    # Step 2: Click Add button
-    add_btn = peak_margin.child_window(title="Add", auto_id="cmdAdd", control_type="Button")
-    add_btn.wait("exists enabled visible", timeout=10)
-    add_btn.click_input()
-    print("✅ Clicked Add button.")
+        # Step 3: Navigate to new row and type data
+        # Assuming last row is empty, navigate there
+        send_keys("{DOWN}")  # move to next row
+        send_keys("{HOME}")  # move to first cell (Sr. No)
+        send_keys("{TAB}")   # move to Start Time cell
 
-    # Step 3: Wait for grid to be visible
-    grid = peak_margin.child_window(title="DataGridView", auto_id="grdPeakMargin", control_type="Table")
-    grid.wait("exists enabled visible", timeout=20)
-    print("✅ Data grid detected.")
+        # Generate random start/end times after 17:00 with 15 min gap
+        start_hour = 17
+        start_minute = random.choice([0, 15, 30, 45])
+        end_minute = (start_minute + 15) % 60
+        end_hour = start_hour + ((start_minute + 15) // 60)
 
-    # (Optional) Step 4: Interact with first row
-    first_row = grid.child_window(title="Row 0", control_type="Custom")
-    if first_row.exists(timeout=5):
-        first_row.click_input()
-        print("✅ Selected Row 0.")
-    else:
-        print("⚠ No rows found after Add click.")
+        start_time = f"{start_hour:02d}:{start_minute:02d}:00"
+        end_time = f"{end_hour:02d}:{end_minute:02d}:00"
 
-    # (Optional) you can send keystrokes to enter data here
-    # from pywinauto.keyboard import send_keys
-    # send_keys("10:00{TAB}10:30{TAB}30{TAB}Y{TAB}Active{TAB}Test remark{TAB}")
+        send_keys(start_time)
+        send_keys("{TAB}")
+        send_keys(end_time)
+        send_keys("{TAB}")
+        send_keys(end_time)  # executable time same as end time
+        send_keys("{TAB}")
+        send_keys("Y")
+        send_keys("{TAB}")
+        send_keys("NORMAL")
+        send_keys("{TAB}")
+        send_keys("Automated Entry")
+        logger.info(f"Filled row with Start={start_time}, End={end_time}")
 
-    return True
+        # Step 4: Click Save
+        save_btn = main_win.child_window(title="Save", auto_id="cmdSave", control_type="Button")
+        save_btn.wait("enabled", timeout=10).click_input()
+        logger.info("Clicked Save button.")
+
+        # Step 5: Verify Status column contains 'PENDING'
+        time.sleep(2)
+        grid_text = grid.
