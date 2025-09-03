@@ -50,4 +50,11 @@ def handle_peak_margin(main_win):
 
         # Step 5: Verify Status column contains 'PENDING'
         time.sleep(2)
-        grid_text = grid.
+        grid_text = grid.window_text()
+        if "PENDING" in grid_text.upper():
+            logger.info("Status column shows PENDING ✅")
+        else:
+            logger.warning("Status column does not show PENDING ❌")
+
+    except Exception as e:
+        logger.exception(f"Failed while handling Peak Margin: {e}")
