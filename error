@@ -1,28 +1,19 @@
-C:\Users\Test3\Desktop\automation\rms>test-case_pywinauto2.py
+python test-case_pywinauto2.py
+2025-09-03 15:42:52,952 [INFO] Starting RMS Application...
+2025-09-03 15:42:54,562 [INFO] Login window found.
+2025-09-03 15:42:56,640 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-03 15:42:58,282 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-03 15:43:01,907 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-03 15:43:04,923 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-03 15:43:06,471 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-03 15:43:06,471 [INFO] Clicked Submit.
+2025-09-03 15:43:07,236 [INFO] Popup text 'Risk Management System - Login' does not match 'Do you want to login to test/mock environment'
+2025-09-03 15:43:47,321 [ERROR] Automation failed: timed out
 Traceback (most recent call last):
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 250, in __resolve_control
-    ctrl = wait_until_passes(
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 458, in wait_until_passes
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 110, in <module>
+    main_win.wait("visible", timeout=40)
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 529, in wait
+    wait_until(timeout, retry_interval,
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 375, in wait_until
     raise err
-pywinauto.timings.TimeoutError
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 183, in <module>
-    main()
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 178, in main
-    exit_app(app)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 153, in exit_app
-    dlg.close()
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 396, in __getattribute__
-    ctrls = self.__resolve_control(self.criteria)
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 261, in __resolve_control
-    raise e.original_exception
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 436, in wait_until_passes
-    func_val = func(*args, **kwargs)
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 203, in __get_ctrl
-    dialog = self.backend.generic_wrapper_class(findwindows.find_element(**criteria[0]))
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\findwindows.py", line 87, in find_element
-    raise ElementNotFoundError(kwargs)
-pywinauto.findwindows.ElementNotFoundError: {'title_re': '.*NCDEX RISK MANAGEMENT SYSTEM.*', 'backend': 'uia', 'process': 12968}
+pywinauto.timings.TimeoutError: timed out
