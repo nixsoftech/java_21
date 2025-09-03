@@ -1,17 +1,29 @@
-python test-case_pywinauto2.py
-2025-09-03 15:42:52,952 [INFO] Starting RMS Application...
-2025-09-03 15:42:54,562 [INFO] Login window found.
-2025-09-03 15:42:56,640 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-03 15:42:58,282 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-03 15:43:01,907 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-03 15:43:04,923 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-03 15:43:06,471 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-03 15:43:06,471 [INFO] Clicked Submit.
-2025-09-03 15:43:07,236 [INFO] Popup text 'Risk Management System - Login' does not match 'Do you want to login to test/mock environment'
-2025-09-03 15:43:47,321 [ERROR] Automation failed: timed out
+python test-case_pywinauto3.py
+2025-09-03 18:14:58,786 [INFO] Starting RMS Application...
+2025-09-03 18:15:00,458 [INFO] Login window found.
+2025-09-03 18:15:02,600 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-03 18:15:04,772 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-03 18:15:07,928 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-03 18:15:11,024 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-03 18:15:13,118 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-03 18:15:13,867 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-03 18:15:13,883 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-03 18:15:15,586 [INFO] Clicked popup button with AutomationId=6
+2025-09-03 18:15:20,414 [INFO] Waiting 30s for delayed popups...
+2025-09-03 18:15:51,370 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-03 18:15:51,370 [WARNING] Popup text mismatch. Expected 'Intra DLyMGN' but got 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-03 18:15:56,763 [ERROR] Failed to click popup button with AutomationId=2: timed out
+2025-09-03 18:15:58,154 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-03 18:15:58,154 [WARNING] Popup text mismatch. Expected 'Do you want to close the RMS' but got 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-03 18:16:04,217 [ERROR] Failed to click popup button with AutomationId=7: timed out
+2025-09-03 18:16:04,217 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-03 18:16:05,670 [INFO] Successfully opened Peak Margin window.
+2025-09-03 18:16:15,795 [ERROR] Automation failed: timed out
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 110, in <module>
-    main_win.wait("visible", timeout=40)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 196, in main
+    handle_peak_margin(app)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 132, in handle_peak_margin
+    peak_margin.wait("visible", timeout=10)
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 529, in wait
     wait_until(timeout, retry_interval,
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 375, in wait_until
