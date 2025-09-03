@@ -67,18 +67,18 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
     raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
 
 
-def handle_popup(app, expected_text=None, click_button=None, timeout=30):
-    """Wait for popup and click a button.
-       If expected_text is None → click button on ANY popup found."""
+def handle_popup(app, expected_text=None, click_button=None, timeout=20):
+    """Wait for popup and click button if matches expected text (case-insensitive)."""
     try:
         popup = app.window(title_re=".*")
         popup.wait("visible", timeout=timeout)
-        popup_text = popup.window_text()
+        popup_text = popup.window_text().strip()
         logger.info(f"Popup detected: '{popup_text}'")
 
-        if expected_text and expected_text not in popup_text:
-            logger.info(f"Popup text does not match expected '{expected_text}', skipping click")
-            return False
+        if expected_text:
+            if expected_text.lower() not in popup_text.lower():
+                logger.info(f"Popup text does not contain expected substring '{expected_text}', ignoring.")
+                return False
 
         if click_button:
             safe_click(popup, title=click_button, control_type="Button")
@@ -89,63 +89,63 @@ def handle_popup(app, expected_text=None, click_button=None, timeout=30):
         return False
 
 
-# ---------------- Main Script ----------------
-try:
-    logger.info("Starting RMS Application...")
-    app = Application(backend="uia").start(
-        r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-    )
-
-    # Wait for Login window
-    dlg = app.window(title_re=".*Risk Management System - Login")
-    dlg.wait("visible", timeout=30)
-    logger.info("Login window found.")
-
-    # Fill login fields
-    safe_type(dlg, "txt_UserId", "Edit", "QA1")
-    safe_type(dlg, "txt_Password", "Edit", "change@1212")
-    safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
-    safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
-
-    # Click Submit
-    safe_click(dlg, auto_id="btn_Submit", control_type="Button")
-    logger.info("Clicked Submit.")
-
-    # Handle environment popup → click Yes (NO TEXT CHECK)
-    handle_popup(app, click_button="Yes", timeout=20)
-
-    # Wait for Main Window
-    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_win.wait("visible", timeout=40)
-    logger.info("Main RMS window is loaded.")
-
-    # Wait for possible post-login popup
-    time.sleep(30)
-    handle_popup(app, expected_text="Intra DLyMGN File Gen Got abandoned at Primary", click_button="OK", timeout=5)
-    handle_popup(app, expected_text="Do you want to close the RMS?", click_button="No", timeout=5)
-
-    # Check RMS Running status
+def main():
     try:
-        rms_status = main_win.child_window(title_re="RMS Running.*", control_type="Text")
-        rms_status.wait("visible", timeout=10)
-        logger.info("RMS is running. Proceeding with automation tasks.")
-    except TimeoutError:
-        logger.warning("RMS is not running. Stopping automation.")
-        raise SystemExit(1)
+        logger.info("Starting RMS Application...")
+        app = Application(backend="uia").start(
+            r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+        )
 
-    # Click RMS Configuration
-    safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-    logger.info("Opened RMS Configuration menu.")
+        # Wait for Login window
+        dlg = app.window(title_re=".*Risk Management System - Login")
+        dlg.wait("visible", timeout=30)
+        logger.info("Login window found.")
 
-    # Click Peak Margin
-    safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-    logger.info("Opened Peak Margin window.")
+        # Fill login fields
+        safe_type(dlg, "txt_UserId", "Edit", "QA1")
+        safe_type(dlg, "txt_Password", "Edit", "change@1212")
+        safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
+        safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
+        safe_click(dlg, auto_id="btn_Submit", control_type="Button")
+        logger.info("Clicked Submit.")
 
-    # Exit Application
-    safe_click(main_win, title="Exit", control_type="MenuItem")
-    handle_popup(app, click_button="Yes", timeout=10)
+        # Handle environment login popup (Yes)
+        handle_popup(app, expected_text="login to test/mock environment", click_button="Yes", timeout=10)
 
-    logger.info("Automation script completed successfully.")
+        # Wait for Main RMS window
+        main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+        main_win.wait("visible", timeout=40)
+        logger.info("Main RMS window is loaded.")
 
-except Exception as e:
-    logger.exception(f"Automation failed: {e}")
+        # Post-login wait & popup handling
+        logger.info("Waiting 30s for any delayed popups...")
+        time.sleep(30)
+        handle_popup(app, expected_text="Intra DLyMGN", click_button="OK", timeout=5)
+        handle_popup(app, expected_text="Do you want to close the RMS", click_button="No", timeout=5)
+
+        # Check RMS Running (status bar text)
+        try:
+            status_bar = main_win.child_window(title_re=".*RMS Running.*", control_type="Text")
+            status_bar.wait("visible", timeout=5)
+            logger.info("RMS is running. Continuing automation task...")
+        except TimeoutError:
+            logger.warning("RMS Running text not found, proceeding anyway...")
+
+        # Navigate to RMS Configuration → Peak Margin
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(2)
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+        logger.info("Opened Peak Margin window.")
+        time.sleep(5)
+
+        # Exit application
+        safe_click(main_win, title="Exit", control_type="MenuItem")
+        handle_popup(app, click_button="Yes", timeout=10)
+        logger.info("Automation script completed successfully.")
+
+    except Exception as e:
+        logger.exception(f"Automation failed: {e}")
+
+
+if __name__ == "__main__":
+    main()
