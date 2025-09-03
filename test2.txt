@@ -1,20 +1,56 @@
-def click_rms_configuration_and_peak_margin(main_win):
-    """Navigate RMS Configuration → Peak Margin using menu_select (preferred)."""
+def handle_peak_margin(app):
+    # Wait for Peak Margin window with regex (handles extra spaces/text)
+    logger.info("Waiting for Peak Margin window...")
     try:
-        logger.info("Navigating to RMS Configuration -> Peak Margin...")
-        main_win.menu_select("RMS Configuration->Peak Margin")
-        logger.info("Successfully opened Peak Margin window.")
-    except Exception as e:
-        logger.error(f"menu_select failed: {e}")
-        logger.info("Falling back to manual click method...")
+        peak_margin = app.window(title_re=".*Peak Margin.*")
+        peak_margin.wait("visible", timeout=30)  # Increased timeout
+        logger.info("Peak Margin window is visible.")
+    except TimeoutError:
+        logger.error("Peak Margin window not found within 30 seconds. Dumping available windows for debugging:")
+        logger.error(app.windows())
+        raise
 
-        try:
-            # Fallback: manually click RMS Configuration then Peak Margin
-            safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-            time.sleep(1)
-            peak_item = main_win.child_window(title="Peak Margin", control_type="MenuItem")
-            peak_item.wait("enabled", timeout=5).click_input()
-            logger.info("Clicked Peak Margin manually.")
-        except Exception as e2:
-            logger.error(f"Manual Peak Margin click also failed: {e2}")
-            raise
+    # Click Add button
+    safe_click(peak_margin, auto_id="cmdAdd", control_type="Button")
+    logger.info("Clicked Add button.")
+
+    # Locate grid
+    try:
+        grid = peak_margin.child_window(control_type="Table")
+        grid.wait("exists ready", timeout=10)
+        logger.info("Found grid in Peak Margin window.")
+    except TimeoutError:
+        logger.error("Grid not found in Peak Margin window.")
+        raise
+
+    rows = wait_for_rows(grid, timeout=10)
+    logger.info(f"Detected {len(rows)} rows after clicking Add.")
+
+    # Get header columns dynamically
+    header = grid.children(control_type="Header")[0]
+    headers = [h.window_text().strip() for h in header.children()]
+    logger.info(f"Detected headers: {headers}")
+
+    col_index = {name.lower(): idx for idx, name in enumerate(headers)}
+    start_idx = col_index.get("start time")
+    end_idx = col_index.get("end time")
+    status_idx = col_index.get("status")
+
+    if start_idx is None or end_idx is None or status_idx is None:
+        raise RuntimeError(f"Missing required columns: {headers}")
+
+    last_row = rows[-1]
+
+    # Generate random Start/End time
+    start_hour = 17
+    minute = random.choice([0, 15, 30, 45])
+    start_time = datetime.time(start_hour, minute)
+    end_time = (datetime.datetime.combine(datetime.date.today(), start_time)
+                + datetime.timedelta(minutes=15)).time()
+    start_str, end_str = start_time.strftime("%H:%M:%S"), end_time.strftime("%H:%M:%S")
+
+    enter_cell_value(last_row.children()[start_idx], start_str)
+    enter_cell_value(last_row.children()[end_idx], end_str)
+
+    safe_click(peak_margin, auto_id="cmdSave", control_type="Button")
+    wait_for_status(last_row.children()[status_idx], expected="Pending", timeout=15)
