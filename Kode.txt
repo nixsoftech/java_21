@@ -67,22 +67,22 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
     raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
 
 
-def handle_popup(app, expected_text=None, click_button=None, timeout=20):
-    """Wait for popup and click button if matches expected text (case-insensitive)."""
+def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
+    """Wait for a popup and click using AutomationId if provided."""
     try:
         popup = app.window(title_re=".*")
         popup.wait("visible", timeout=timeout)
         popup_text = popup.window_text().strip()
         logger.info(f"Popup detected: '{popup_text}'")
 
-        if expected_text:
-            if expected_text.lower() not in popup_text.lower():
-                logger.info(f"Popup text does not contain expected substring '{expected_text}', ignoring.")
-                return False
+        if expected_substring and expected_substring.lower() not in popup_text.lower():
+            logger.info(f"Popup text does not contain expected '{expected_substring}', ignoring.")
+            return False
 
-        if click_button:
-            safe_click(popup, title=click_button, control_type="Button")
-            logger.info(f"Clicked '{click_button}' on popup.")
+        if auto_id_to_click:
+            btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+            btn.wait("enabled", timeout=5).click_input()
+            logger.info(f"Clicked button with AutomationId={auto_id_to_click}")
         return True
     except TimeoutError:
         logger.info(f"No popup appeared within {timeout}s.")
@@ -101,7 +101,7 @@ def main():
         dlg.wait("visible", timeout=30)
         logger.info("Login window found.")
 
-        # Fill login fields
+        # Fill login fields with retries
         safe_type(dlg, "txt_UserId", "Edit", "QA1")
         safe_type(dlg, "txt_Password", "Edit", "change@1212")
         safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
@@ -109,21 +109,23 @@ def main():
         safe_click(dlg, auto_id="btn_Submit", control_type="Button")
         logger.info("Clicked Submit.")
 
-        # Handle environment login popup (Yes)
-        handle_popup(app, expected_text="login to test/mock environment", click_button="Yes", timeout=10)
+        # Handle environment login popup -> Click Yes (AutomationId=6)
+        handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
 
         # Wait for Main RMS window
         main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
         main_win.wait("visible", timeout=40)
         logger.info("Main RMS window is loaded.")
 
-        # Post-login wait & popup handling
+        # Post-login wait
         logger.info("Waiting 30s for any delayed popups...")
         time.sleep(30)
-        handle_popup(app, expected_text="Intra DLyMGN", click_button="OK", timeout=5)
-        handle_popup(app, expected_text="Do you want to close the RMS", click_button="No", timeout=5)
 
-        # Check RMS Running (status bar text)
+        # Handle post-login popups
+        handle_popup(app, expected_substring="Intra DLyMGN", auto_id_to_click="2", timeout=5)  # OK button (AutoId may differ)
+        handle_popup(app, expected_substring="Do you want to close the RMS", auto_id_to_click="7", timeout=5)  # No button
+
+        # Check RMS Running (status bar check is optional)
         try:
             status_bar = main_win.child_window(title_re=".*RMS Running.*", control_type="Text")
             status_bar.wait("visible", timeout=5)
@@ -140,7 +142,7 @@ def main():
 
         # Exit application
         safe_click(main_win, title="Exit", control_type="MenuItem")
-        handle_popup(app, click_button="Yes", timeout=10)
+        handle_popup(app, auto_id_to_click="6", timeout=10)  # Yes button
         logger.info("Automation script completed successfully.")
 
     except Exception as e:
