@@ -1,23 +1,20 @@
-def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
-    """Wait for a popup and click using AutomationId if provided."""
+def click_rms_configuration_and_peak_margin(main_win):
+    """Navigate RMS Configuration → Peak Margin using menu_select (preferred)."""
     try:
-        popup = app.window(title_re=".*")
-        popup.wait("visible", timeout=timeout)
-        popup_text = popup.window_text().strip()
-        logger.info(f"Popup detected: '{popup_text}'")
+        logger.info("Navigating to RMS Configuration -> Peak Margin...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin window.")
+    except Exception as e:
+        logger.error(f"menu_select failed: {e}")
+        logger.info("Falling back to manual click method...")
 
-        if expected_substring and expected_substring.lower() not in popup_text.lower():
-            logger.warning(f"Popup text does not contain expected '{expected_substring}', proceeding anyway...")
-
-        if auto_id_to_click:
-            try:
-                btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
-                btn.wait("enabled", timeout=5).click_input()
-                logger.info(f"Clicked button with AutomationId={auto_id_to_click}")
-            except Exception as e:
-                logger.error(f"Failed to click button with AutomationId={auto_id_to_click}: {e}")
-        return True
-
-    except TimeoutError:
-        logger.info(f"No popup appeared within {timeout}s.")
-        return False
+        try:
+            # Fallback: manually click RMS Configuration then Peak Margin
+            safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+            time.sleep(1)
+            peak_item = main_win.child_window(title="Peak Margin", control_type="MenuItem")
+            peak_item.wait("enabled", timeout=5).click_input()
+            logger.info("Clicked Peak Margin manually.")
+        except Exception as e2:
+            logger.error(f"Manual Peak Margin click also failed: {e2}")
+            raise
