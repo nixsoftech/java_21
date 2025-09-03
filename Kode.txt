@@ -1,4 +1,3 @@
-
 import time
 import os
 import logging
@@ -24,7 +23,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 # ---------------- Helper Functions ----------------
 def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
     for attempt in range(1, retries + 1):
@@ -38,7 +36,6 @@ def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
             time.sleep(delay)
     raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
 
-
 def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
     for attempt in range(1, retries + 1):
         try:
@@ -51,7 +48,6 @@ def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
             time.sleep(delay)
     raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
 
-
 def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
     for attempt in range(1, retries + 1):
         try:
@@ -60,13 +56,13 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
             else:
                 ctrl = window.child_window(title=title, control_type=control_type)
             ctrl.wait("enabled", timeout=5).click_input()
+            time.sleep(0.5)
             logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
             return True
         except Exception as e:
             logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
             time.sleep(delay)
     raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
-
 
 def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
     """Wait for a popup and click using AutomationId if provided."""
@@ -83,16 +79,26 @@ def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15
             try:
                 btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
                 btn.wait("enabled", timeout=5).click_input()
-                logger.info(f"Clicked button with AutomationId={auto_id_to_click}")
+                logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
             except Exception as e:
-                logger.error(f"Failed to click button with AutomationId={auto_id_to_click}: {e}")
+                logger.error(f"Failed to click popup button with AutomationId={auto_id_to_click}: {e}")
         return True
 
     except TimeoutError:
         logger.info(f"No popup appeared within {timeout}s.")
         return False
 
+def click_rms_configuration_and_peak_margin(main_win):
+    """Click RMS Configuration menu and then Peak Margin from dropdown."""
+    try:
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(1)  # allow dropdown to appear
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+        logger.info("Opened Peak Margin window.")
+    except Exception as e:
+        logger.error(f"Failed to navigate to Peak Margin: {e}")
 
+# ---------------- Main Script ----------------
 def main():
     try:
         logger.info("Starting RMS Application...")
@@ -100,12 +106,10 @@ def main():
             r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
         )
 
-        # Wait for Login window
         dlg = app.window(title_re=".*Risk Management System - Login")
         dlg.wait("visible", timeout=30)
         logger.info("Login window found.")
 
-        # Fill login fields with retries
         safe_type(dlg, "txt_UserId", "Edit", "rash1")
         safe_type(dlg, "txt_Password", "Edit", "change@1212")
         safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
@@ -113,45 +117,38 @@ def main():
         safe_click(dlg, auto_id="btn_Submit", control_type="Button")
         logger.info("Clicked Submit.")
 
-        # Handle environment login popup -> Click Yes (AutomationId=6)
+        # Handle login popup (Yes = AutomationId=6)
         handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
 
-        # Wait for Main RMS window
         main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
         main_win.wait("visible", timeout=40)
         logger.info("Main RMS window is loaded.")
 
-        # Post-login wait
-        logger.info("Waiting 30s for any delayed popups...")
+        # Post-login wait & popups
+        logger.info("Waiting 30s for delayed popups...")
         time.sleep(30)
+        handle_popup(app, expected_substring="Intra DLyMGN", auto_id_to_click="2", timeout=5)
+        handle_popup(app, expected_substring="Do you want to close the RMS", auto_id_to_click="7", timeout=5)
 
-        # Handle post-login popups
-        handle_popup(app, expected_substring="Intra DLyMGN", auto_id_to_click="2", timeout=5)  # OK button (AutoId may differ)
-        handle_popup(app, expected_substring="Do you want to close the RMS", auto_id_to_click="7", timeout=5)  # No button
-
-        # Check RMS Running (status bar check is optional)
+        # Check RMS Running
         try:
             status_bar = main_win.child_window(title_re=".*RMS Running.*", control_type="Text")
             status_bar.wait("visible", timeout=5)
-            logger.info("RMS is running. Continuing automation task...")
+            logger.info("RMS is running, continuing automation.")
         except TimeoutError:
-            logger.warning("RMS Running text not found, proceeding anyway...")
+            logger.warning("RMS running text not found, continuing anyway.")
 
-        # Navigate to RMS Configuration → Peak Margin
-        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-        time.sleep(2)
-        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-        logger.info("Opened Peak Margin window.")
+        # Navigate RMS Configuration -> Peak Margin
+        click_rms_configuration_and_peak_margin(main_win)
         time.sleep(5)
 
-        # Exit application
+        # Exit RMS
         safe_click(main_win, title="Exit", control_type="MenuItem")
         handle_popup(app, auto_id_to_click="6", timeout=10)  # Yes button
         logger.info("Automation script completed successfully.")
 
     except Exception as e:
         logger.exception(f"Automation failed: {e}")
-
 
 if __name__ == "__main__":
     main()
