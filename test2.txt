@@ -1,32 +1,36 @@
 def handle_peak_margin(app):
-    # Wait for Peak Margin window with regex (handles extra spaces/text)
-    logger.info("Waiting for Peak Margin window...")
+    logger.info("Attaching to main RMS window (Peak Margin screen)...")
+    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+    main_win.wait("ready", timeout=20)
+
+    # Wait briefly for Peak Margin UI to load
+    time.sleep(2)
+
+    logger.info("Looking for Add button by AutomationId...")
     try:
-        peak_margin = app.window(title_re=".*Peak Margin.*")
-        peak_margin.wait("visible", timeout=30)  # Increased timeout
-        logger.info("Peak Margin window is visible.")
+        add_btn = main_win.child_window(auto_id="btn_Add", control_type="Button")
+        add_btn.wait("enabled ready", timeout=10)
+        safe_click(add_btn)
+        logger.info("Clicked Add button.")
     except TimeoutError:
-        logger.error("Peak Margin window not found within 30 seconds. Dumping available windows for debugging:")
-        logger.error(app.windows())
+        logger.error("Add button not found. Dumping controls for debugging:")
+        logger.error(main_win.print_control_identifiers())
         raise
 
-    # Click Add button
-    safe_click(peak_margin, auto_id="cmdAdd", control_type="Button")
-    logger.info("Clicked Add button.")
-
-    # Locate grid
+    # Locate Peak Margin grid using its AutomationId from Inspect dump
     try:
-        grid = peak_margin.child_window(control_type="Table")
+        grid = main_win.child_window(auto_id="grd_PeakMargin", control_type="Table")
         grid.wait("exists ready", timeout=10)
-        logger.info("Found grid in Peak Margin window.")
+        logger.info("Found Peak Margin grid.")
     except TimeoutError:
-        logger.error("Grid not found in Peak Margin window.")
+        logger.error("Grid not found. Dumping controls for debugging:")
+        logger.error(main_win.print_control_identifiers())
         raise
 
     rows = wait_for_rows(grid, timeout=10)
     logger.info(f"Detected {len(rows)} rows after clicking Add.")
 
-    # Get header columns dynamically
+    # Detect column headers dynamically
     header = grid.children(control_type="Header")[0]
     headers = [h.window_text().strip() for h in header.children()]
     logger.info(f"Detected headers: {headers}")
@@ -37,11 +41,12 @@ def handle_peak_margin(app):
     status_idx = col_index.get("status")
 
     if start_idx is None or end_idx is None or status_idx is None:
-        raise RuntimeError(f"Missing required columns: {headers}")
+        logger.error(f"Could not find required columns. Headers detected: {headers}")
+        raise RuntimeError(f"Missing required columns in Peak Margin grid.")
 
     last_row = rows[-1]
 
-    # Generate random Start/End time
+    # Generate Start/End times
     start_hour = 17
     minute = random.choice([0, 15, 30, 45])
     start_time = datetime.time(start_hour, minute)
@@ -52,5 +57,15 @@ def handle_peak_margin(app):
     enter_cell_value(last_row.children()[start_idx], start_str)
     enter_cell_value(last_row.children()[end_idx], end_str)
 
-    safe_click(peak_margin, auto_id="cmdSave", control_type="Button")
+    logger.info("Looking for Save button by AutomationId...")
+    try:
+        save_btn = main_win.child_window(auto_id="btn_Save", control_type="Button")
+        save_btn.wait("enabled ready", timeout=10)
+        safe_click(save_btn)
+        logger.info("Clicked Save button.")
+    except TimeoutError:
+        logger.error("Save button not found. Dumping controls for debugging:")
+        logger.error(main_win.print_control_identifiers())
+        raise
+
     wait_for_status(last_row.children()[status_idx], expected="Pending", timeout=15)
