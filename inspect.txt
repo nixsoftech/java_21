@@ -1,92 +1,27 @@
-Name:	"RMS Configuration"
-ControlType:	UIA_MenuItemControlTypeId (0xC35B)
-LocalizedControlType:	"menu item"
-BoundingRectangle:	{l:420 t:56 r:554 b:74}
+After opening peak margin, click on add button , 
+a emtpy row will be created on that form
+we need to add random time after 17 hrs with 15 mins gap for start and end time (eg 17:45:00) in the Start Time column name
+likewise for End Time (eg 18:00:00)
+after adding time (24 hrs time format) we need to click on save.
+after clicking on save we need to verify the status column should show pending
+
+=====================
+Name:	"Add"
+ControlType:	UIA_ButtonControlTypeId (0xC350)
+LocalizedControlType:	"button"
+BoundingRectangle:	{l:14 t:493 r:89 b:516}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	false
-AccessKey:	"Alt+c"
-ProcessId:	10576
-ProviderDescription:	"[pid:10576,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	"Press"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	"Alt+c"
-LegacyIAccessible.Name:	"RMS Configuration"
-LegacyIAccessible.Role:	menu item (0xC)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	"Start RMS" menu item
-LastChild:	"BMS File Upload" menu item
-Next:	"Tools" menu item
-Previous:	"Client Collateral" menu item
-Other Props:	Object has no additional properties
-Children:	"Start RMS" menu item
-	"Timings For Volatility Calculation" menu item
-	"Timings For Drop Delivery Margin" menu item
-	"Change Password" menu item
-	"Generate GPSP/Process BK01" menu item
-	"Drop Delivery Margin" menu item
-	"Process CRMS/FUNDS File" menu item
-	"Timings for Intraday PSN" menu item
-	"Peak Margin" menu item
-	"BMS File Upload" menu item
-Ancestors:	"Main Menu" menu bar
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-
-=========================
-Name:	"Peak Margin"
-ControlType:	UIA_MenuItemControlTypeId (0xC35B)
-LocalizedControlType:	"menu item"
-IsEnabled:	true
-IsOffscreen:	true
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	10576
-ProviderDescription:	"[pid:10576,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	18280
+RuntimeId:	[2A.5B0392]
+AutomationId:	"cmdAdd"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x5B0392
+ProviderDescription:	"[pid:3656,providerId:0x5B0392 Main:Nested [pid:18280,providerId:0x5B0392 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
@@ -95,8 +30,8 @@ LegacyIAccessible.DefaultAction:	"Press"
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Peak Margin"
-LegacyIAccessible.Role:	menu item (0xC)
+LegacyIAccessible.Name:	"Add"
+LegacyIAccessible.Role:	push button (0x2B)
 LegacyIAccessible.State:	focusable (0x100000)
 LegacyIAccessible.Value:	""
 IsAnnotationPatternAvailable:	false
@@ -136,12 +71,309 @@ IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	"BMS File Upload" menu item
-Previous:	"Timings for Intraday PSN" menu item
+Next:	"DataGridView" table
+Previous:	"Delete" button
 Other Props:	Object has no additional properties
 Children:	Container has no children
-Ancestors:	"RMS Configuration" menu item
-	"Main Menu" menu bar
+Ancestors:	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+================================
+Name:	"Start Time"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:122 t:92 r:222 b:124}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	18280
+ProviderDescription:	"[pid:18280,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Start Time"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Start Time"
+Value.IsReadOnly:	false
+Value.Value:	"Start Time"
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	true
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"End Time" header
+Previous:	"Sr. No" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+===============================
+Name:	"End Time"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:222 t:92 r:322 b:124}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	18280
+ProviderDescription:	"[pid:18280,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"End Time"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"End Time"
+Value.IsReadOnly:	false
+Value.Value:	"End Time"
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	true
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"Executable Time" header
+Previous:	"Start Time" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+==================================
+Name:	"Save"
+ControlType:	UIA_ButtonControlTypeId (0xC350)
+LocalizedControlType:	"button"
+BoundingRectangle:	{l:181 t:519 r:256 b:542}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	18280
+RuntimeId:	[2A.1803E4]
+AutomationId:	"cmdSave"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x1803E4
+ProviderDescription:	"[pid:3656,providerId:0x1803E4 Main:Nested [pid:18280,providerId:0x1803E4 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	"Press"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Save"
+LegacyIAccessible.Role:	push button (0x2B)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	true
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	false
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"Delete" button
+Previous:	"Export" button
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+=========================
+Name:	"Status"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:513 t:103 r:613 b:135}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	18280
+ProviderDescription:	"[pid:18280,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Status"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Status"
+Value.IsReadOnly:	false
+Value.Value:	"Status"
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	true
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"Maker Remarks" header
+Previous:	"Flag" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
