@@ -1,4 +1,4 @@
-python test-case_pywinauto.py
+C:\Users\Test3\Desktop\automation\rms>test-case_pywinauto2.py
 Traceback (most recent call last):
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 250, in __resolve_control
     ctrl = wait_until_passes(
@@ -9,16 +9,20 @@ pywinauto.timings.TimeoutError
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto.py", line 14, in <module>
-    dlg.child_window(auto_id="txtUser", control_type="Edit").type_keys("QA1")
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 379, in __getattribute__
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 183, in <module>
+    main()
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 178, in main
+    exit_app(app)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto2.py", line 153, in exit_app
+    dlg.close()
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 396, in __getattribute__
     ctrls = self.__resolve_control(self.criteria)
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 261, in __resolve_control
     raise e.original_exception
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 436, in wait_until_passes
     func_val = func(*args, **kwargs)
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 222, in __get_ctrl
-    ctrl = self.backend.generic_wrapper_class(findwindows.find_element(**ctrl_criteria))
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 203, in __get_ctrl
+    dialog = self.backend.generic_wrapper_class(findwindows.find_element(**criteria[0]))
   File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\findwindows.py", line 87, in find_element
     raise ElementNotFoundError(kwargs)
-pywinauto.findwindows.ElementNotFoundError: {'auto_id': 'txtUser', 'control_type': 'Edit', 'top_level_only': False, 'parent': <uia_element_info.UIAElementInfo - 'Risk Management System - Login', WindowsForms10.Window.8.app.0.bb8560_r20_ad1, 526730>, 'backend': 'uia'}
+pywinauto.findwindows.ElementNotFoundError: {'title_re': '.*NCDEX RISK MANAGEMENT SYSTEM.*', 'backend': 'uia', 'process': 12968}
