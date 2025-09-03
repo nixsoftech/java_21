@@ -68,6 +68,31 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
     raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
 
 
+def handle_popup(app, expected_text=None, click_button=None, timeout=30):
+    """Wait for popup and optionally click a button if text matches."""
+    try:
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=timeout)
+        popup_text = popup.window_text()
+        logger.info(f"Popup detected: '{popup_text}'")
+
+        if expected_text and expected_text not in popup_text:
+            logger.info(f"Popup text does not match expected '{expected_text}', skipping click")
+            return False
+
+        if click_button:
+            try:
+                safe_click(popup, title=click_button, control_type="Button")
+                logger.info(f"Clicked '{click_button}' on popup.")
+                return True
+            except TimeoutError:
+                logger.warning(f"Button '{click_button}' not found on popup.")
+        return True
+    except TimeoutError:
+        logger.info(f"No popup appeared within {timeout}s.")
+        return False
+
+
 # ---------------- Main Script ----------------
 try:
     logger.info("Starting RMS Application...")
@@ -90,58 +115,41 @@ try:
     safe_click(dlg, auto_id="btn_Submit", control_type="Button")
     logger.info("Clicked Submit.")
 
-    # ---------------- Popup Handling ----------------
-    logger.info("Waiting for environment popup or login window to close...")
+    # Handle environment popup (Yes)
+    handle_popup(app, expected_text="Do you want to login to test/mock environment", click_button="Yes", timeout=20)
 
-    try:
-        popup = app.window(title_re=".*")
-        popup.wait("visible", timeout=60)
-
-        popup_text = popup.window_text()
-        logger.info(f"Popup detected: '{popup_text}'")
-
-        try:
-            buttons = popup.descendants(control_type="Button")
-            button_names = [b.window_text() for b in buttons]
-            logger.info(f"Popup buttons found: {button_names}")
-        except Exception:
-            button_names = []
-
-        if "Yes" in button_names:
-            safe_click(popup, title="Yes", control_type="Button")
-            logger.info("Clicked Yes on popup.")
-        elif "OK" in button_names:
-            safe_click(popup, title="OK", control_type="Button")
-            logger.info("Clicked OK on popup.")
-        else:
-            logger.warning("No Yes/OK button detected. Continuing anyway...")
-
-    except TimeoutError:
-        logger.info("No popup appeared within 60s. Waiting for login window to close...")
-        try:
-            dlg.wait_not("visible", timeout=60)
-        except TimeoutError:
-            logger.error("Login window did not close within 60s - login may have failed!")
-            raise
-
-    # ---------------- Wait for Main RMS Window ----------------
+    # Wait for main window
     main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
     main_win.wait("visible", timeout=60)
     logger.info("Main RMS window is loaded.")
 
-    # ---------------- Exit Flow ----------------
-    safe_click(main_win, title="Exit", control_type="MenuItem")
-    logger.info("Clicked Exit menu item.")
+    # ---------------- Post-Login Popups ----------------
+    logger.info("Waiting 30s for post-login popups...")
+    time.sleep(30)
 
+    handle_popup(app, expected_text="Intra DLyMGN File Gen Got abandoned at Primary", click_button="OK", timeout=5)
+    handle_popup(app, expected_text="Do you want to close the RMS", click_button="No", timeout=5)
+
+    # ---------------- Verify RMS Running ----------------
     try:
-        exit_popup = app.window(title_re=".*")
-        exit_popup.wait("visible", timeout=15)
-        safe_click(exit_popup, title="Yes", control_type="Button")
-        logger.info("Clicked Yes on Exit confirmation popup")
+        status_bar = main_win.child_window(title_re="RMS Running.*", control_type="Text")
+        status_bar.wait("visible", timeout=10)
+        logger.info("RMS is running. Continuing automation tasks...")
     except TimeoutError:
-        logger.warning("No exit confirmation popup appeared.")
+        logger.error("RMS not running. Exiting automation.")
+        raise
 
-    logger.info("Automation script completed successfully ✅")
+    # ---------------- Navigate to RMS Configuration -> Peak Margin ----------------
+    safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+    time.sleep(1)
+    safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+    logger.info("Opened Peak Margin window.")
+    time.sleep(3)
+
+    # ---------------- Exit Application ----------------
+    safe_click(main_win, title="Exit", control_type="MenuItem")
+    handle_popup(app, expected_text="Do you want to close the RMS", click_button="Yes", timeout=10)
+    logger.info("Application exited successfully ✅")
 
 except Exception as e:
     logger.exception(f"Automation failed: {e}")
