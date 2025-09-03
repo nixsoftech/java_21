@@ -73,29 +73,99 @@ def safe_click(window, auto_id=None, title=None, control_type="Button", retries=
 
 def check_and_handle_popups(app, timeout=10):
     """Check for and handle specific popups after login."""
+    logger.info("Checking for popups after login...")
+    
     try:
-        # Check for "Intra DLyMGN File Gen Got abandoned at Primary" popup
+        # Method 1: Check for any popup with "Intra DLyMGN" in title
         try:
-            popup1 = app.window(title_re=".*Intra DLyMGN File Gen Got abandoned at Primary.*")
-            popup1.wait("visible", timeout=5)
-            safe_click(popup1, title="OK", control_type="Button")
-            logger.info("Clicked OK on 'Intra DLyMGN File Gen' popup")
-            time.sleep(2)
-        except TimeoutError:
-            logger.info("No 'Intra DLyMGN File Gen' popup found")
-        
-        # Check for "Do you want to close the RMS?" popup
+            popups = app.windows()
+            for popup in popups:
+                if popup.is_visible() and "Intra DLyMGN" in popup.window_text():
+                    logger.info(f"Found popup: {popup.window_text()}")
+                    # Try to find and click OK button using multiple approaches
+                    try:
+                        # Method 1: Look for OK button by title
+                        ok_button = popup.child_window(title="OK", control_type="Button")
+                        ok_button.wait("enabled", timeout=5).click_input()
+                        logger.info("Clicked OK button using title")
+                        time.sleep(2)
+                        break
+                    except:
+                        try:
+                            # Method 2: Look for OK button by auto_id if available
+                            ok_button = popup.child_window(auto_id="btnOK", control_type="Button")
+                            ok_button.wait("enabled", timeout=5).click_input()
+                            logger.info("Clicked OK button using auto_id")
+                            time.sleep(2)
+                            break
+                        except:
+                            try:
+                                # Method 3: Look for any button that might be OK
+                                buttons = popup.descendants(control_type="Button")
+                                for button in buttons:
+                                    if button.is_visible() and button.window_text().upper() in ["OK", "YES", "NO"]:
+                                        button.click_input()
+                                        logger.info(f"Clicked button: {button.window_text()}")
+                                        time.sleep(2)
+                                        break
+                                break
+                            except Exception as e:
+                                logger.warning(f"Could not click button: {e}")
+        except Exception as e:
+            logger.warning(f"Error checking for Intra DLyMGN popup: {e}")
+
+        # Method 2: Check for "Do you want to close the RMS?" popup
         try:
-            popup2 = app.window(title_re=".*Do you want to close the RMS?.*")
-            popup2.wait("visible", timeout=5)
-            safe_click(popup2, title="No", control_type="Button")
-            logger.info("Clicked No on 'Close RMS' popup")
-            time.sleep(2)
-        except TimeoutError:
-            logger.info("No 'Close RMS' popup found")
+            popups = app.windows()
+            for popup in popups:
+                if popup.is_visible() and "close the RMS" in popup.window_text().lower():
+                    logger.info(f"Found close RMS popup: {popup.window_text()}")
+                    # Click No button
+                    try:
+                        no_button = popup.child_window(title="No", control_type="Button")
+                        no_button.wait("enabled", timeout=5).click_input()
+                        logger.info("Clicked No button")
+                        time.sleep(2)
+                        break
+                    except:
+                        try:
+                            # Try to find No button by other means
+                            buttons = popup.descendants(control_type="Button")
+                            for button in buttons:
+                                if button.is_visible() and button.window_text().upper() == "NO":
+                                    button.click_input()
+                                    logger.info("Clicked No button (alternative method)")
+                                    time.sleep(2)
+                                    break
+                            break
+                        except Exception as e:
+                            logger.warning(f"Could not click No button: {e}")
+        except Exception as e:
+            logger.warning(f"Error checking for close RMS popup: {e}")
+
+        # Method 3: Check for any generic popup with OK button
+        try:
+            time.sleep(3)  # Wait a bit for popups to appear
+            dialogs = app.windows(visible_only=True)
+            for dialog in dialogs:
+                if dialog != app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*") and dialog.is_dialog():
+                    logger.info(f"Found dialog: {dialog.window_text()}")
+                    try:
+                        # Try to click OK if available
+                        ok_buttons = dialog.descendants(control_type="Button")
+                        for btn in ok_buttons:
+                            if btn.is_visible() and btn.window_text().upper() == "OK":
+                                btn.click_input()
+                                logger.info("Clicked OK on generic popup")
+                                time.sleep(2)
+                                break
+                    except Exception as e:
+                        logger.warning(f"Could not handle generic popup: {e}")
+        except Exception as e:
+            logger.warning(f"Error checking for generic popups: {e}")
             
     except Exception as e:
-        logger.warning(f"Error handling popups: {e}")
+        logger.warning(f"Error in popup handling: {e}")
 
 
 def check_rms_running(main_win, timeout=30):
@@ -104,19 +174,19 @@ def check_rms_running(main_win, timeout=30):
     
     for attempt in range(1, 6):
         try:
-            # Look for the RMS Running status text
-            status_text = main_win.child_window(title_re=".*RMS Running.*", control_type="Text")
-            status_text.wait("visible", timeout=10)
+            # Look for the RMS Running status text with flexible matching
+            status_elements = main_win.descendants(control_type="Text")
+            for element in status_elements:
+                if element.is_visible() and "RMS Running" in element.window_text():
+                    status = element.window_text()
+                    logger.info(f"RMS Status: {status}")
+                    
+                    if "RMS Running" in status:
+                        logger.info("✓ RMS is running successfully")
+                        return True
             
-            status = status_text.window_text()
-            logger.info(f"RMS Status: {status}")
-            
-            if "RMS Running" in status:
-                logger.info("✓ RMS is running successfully")
-                return True
-            else:
-                logger.warning(f"RMS status indicates it might not be running: {status}")
-                time.sleep(5)
+            logger.warning(f"Attempt {attempt}: RMS status not found, waiting...")
+            time.sleep(5)
                 
         except Exception as e:
             logger.warning(f"Attempt {attempt} to find RMS status failed: {e}")
@@ -134,26 +204,37 @@ def navigate_to_peak_margin(main_win):
         # Click on RMS Configuration menu
         safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
         logger.info("Clicked RMS Configuration menu")
-        time.sleep(2)
+        time.sleep(3)  # Wait for menu to expand
         
-        # Click on Peak Margin submenu
-        # Since it's a submenu, we need to find it under the RMS Configuration menu
-        config_menu = main_win.child_window(title="RMS Configuration", control_type="MenuItem")
-        config_menu.click_input()
-        
-        # Wait for the submenu to appear and click Peak Margin
-        peak_margin_item = main_win.child_window(title="Peak Margin", control_type="MenuItem")
-        peak_margin_item.wait("visible", timeout=10)
-        peak_margin_item.click_input()
-        logger.info("Clicked Peak Margin submenu")
+        # Click on Peak Margin submenu - use multiple approaches
+        try:
+            # Method 1: Direct click on Peak Margin menu item
+            peak_margin_item = main_win.child_window(title="Peak Margin", control_type="MenuItem")
+            peak_margin_item.wait("visible", timeout=10)
+            peak_margin_item.click_input()
+            logger.info("Clicked Peak Margin submenu (direct)")
+        except:
+            # Method 2: Use coordinates if direct click fails
+            config_menu = main_win.child_window(title="RMS Configuration", control_type="MenuItem")
+            rect = config_menu.rectangle()
+            # Click slightly below the menu to open submenu
+            main_win.click_input(coords=(rect.left + 10, rect.bottom + 5))
+            time.sleep(1)
+            # Now try to find and click Peak Margin
+            peak_margin_item = main_win.child_window(title="Peak Margin", control_type="MenuItem")
+            peak_margin_item.click_input()
+            logger.info("Clicked Peak Margin submenu (coordinates)")
         
         # Wait for Peak Margin window to open
-        peak_margin_win = app.window(title="Peak Margin")
-        peak_margin_win.wait("visible", timeout=15)
-        logger.info("Peak Margin window opened successfully")
-        
-        return True
-        
+        time.sleep(5)
+        peak_margin_windows = app.windows(title="Peak Margin")
+        if peak_margin_windows:
+            logger.info("Peak Margin window opened successfully")
+            return True
+        else:
+            logger.warning("Peak Margin window not found, but navigation attempted")
+            return False
+            
     except Exception as e:
         logger.error(f"Failed to navigate to Peak Margin: {e}")
         return False
@@ -180,6 +261,7 @@ try:
     # Click Submit
     safe_click(dlg, auto_id="btn_Submit", control_type="Button")
     logger.info("Clicked Submit.")
+    time.sleep(5)  # Wait for login process
 
     # Handle login popup (Yes/No) with retry
     try:
@@ -187,6 +269,7 @@ try:
         popup.wait("visible", timeout=15)
         safe_click(popup, title="Yes", control_type="Button")
         logger.info("Clicked Yes on environment popup.")
+        time.sleep(3)
     except TimeoutError:
         logger.warning("No login popup appeared.")
 
@@ -194,6 +277,7 @@ try:
     main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
     main_win.wait("visible", timeout=40)
     logger.info("Main RMS window is loaded")
+    time.sleep(5)  # Wait for main window to stabilize
 
     # Handle specific popups after login
     check_and_handle_popups(app)
@@ -206,7 +290,7 @@ try:
     # Navigate to RMS Configuration -> Peak Margin
     if navigate_to_peak_margin(main_win):
         logger.info("Successfully navigated to Peak Margin")
-        time.sleep(3)  # Wait for Peak Margin window to fully load
+        time.sleep(5)  # Wait for Peak Margin window to fully load
     else:
         logger.error("Failed to navigate to Peak Margin")
         raise Exception("Navigation to Peak Margin failed")
@@ -215,6 +299,7 @@ try:
     # Click Exit menu item
     safe_click(main_win, title="Exit", control_type="MenuItem")
     logger.info("Clicked Exit menu item.")
+    time.sleep(2)
 
     # Handle Exit confirmation popup
     try:
