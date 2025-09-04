@@ -1,4 +1,3 @@
-
 import time
 import os
 import random
@@ -54,10 +53,7 @@ def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
 def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
     for attempt in range(1, retries + 1):
         try:
-            if auto_id:
-                ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            else:
-                ctrl = window.child_window(title=title, control_type=control_type)
+            ctrl = window.child_window(auto_id=auto_id, title=title, control_type=control_type)
             ctrl.wait("enabled", timeout=5).click_input()
             time.sleep(0.5)
             logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
@@ -91,42 +87,23 @@ def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15
         return False
 
 def handle_post_login_popups(app, main_win, timeout=20):
-    """
-    Handles sequential popups after login:
-    1. "BMS OpmsEngine Got abandoned..." -> OK (AutomationId=2)
-    2. "Do you want to close RMS ?" -> NO (AutomationId=7)
-    """
-
     try:
         logger.info("Waiting for 'BMS OpmsEngine Got abandoned' popup...")
         popup1 = main_win.child_window(title="Risk Management System", control_type="Window")
         popup1.wait("visible", timeout=timeout)
-        popup1_text = popup1.window_text().strip()
-        logger.info(f"[Popup1] Detected: '{popup1_text}'")
+        logger.info("[Popup1] Detected")
 
-        try:
-            btn_ok = popup1.child_window(auto_id="2", control_type="Button")
-            btn_ok.wait("enabled", timeout=5).click_input()
-            logger.info("[Popup1] Clicked OK (AutomationId=2)")
-        except Exception as e:
-            logger.error(f"[Popup1] Failed to click OK: {e}")
-            logger.error(popup1.print_control_identifiers())
+        safe_click(popup1, auto_id="2", control_type="Button")
+        logger.info("[Popup1] Clicked OK")
 
         time.sleep(2)
 
         logger.info("Waiting for 'Do you want to close RMS' popup...")
-        popup2 = main_win.child_window(title_re=".*", control_type="Window")
+        popup2 = main_win.child_window(title="Risk Management System", control_type="Window")
         popup2.wait("visible", timeout=timeout)
-        popup2_text = popup2.window_text().strip()
-        logger.info(f"[Popup2] Detected: '{popup2_text}'")
 
-        try:
-            btn_no = popup2.child_window(auto_id="7", control_type="Button")
-            btn_no.wait("enabled", timeout=5).click_input()
-            logger.info("[Popup2] Clicked NO (AutomationId=7)")
-        except Exception as e:
-            logger.error(f"[Popup2] Failed to click NO: {e}")
-            logger.error(popup2.print_control_identifiers())
+        safe_click(popup2, auto_id="7", control_type="Button")
+        logger.info("[Popup2] Clicked NO")
 
     except TimeoutError:
         logger.warning("No post-login popups appeared within timeout.")
@@ -136,87 +113,63 @@ def click_rms_configuration_and_peak_margin(main_win):
         logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
         main_win.menu_select("RMS Configuration->Peak Margin")
         logger.info("Successfully opened Peak Margin window.")
-    except Exception as e:
-        logger.error(f"menu_select failed: {e}")
-        logger.info("Falling back to manual click...")
+    except Exception:
+        logger.warning("menu_select failed, using fallback clicks...")
         safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
         time.sleep(1)
         safe_click(main_win, title="Peak Margin", control_type="MenuItem")
 
 def handle_peak_margin(app, main_win):
     logger.info("Looking for Peak Margin panel inside main window...")
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
 
-    try:
-        peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-        peak_margin_win.wait("visible", timeout=10)
-        logger.info("Peak Margin panel detected and ready.")
-    except TimeoutError:
-        logger.error("Peak Margin panel not found. Dumping children for debugging...")
-        logger.error(main_win.print_control_identifiers())
-        raise
-
-    # ---- Step 1: Click Add Button ----
+    logger.info("Peak Margin panel detected. Clicking Add...")
     safe_click(peak_margin_win, title="Add", control_type="Button")
     time.sleep(1)
 
-    # ---- Step 2: Get all DataItems inside the Table ----
     grid = peak_margin_win.child_window(control_type="Table")
     grid.wait("exists ready", timeout=10)
 
     all_data_items = grid.descendants(control_type="DataItem")
     if not all_data_items:
-        logger.error("No DataItems detected inside Peak Margin grid!")
         raise RuntimeError("No data cells found in grid after clicking Add")
 
     logger.info(f"Detected {len(all_data_items)} data cells in grid.")
-    # Group cells by rows (assuming equal number of columns per row)
-    # You may need to adjust this based on number of columns
-    columns_per_row = 4  # Start Time, End Time, Executable Time, Flag (adjust if more)
-    rows = [all_data_items[i:i+columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
-
+    columns_per_row = 4
+    rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
     last_row_cells = rows[-1]
+
     logger.info(f"Selected last row with {len(last_row_cells)} cells.")
 
     now = datetime.now()
-    start_time = (datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17) +
-                  timedelta(minutes=random.randint(0, 59))).strftime("%H:%M:%S")
+    start_time = (datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17, minutes=random.randint(0, 59))).strftime("%H:%M:%S")
     end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
     exec_time = start_time
+
     logger.info(f"Filling new row with Start={start_time}, End={end_time}, Exec={exec_time}")
 
+    def fill_cell(cell, value):
+        cell.double_click_input()
+        time.sleep(0.2)
+        edit = app.window(control_type="Edit", title="Editing Control")
+        if edit.exists(timeout=2):
+            edit.type_keys(value, with_spaces=True)
+        else:
+            send_keys(value)
+        send_keys("{TAB}")
+        time.sleep(0.2)
+
     try:
-        # Fill Start Time
-        last_row_cells[0].double_click_input()
-        send_keys(start_time)
-        send_keys("{TAB}")
-        time.sleep(0.2)
-
-        # Fill End Time
-        last_row_cells[1].double_click_input()
-        send_keys(end_time)
-        send_keys("{TAB}")
-        time.sleep(0.2)
-
-        # Fill Executable Time
-        last_row_cells[2].double_click_input()
-        send_keys(exec_time)
-        send_keys("{TAB}")
-        time.sleep(0.2)
-
-        # Fill Flag
-        last_row_cells[3].double_click_input()
-        send_keys("Y")
-        send_keys("{TAB}")
-
+        fill_cell(last_row_cells[0], start_time)
+        fill_cell(last_row_cells[1], end_time)
+        fill_cell(last_row_cells[2], exec_time)
+        fill_cell(last_row_cells[3], "Y")
     except Exception as e:
-        logger.error(f"Failed to fill row data: {e}")
-        for idx, cell in enumerate(last_row_cells):
-            logger.error(f"Cell[{idx}] -> {cell.window_text()}")
+        logger.error(f"Failed to fill row: {e}")
         raise
 
     safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(2)
-
     logger.info("Row filled and saved successfully.")
 
 # ---------------- Main Script ----------------
@@ -236,21 +189,21 @@ def main():
         safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
         safe_click(dlg, auto_id="btn_Submit", control_type="Button")
 
-        # Handle login confirmation popup (already working earlier)
         handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
 
         main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
         main_win.wait("visible", timeout=40)
         logger.info("Main RMS window is loaded.")
 
-        time.sleep(15)  # wait for extra popups
-        handle_post_login_popups(app, main_win, timeout=15)
+        time.sleep(15)
+        handle_post_login_popups(app, main_win)
 
         click_rms_configuration_and_peak_margin(main_win)
         handle_peak_margin(app, main_win)
 
         safe_click(main_win, title="Exit", control_type="MenuItem")
         handle_popup(app, auto_id_to_click="6", timeout=10)
+
         logger.info("Automation script completed successfully.")
 
     except Exception as e:
