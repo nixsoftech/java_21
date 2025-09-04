@@ -1,32 +1,13 @@
-python test-case_pywinauto3.py
-2025-09-04 13:06:30,942 [INFO] Starting RMS Application...
-2025-09-04 13:06:35,707 [INFO] Login window found.
-2025-09-04 13:06:38,177 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-04 13:06:39,709 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-04 13:06:42,849 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-04 13:06:45,725 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-04 13:06:47,803 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-04 13:06:48,413 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-04 13:06:48,460 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-04 13:06:50,101 [INFO] Clicked popup button with AutomationId=6
-2025-09-04 13:07:16,107 [INFO] Waiting 30s for delayed popups...
-2025-09-04 13:07:46,889 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-04 13:07:46,889 [WARNING] Popup text mismatch. Expected 'Intra DLyMGN' but got 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-04 13:07:52,295 [ERROR] Failed to click popup button with AutomationId=2: timed out
-2025-09-04 13:07:53,498 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-04 13:07:53,498 [WARNING] Popup text mismatch. Expected 'Do you want to close the RMS' but got 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-04 13:07:59,311 [ERROR] Failed to click popup button with AutomationId=7: timed out
-2025-09-04 13:07:59,311 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-04 13:08:01,407 [INFO] Successfully opened Peak Margin window.
-2025-09-04 13:08:01,407 [INFO] Looking for Peak Margin section inside main RMS window...
-2025-09-04 13:08:01,407 [ERROR] Failed while handling Peak Margin: Neither GUI element (wrapper) nor wrapper method 'child_window' were found (typo?)
+2025-09-04 14:00:06,566 [INFO] Successfully opened Peak Margin window.
+2025-09-04 14:00:06,566 [INFO] Waiting for Peak Margin window...
+2025-09-04 14:00:26,868 [ERROR] Automation failed: timed out
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 140, in handle_peak_margin
-    add_btn = main_win.child_window(title="Add", auto_id="cmdAdd", control_type="Button")
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 180, in __call__
-    raise AttributeError("Neither GUI element (wrapper) " \
-AttributeError: Neither GUI element (wrapper) nor wrapper method 'child_window' were found (typo?)
-2025-09-04 13:08:05,408 [INFO] Clicked Exit (attempt 1)
-2025-09-04 13:08:06,689 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-04 13:08:09,454 [INFO] Clicked popup button with AutomationId=6
-2025-09-04 13:08:09,454 [INFO] Automation script completed successfully.
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 164, in main
+    handle_peak_margin(app)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 106, in handle_peak_margin
+    peak_margin_win.wait("visible", timeout=20)
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 529, in wait
+    wait_until(timeout, retry_interval,
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 375, in wait_until
+    raise err
+pywinauto.timings.TimeoutError: timed out
