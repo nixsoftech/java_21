@@ -1,6 +1,7 @@
 def handle_peak_margin(app, main_win):
     logger.info("Looking for Peak Margin panel inside main window...")
 
+    # Locate Peak Margin window/panel
     try:
         peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
         peak_margin_win.wait("visible", timeout=10)
@@ -10,85 +11,75 @@ def handle_peak_margin(app, main_win):
         logger.error(main_win.print_control_identifiers())
         raise
 
-    # ---- Click Add ----
+    # ---- Step 1: Click Add Button ----
     safe_click(peak_margin_win, title="Add", control_type="Button")
-    time.sleep(1)
+    time.sleep(1)  # give UI time to add row
 
-    # ---- Find the grid ----
-    try:
-        grid = peak_margin_win.child_window(control_type="Table")
-        grid.wait("exists", timeout=10)
-        logger.info("Grid located successfully.")
-    except TimeoutError:
-        logger.error("Grid not found at all. Dumping Peak Margin children for debugging...")
-        logger.error(peak_margin_win.print_control_identifiers())
-        return
-
-    # ---- Wait up to 5s for rows to appear ----
-    for i in range(5):
-        rows = grid.children(control_type="DataItem")
-        if rows:
-            logger.info(f"Detected {len(rows)} rows in grid.")
-            break
-        logger.warning(f"No rows detected yet, retrying... ({i+1}/5)")
-        time.sleep(1)
-    else:
-        logger.error("Still no rows detected after waiting. Dumping grid children for debugging...")
+    # ---- Step 2: Get all rows ----
+    grid = peak_margin_win.child_window(control_type="Table")
+    grid.wait("exists ready", timeout=10)
+    rows = grid.children(control_type="Custom")
+    if not rows:
+        logger.error("No rows detected in Peak Margin grid!")
         logger.error(grid.print_control_identifiers())
-        return  # stop further execution
-
-    # ---- Work with last row ----
+        raise RuntimeError("No rows found in grid after clicking Add")
+    logger.info(f"Detected {len(rows)} rows. Selecting last row...")
     last_row = rows[-1]
-    last_row_value = last_row.legacy_properties().get("Value", "")
-    logger.info(f"Last row legacy value: {last_row_value}")
 
-    if "(null)" not in last_row_value:
-        logger.warning("Last row already has data, skipping adding new row.")
+    # ---- Step 3: Check if it's a new row ----
+    row_value = last_row.legacy_properties().get("Value", "")
+    if "(null)" not in row_value:
+        logger.warning("Last row already contains data! Skipping data entry.")
         return
 
-    # ---- Prepare random times ----
-    from datetime import datetime, timedelta
+    # ---- Step 4: Generate random times ----
     now = datetime.now()
     start_time = (datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17) +
                   timedelta(minutes=random.randint(0, 59))).strftime("%H:%M:%S")
     end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
     exec_time = start_time
+    logger.info(f"Filling new row with Start={start_time}, End={end_time}, Exec={exec_time}")
 
-    logger.info(f"Filling last row with Start={start_time}, End={end_time}")
-
-    # ---- Edit cells ----
-    def edit_cell(cell, value):
-        try:
-            cell.click_input(double=True)
-            cell.type_keys("{F2}")
-            time.sleep(0.3)
-            cell.type_keys("^a{DEL}")
-            cell.type_keys(value, with_spaces=True)
-            cell.type_keys("{ENTER}")
-            logger.info(f"Entered '{value}' into cell '{cell.element_info.name}'")
-        except Exception as e:
-            logger.error(f"Failed to enter '{value}' into {cell.element_info.name}: {e}")
-
+    # ---- Step 5: Fill Start Time ----
     try:
-        edit_cell(last_row.child_window(title_re="Start Time.*", control_type="DataItem"), start_time)
-        edit_cell(last_row.child_window(title_re="End Time.*", control_type="DataItem"), end_time)
-        edit_cell(last_row.child_window(title_re="Executable Time.*", control_type="DataItem"), exec_time)
-        edit_cell(last_row.child_window(title_re="Flag.*", control_type="DataItem"), "Y")
-    except Exception as e:
-        logger.error(f"Failed to fill row cells: {e}")
-        return
+        start_cell = last_row.child_window(title_re="Start Time.*", control_type="DataItem")
+        start_cell.double_click_input()
+        send_keys(start_time)
+        send_keys("{TAB}")
+        time.sleep(0.2)
 
-    # ---- Save ----
+        # ---- Fill End Time ----
+        end_cell = last_row.child_window(title_re="End Time.*", control_type="DataItem")
+        end_cell.double_click_input()
+        send_keys(end_time)
+        send_keys("{TAB}")
+        time.sleep(0.2)
+
+        # ---- Fill Executable Time ----
+        exec_cell = last_row.child_window(title_re="Executable Time.*", control_type="DataItem")
+        exec_cell.double_click_input()
+        send_keys(exec_time)
+        send_keys("{TAB}")
+        time.sleep(0.2)
+
+        # ---- Fill Flag (Y) ----
+        flag_cell = last_row.child_window(title_re="Flag.*", control_type="DataItem")
+        flag_cell.double_click_input()
+        send_keys("Y")
+        send_keys("{TAB}")
+
+    except Exception as e:
+        logger.error(f"Failed to fill row data: {e}")
+        logger.error(last_row.print_control_identifiers())
+        raise
+
+    # ---- Step 6: Save the Row ----
     safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(3)
+    time.sleep(2)
 
-    # ---- Verify Status ----
-    try:
-        status_cell = last_row.child_window(title_re="Status.*", control_type="DataItem")
-        status_text = status_cell.window_text().strip()
-        if "PENDING" in status_text.upper():
-            logger.info(f"Status verification PASSED: {status_text}")
-        else:
-            logger.warning(f"Status verification FAILED: Status is '{status_text}'")
-    except Exception as e:
-        logger.error(f"Could not verify status cell: {e}")
+    # ---- Step 7: Verify Status ----
+    updated_value = last_row.legacy_properties().get("Value", "")
+    if "PENDING" in updated_value.upper():
+        logger.info("Status verification PASSED: PENDING found in last row.")
+    else:
+        logger.warning(f"Status verification FAILED. Row value: {updated_value}")
