@@ -1,26 +1,24 @@
-Name:	"Exit"
-ControlType:	UIA_MenuItemControlTypeId (0xC35B)
-LocalizedControlType:	"menu item"
-BoundingRectangle:	{l:127 t:98 r:169 b:116}
+Name:	"Row 7"
+BoundingRectangle:	{l:22 t:278 r:908 b:300}
 IsEnabled:	true
 IsOffscreen:	false
-IsKeyboardFocusable:	true
+IsKeyboardFocusable:	false
 HasKeyboardFocus:	false
-AccessKey:	"Alt+x"
-ProcessId:	3124
-ProviderDescription:	"[pid:3124,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+AccessKey:	""
+ProcessId:	524
+ProviderDescription:	"[pid:524,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
 LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	"Press"
+LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	"Alt+x"
-LegacyIAccessible.Name:	"Exit"
-LegacyIAccessible.Role:	menu item (0xC)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Row 7"
+LegacyIAccessible.Role:	row (0x1C)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"8;(null);(null);(null);N;NORMAL;(null);True"
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -28,7 +26,7 @@ IsDropTargetPatternAvailable:	false
 IsExpandCollapsePatternAvailable:	false
 IsGridItemPatternAvailable:	false
 IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
+IsInvokePatternAvailable:	false
 IsItemContainerPatternAvailable:	false
 IsLegacyIAccessiblePatternAvailable:	true
 IsMultipleViewPatternAvailable:	false
@@ -56,13 +54,22 @@ IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
+FirstChild:	"Sr. No Row 7" item
+LastChild:	"Edit Row 7" item
 Next:	[null]
-Previous:	"Update" menu item
+Previous:	"Row 6" 
 Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Main Menu" menu bar
-	"NCDEX RISK MANAGEMENT SYSTEM 6.2.0" window
+Children:	"Sr. No Row 7" item
+	"Start Time Row 7" item
+	"End Time Row 7" item
+	"Executable Time Row 7" item
+	"Flag Row 7" item
+	"Status Row 7" item
+	"Maker Remarks Row 7" item
+	"Edit Row 7" item
+Ancestors:	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
