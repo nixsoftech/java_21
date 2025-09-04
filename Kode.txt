@@ -1,239 +1,41 @@
-import time
-import os
-import random
-import logging
-from datetime import datetime, timedelta
-from pywinauto.application import Application
-from pywinauto.timings import TimeoutError
-from pywinauto.keyboard import send_keys
-
-# ---------------- Logging Setup ----------------
-script_name = os.path.splitext(os.path.basename(__file__))[0]
-log_dir = os.path.join(os.getcwd(), "logs")
-os.makedirs(log_dir, exist_ok=True)
-
-timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
-# ---------------- Helper Functions ----------------
-def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
-            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
-
-def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).select(value)
-            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
-
-def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
-    for attempt in range(1, retries + 1):
-        try:
-            if auto_id:
-                ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            else:
-                ctrl = window.child_window(title=title, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).click_input()
-            time.sleep(0.5)
-            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
-
-
-# ---------------- NEW POPUP HANDLER ----------------
-def handle_known_popups_by_id(app, ok_ids=None, no_ids=None, timeout=15):
+def handle_post_login_popups(app, timeout=15):
     """
-    Detects Risk Management System popups and clicks the appropriate button based on AutomationId.
-    ok_ids / no_ids = list of AutomationIds to click
+    Handles popups appearing right after login (BMS OpmsEngine & Close RMS confirmation).
+    Waits up to `timeout` seconds for any matching popup.
     """
     start_time = time.time()
-    handled_count = 0
-    ok_ids = ok_ids or []
-    no_ids = no_ids or []
-
     while time.time() - start_time < timeout:
         try:
             popup = app.window(title_re=".*Risk Management System.*")
             popup.wait("visible", timeout=3)
-
             popup_text = popup.window_text().strip()
-            logger.info(f"Popup detected: '{popup_text}'")
+            logger.info(f"Post-login popup detected: '{popup_text}'")
+
             buttons = popup.children(control_type="Button")
             for btn in buttons:
-                logger.info(f"Button found -> Text='{btn.window_text()}' | AutomationId={btn.automation_id()}")
+                logger.info(f"Button -> Text='{btn.window_text()}' | AutoID={btn.automation_id()}")
 
-            clicked = False
-            for btn in buttons:
-                if btn.automation_id() in ok_ids:
-                    btn.click_input()
-                    logger.info(f"Clicked OK (auto_id={btn.automation_id()})")
-                    clicked = True
-                    handled_count += 1
-                    break
-                if btn.automation_id() in no_ids:
-                    btn.click_input()
-                    logger.info(f"Clicked NO (auto_id={btn.automation_id()})")
-                    clicked = True
-                    handled_count += 1
-                    break
+            if "BMS OpmsEngine" in popup_text:
+                # Click OK
+                for btn in buttons:
+                    if btn.window_text().strip().lower() == "ok":
+                        btn.click_input()
+                        logger.info("Clicked OK for BMS OpmsEngine popup.")
+                        return True
 
-            if clicked:
-                return True  # Exit after first handled popup
+            elif "Do you want to close the RMS" in popup_text:
+                # Click NO
+                for btn in buttons:
+                    if btn.window_text().strip().lower() == "no":
+                        btn.click_input()
+                        logger.info("Clicked NO for 'Do you want to close RMS' popup.")
+                        return True
+
             else:
-                logger.warning("Popup found, but no matching AutomationId to click.")
-                return False
+                logger.warning("Popup found but text not recognized, skipping.")
 
         except TimeoutError:
             time.sleep(1)
 
-    logger.info("No popup appeared within timeout.")
-    return handled_count > 0
-
-
-def click_rms_configuration_and_peak_margin(main_win):
-    try:
-        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
-        main_win.menu_select("RMS Configuration->Peak Margin")
-        logger.info("Successfully opened Peak Margin window.")
-    except Exception as e:
-        logger.error(f"menu_select failed: {e}")
-        logger.info("Falling back to manual click...")
-        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-        time.sleep(1)
-        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-
-
-def handle_peak_margin(app, main_win):
-    logger.info("Looking for Peak Margin panel inside main window...")
-
-    try:
-        peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-        peak_margin_win.wait("visible", timeout=10)
-        logger.info("Peak Margin panel detected and ready.")
-    except TimeoutError:
-        logger.error("Peak Margin panel not found. Dumping children for debugging...")
-        logger.error(main_win.print_control_identifiers())
-        raise
-
-    safe_click(peak_margin_win, title="Add", control_type="Button")
-    time.sleep(1)
-
-    grid = peak_margin_win.child_window(control_type="Table")
-    grid.wait("exists ready", timeout=10)
-    rows = grid.children(control_type="Custom")
-    if not rows:
-        logger.error("No rows detected in Peak Margin grid!")
-        logger.error(grid.print_control_identifiers())
-        raise RuntimeError("No rows found in grid after clicking Add")
-    logger.info(f"Detected {len(rows)} rows. Selecting last row...")
-    last_row = rows[-1]
-
-    row_value = last_row.legacy_properties().get("Value", "")
-    if "(null)" not in row_value:
-        logger.warning("Last row already contains data! Skipping data entry.")
-        return
-
-    now = datetime.now()
-    start_time = (datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17) +
-                  timedelta(minutes=random.randint(0, 59))).strftime("%H:%M:%S")
-    end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
-    exec_time = start_time
-    logger.info(f"Filling new row with Start={start_time}, End={end_time}, Exec={exec_time}")
-
-    try:
-        start_cell = last_row.child_window(title_re="Start Time.*", control_type="DataItem")
-        start_cell.double_click_input()
-        send_keys(start_time + "{TAB}")
-        end_cell = last_row.child_window(title_re="End Time.*", control_type="DataItem")
-        end_cell.double_click_input()
-        send_keys(end_time + "{TAB}")
-        exec_cell = last_row.child_window(title_re="Executable Time.*", control_type="DataItem")
-        exec_cell.double_click_input()
-        send_keys(exec_time + "{TAB}")
-        flag_cell = last_row.child_window(title_re="Flag.*", control_type="DataItem")
-        flag_cell.double_click_input()
-        send_keys("Y{TAB}")
-
-    except Exception as e:
-        logger.error(f"Failed to fill row data: {e}")
-        logger.error(last_row.print_control_identifiers())
-        raise
-
-    safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(2)
-
-    updated_value = last_row.legacy_properties().get("Value", "")
-    if "PENDING" in updated_value.upper():
-        logger.info("Status verification PASSED: PENDING found in last row.")
-    else:
-        logger.warning(f"Status verification FAILED. Row value: {updated_value}")
-
-# ---------------- Main Script ----------------
-def main():
-    try:
-        logger.info("Starting RMS Application...")
-        app = Application(backend="uia").start(
-            r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-        )
-
-        dlg = app.window(title_re=".*Risk Management System - Login")
-        dlg.wait("visible", timeout=30)
-
-        safe_type(dlg, "txt_UserId", "Edit", "QA1")
-        safe_type(dlg, "txt_Password", "Edit", "change@1212")
-        safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
-        safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
-        safe_click(dlg, auto_id="btn_Submit", control_type="Button")
-
-        # Handle "Login to test/mock" popup -> Click OK (auto_id to confirm after running once)
-        handle_known_popups_by_id(app, ok_ids=["6"], timeout=10)
-
-        main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-        main_win.wait("visible", timeout=40)
-        logger.info("Main RMS window is loaded.")
-        time.sleep(30)
-
-        # Handle BMS popup (Click OK)
-        handle_known_popups_by_id(app, ok_ids=["1"], timeout=5)
-
-        click_rms_configuration_and_peak_margin(main_win)
-        handle_peak_margin(app, main_win)
-
-        safe_click(main_win, title="Exit", control_type="MenuItem")
-        # Handle exit popup (Click NO)
-        handle_known_popups_by_id(app, no_ids=["2"], timeout=5)
-
-        logger.info("Automation script completed successfully.")
-
-    except Exception as e:
-        logger.exception(f"Automation failed: {e}")
-
-if __name__ == "__main__":
-    main()
+    logger.info("No post-login popups detected within timeout.")
+    return False
