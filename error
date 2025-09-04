@@ -1,7 +1,359 @@
-Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-04 14:04:41,546 [INFO] Successfully opened Peak Margin window.
-2025-09-04 14:04:41,546 [ERROR] Automation failed: handle_peak_margin() missing 1 required positional argument: 'main_win'
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 167, in main
-    handle_peak_margin(app)
-TypeError: handle_peak_margin() missing 1 required positional argument: 'main_win'
+python test-case_pywinauto3.py
+2025-09-04 14:59:36,856 [INFO] Starting RMS Application...
+2025-09-04 14:59:42,124 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-04 14:59:43,968 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-04 14:59:46,921 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-04 14:59:49,983 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-04 14:59:51,984 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-04 14:59:52,640 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-04 14:59:52,640 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-04 14:59:54,312 [INFO] Clicked popup button with AutomationId=6
+2025-09-04 14:59:57,500 [INFO] Main RMS window is loaded.
+2025-09-04 15:00:27,504 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-04 15:00:29,535 [INFO] Successfully opened Peak Margin window.
+2025-09-04 15:00:29,551 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-04 15:00:32,160 [INFO] Peak Margin panel detected and ready.
+2025-09-04 15:00:35,975 [INFO] Clicked Add (attempt 1)
+2025-09-04 15:00:40,242 [INFO] Grid located successfully.
+2025-09-04 15:00:41,992 [WARNING] No rows detected yet, retrying... (1/5)
+2025-09-04 15:00:44,679 [WARNING] No rows detected yet, retrying... (2/5)
+2025-09-04 15:00:47,476 [WARNING] No rows detected yet, retrying... (3/5)
+2025-09-04 15:00:50,132 [WARNING] No rows detected yet, retrying... (4/5)
+2025-09-04 15:00:52,853 [WARNING] No rows detected yet, retrying... (5/5)
+2025-09-04 15:00:53,868 [ERROR] Still no rows detected after waiting. Dumping grid children for debugging...
+Control Identifiers:
+
+Table - 'DataGridView'    (L20, T92, R909, B478)
+['DataGridViewTable', 'DataGridView', 'Table']
+child_window(title="DataGridView", auto_id="grdPeakMargin", control_type="Table")
+   |
+   | Custom - 'Top Row'    (L20, T92, R908, B124)
+   | ['Top RowCustom', 'Top Row', 'Custom', 'Custom0', 'Custom1']
+   | child_window(title="Top Row", control_type="Custom")
+   |    |
+   |    | Header - 'Sr. No'    (L22, T92, R122, B124)
+   |    | ['Sr. No', 'Sr. NoHeader', 'Header', 'Header0', 'Header1']
+   |    | child_window(title="Sr. No", control_type="Header")
+   |    |
+   |    | Header - 'Start Time'    (L122, T92, R222, B124)
+   |    | ['Start Time', 'Header2', 'Start TimeHeader']
+   |    | child_window(title="Start Time", control_type="Header")
+   |    |
+   |    | Header - 'End Time'    (L222, T92, R322, B124)
+   |    | ['End TimeHeader', 'End Time', 'Header3']
+   |    | child_window(title="End Time", control_type="Header")
+   |    |
+   |    | Header - 'Executable Time'    (L322, T92, R422, B124)
+   |    | ['Executable TimeHeader', 'Executable Time', 'Header4']
+   |    | child_window(title="Executable Time", control_type="Header")
+   |    |
+   |    | Header - 'Flag'    (L422, T92, R522, B124)
+   |    | ['FlagHeader', 'Flag', 'Header5']
+   |    | child_window(title="Flag", control_type="Header")
+   |    |
+   |    | Header - 'Status'    (L522, T92, R622, B124)
+   |    | ['Status', 'StatusHeader', 'Header6']
+   |    | child_window(title="Status", control_type="Header")
+   |    |
+   |    | Header - 'Maker Remarks'    (L622, T92, R722, B124)
+   |    | ['Maker Remarks', 'Header7', 'Maker RemarksHeader']
+   |    | child_window(title="Maker Remarks", control_type="Header")
+   |    |
+   |    | Header - 'Edit'    (L722, T92, R822, B124)
+   |    | ['EditHeader', 'Edit', 'Header8']
+   |    | child_window(title="Edit", control_type="Header")
+   |
+   | Custom - 'Row 0'    (L22, T124, R908, B146)
+   | ['Row 0', 'Row 0Custom', 'Custom2']
+   | child_window(title="Row 0", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 0'    (L22, T124, R122, B146)
+   |    | ['Sr. No Row 0DataItem', 'Sr. No Row 0', 'DataItem', 'DataItem0', 'DataItem1']
+   |    | child_window(title="Sr. No Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 0'    (L122, T124, R222, B146)
+   |    | ['Start Time Row 0', 'Start Time Row 0DataItem', 'DataItem2']
+   |    | child_window(title="Start Time Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 0'    (L222, T124, R322, B146)
+   |    | ['End Time Row 0DataItem', 'End Time Row 0', 'DataItem3']
+   |    | child_window(title="End Time Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 0'    (L322, T124, R422, B146)
+   |    | ['Executable Time Row 0DataItem', 'DataItem4', 'Executable Time Row 0']
+   |    | child_window(title="Executable Time Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 0'    (L422, T124, R522, B146)
+   |    | ['Flag Row 0', 'DataItem5', 'Flag Row 0DataItem']
+   |    | child_window(title="Flag Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 0'    (L522, T124, R622, B146)
+   |    | ['Status Row 0DataItem', 'DataItem6', 'Status Row 0']
+   |    | child_window(title="Status Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 0'    (L622, T124, R722, B146)
+   |    | ['Maker Remarks Row 0', 'DataItem7', 'Maker Remarks Row 0DataItem']
+   |    | child_window(title="Maker Remarks Row 0", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 0'    (L722, T124, R822, B146)
+   |    | ['Edit Row 0DataItem', 'Edit Row 0', 'DataItem8']
+   |    | child_window(title="Edit Row 0", control_type="DataItem")
+   |
+   | Custom - 'Row 1'    (L22, T146, R908, B168)
+   | ['Row 1Custom', 'Custom3', 'Row 1']
+   | child_window(title="Row 1", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 1'    (L22, T146, R122, B168)
+   |    | ['Sr. No Row 1', 'DataItem9', 'Sr. No Row 1DataItem']
+   |    | child_window(title="Sr. No Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 1'    (L122, T146, R222, B168)
+   |    | ['Start Time Row 1', 'Start Time Row 1DataItem', 'DataItem10']
+   |    | child_window(title="Start Time Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 1'    (L222, T146, R322, B168)
+   |    | ['End Time Row 1', 'End Time Row 1DataItem', 'DataItem11']
+   |    | child_window(title="End Time Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 1'    (L322, T146, R422, B168)
+   |    | ['DataItem12', 'Executable Time Row 1', 'Executable Time Row 1DataItem']
+   |    | child_window(title="Executable Time Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 1'    (L422, T146, R522, B168)
+   |    | ['Flag Row 1', 'DataItem13', 'Flag Row 1DataItem']
+   |    | child_window(title="Flag Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 1'    (L522, T146, R622, B168)
+   |    | ['Status Row 1DataItem', 'Status Row 1', 'DataItem14']
+   |    | child_window(title="Status Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 1'    (L622, T146, R722, B168)
+   |    | ['Maker Remarks Row 1', 'DataItem15', 'Maker Remarks Row 1DataItem']
+   |    | child_window(title="Maker Remarks Row 1", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 1'    (L722, T146, R822, B168)
+   |    | ['Edit Row 1', 'DataItem16', 'Edit Row 1DataItem']
+   |    | child_window(title="Edit Row 1", control_type="DataItem")
+   |
+   | Custom - 'Row 2'    (L22, T168, R908, B190)
+   | ['Row 2Custom', 'Row 2', 'Custom4']
+   | child_window(title="Row 2", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 2'    (L22, T168, R122, B190)
+   |    | ['Sr. No Row 2DataItem', 'Sr. No Row 2', 'DataItem17']
+   |    | child_window(title="Sr. No Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 2'    (L122, T168, R222, B190)
+   |    | ['DataItem18', 'Start Time Row 2DataItem', 'Start Time Row 2']
+   |    | child_window(title="Start Time Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 2'    (L222, T168, R322, B190)
+   |    | ['End Time Row 2DataItem', 'DataItem19', 'End Time Row 2']
+   |    | child_window(title="End Time Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 2'    (L322, T168, R422, B190)
+   |    | ['Executable Time Row 2DataItem', 'DataItem20', 'Executable Time Row 2']
+   |    | child_window(title="Executable Time Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 2'    (L422, T168, R522, B190)
+   |    | ['DataItem21', 'Flag Row 2DataItem', 'Flag Row 2']
+   |    | child_window(title="Flag Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 2'    (L522, T168, R622, B190)
+   |    | ['Status Row 2DataItem', 'DataItem22', 'Status Row 2']
+   |    | child_window(title="Status Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 2'    (L622, T168, R722, B190)
+   |    | ['Maker Remarks Row 2', 'DataItem23', 'Maker Remarks Row 2DataItem']
+   |    | child_window(title="Maker Remarks Row 2", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 2'    (L722, T168, R822, B190)
+   |    | ['Edit Row 2DataItem', 'DataItem24', 'Edit Row 2']
+   |    | child_window(title="Edit Row 2", control_type="DataItem")
+   |
+   | Custom - 'Row 3'    (L22, T190, R908, B212)
+   | ['Row 3Custom', 'Custom5', 'Row 3']
+   | child_window(title="Row 3", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 3'    (L22, T190, R122, B212)
+   |    | ['DataItem25', 'Sr. No Row 3DataItem', 'Sr. No Row 3']
+   |    | child_window(title="Sr. No Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 3'    (L122, T190, R222, B212)
+   |    | ['Start Time Row 3DataItem', 'Start Time Row 3', 'DataItem26']
+   |    | child_window(title="Start Time Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 3'    (L222, T190, R322, B212)
+   |    | ['DataItem27', 'End Time Row 3', 'End Time Row 3DataItem']
+   |    | child_window(title="End Time Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 3'    (L322, T190, R422, B212)
+   |    | ['Executable Time Row 3DataItem', 'DataItem28', 'Executable Time Row 3']
+   |    | child_window(title="Executable Time Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 3'    (L422, T190, R522, B212)
+   |    | ['Flag Row 3', 'DataItem29', 'Flag Row 3DataItem']
+   |    | child_window(title="Flag Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 3'    (L522, T190, R622, B212)
+   |    | ['Status Row 3DataItem', 'DataItem30', 'Status Row 3']
+   |    | child_window(title="Status Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 3'    (L622, T190, R722, B212)
+   |    | ['Maker Remarks Row 3DataItem', 'DataItem31', 'Maker Remarks Row 3']
+   |    | child_window(title="Maker Remarks Row 3", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 3'    (L722, T190, R822, B212)
+   |    | ['Edit Row 3DataItem', 'DataItem32', 'Edit Row 3']
+   |    | child_window(title="Edit Row 3", control_type="DataItem")
+   |
+   | Custom - 'Row 4'    (L22, T212, R908, B234)
+   | ['Row 4', 'Custom6', 'Row 4Custom']
+   | child_window(title="Row 4", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 4'    (L22, T212, R122, B234)
+   |    | ['Sr. No Row 4', 'DataItem33', 'Sr. No Row 4DataItem']
+   |    | child_window(title="Sr. No Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 4'    (L122, T212, R222, B234)
+   |    | ['Start Time Row 4', 'DataItem34', 'Start Time Row 4DataItem']
+   |    | child_window(title="Start Time Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 4'    (L222, T212, R322, B234)
+   |    | ['End Time Row 4', 'DataItem35', 'End Time Row 4DataItem']
+   |    | child_window(title="End Time Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 4'    (L322, T212, R422, B234)
+   |    | ['Executable Time Row 4', 'DataItem36', 'Executable Time Row 4DataItem']
+   |    | child_window(title="Executable Time Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 4'    (L422, T212, R522, B234)
+   |    | ['Flag Row 4', 'DataItem37', 'Flag Row 4DataItem']
+   |    | child_window(title="Flag Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 4'    (L522, T212, R622, B234)
+   |    | ['Status Row 4DataItem', 'DataItem38', 'Status Row 4']
+   |    | child_window(title="Status Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 4'    (L622, T212, R722, B234)
+   |    | ['Maker Remarks Row 4', 'DataItem39', 'Maker Remarks Row 4DataItem']
+   |    | child_window(title="Maker Remarks Row 4", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 4'    (L722, T212, R822, B234)
+   |    | ['Edit Row 4DataItem', 'DataItem40', 'Edit Row 4']
+   |    | child_window(title="Edit Row 4", control_type="DataItem")
+   |
+   | Custom - 'Row 5'    (L22, T234, R908, B256)
+   | ['Row 5Custom', 'Row 5', 'Custom7']
+   | child_window(title="Row 5", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 5'    (L22, T234, R122, B256)
+   |    | ['Sr. No Row 5', 'Sr. No Row 5DataItem', 'DataItem41']
+   |    | child_window(title="Sr. No Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 5'    (L122, T234, R222, B256)
+   |    | ['Start Time Row 5DataItem', 'DataItem42', 'Start Time Row 5']
+   |    | child_window(title="Start Time Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 5'    (L222, T234, R322, B256)
+   |    | ['End Time Row 5', 'DataItem43', 'End Time Row 5DataItem']
+   |    | child_window(title="End Time Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 5'    (L322, T234, R422, B256)
+   |    | ['DataItem44', 'Executable Time Row 5DataItem', 'Executable Time Row 5']
+   |    | child_window(title="Executable Time Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 5'    (L422, T234, R522, B256)
+   |    | ['Flag Row 5DataItem', 'DataItem45', 'Flag Row 5']
+   |    | child_window(title="Flag Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 5'    (L522, T234, R622, B256)
+   |    | ['Status Row 5', 'DataItem46', 'Status Row 5DataItem']
+   |    | child_window(title="Status Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 5'    (L622, T234, R722, B256)
+   |    | ['Maker Remarks Row 5', 'DataItem47', 'Maker Remarks Row 5DataItem']
+   |    | child_window(title="Maker Remarks Row 5", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 5'    (L722, T234, R822, B256)
+   |    | ['Edit Row 5DataItem', 'Edit Row 5', 'DataItem48']
+   |    | child_window(title="Edit Row 5", control_type="DataItem")
+   |
+   | Custom - 'Row 6'    (L22, T256, R908, B278)
+   | ['Row 6Custom', 'Custom8', 'Row 6']
+   | child_window(title="Row 6", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 6'    (L22, T256, R122, B278)
+   |    | ['Sr. No Row 6', 'DataItem49', 'Sr. No Row 6DataItem']
+   |    | child_window(title="Sr. No Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 6'    (L122, T256, R222, B278)
+   |    | ['Start Time Row 6DataItem', 'Start Time Row 6', 'DataItem50']
+   |    | child_window(title="Start Time Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 6'    (L222, T256, R322, B278)
+   |    | ['DataItem51', 'End Time Row 6', 'End Time Row 6DataItem']
+   |    | child_window(title="End Time Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 6'    (L322, T256, R422, B278)
+   |    | ['Executable Time Row 6DataItem', 'DataItem52', 'Executable Time Row 6']
+   |    | child_window(title="Executable Time Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 6'    (L422, T256, R522, B278)
+   |    | ['Flag Row 6', 'DataItem53', 'Flag Row 6DataItem']
+   |    | child_window(title="Flag Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 6'    (L522, T256, R622, B278)
+   |    | ['Status Row 6DataItem', 'DataItem54', 'Status Row 6']
+   |    | child_window(title="Status Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 6'    (L622, T256, R722, B278)
+   |    | ['Maker Remarks Row 6', 'DataItem55', 'Maker Remarks Row 6DataItem']
+   |    | child_window(title="Maker Remarks Row 6", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 6'    (L722, T256, R822, B278)
+   |    | ['Edit Row 6DataItem', 'DataItem56', 'Edit Row 6']
+   |    | child_window(title="Edit Row 6", control_type="DataItem")
+   |
+   | Custom - 'Row 7'    (L22, T278, R908, B300)
+   | ['Row 7', 'Custom9', 'Row 7Custom']
+   | child_window(title="Row 7", control_type="Custom")
+   |    |
+   |    | DataItem - 'Sr. No Row 7'    (L22, T278, R122, B300)
+   |    | ['DataItem57', 'Sr. No Row 7', 'Sr. No Row 7DataItem']
+   |    | child_window(title="Sr. No Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Start Time Row 7'    (L122, T278, R222, B300)
+   |    | ['Start Time Row 7', 'DataItem58', 'Start Time Row 7DataItem']
+   |    | child_window(title="Start Time Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'End Time Row 7'    (L222, T278, R322, B300)
+   |    | ['End Time Row 7', 'DataItem59', 'End Time Row 7DataItem']
+   |    | child_window(title="End Time Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Executable Time Row 7'    (L322, T278, R422, B300)
+   |    | ['Executable Time Row 7DataItem', 'DataItem60', 'Executable Time Row 7']
+   |    | child_window(title="Executable Time Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Flag Row 7'    (L422, T278, R522, B300)
+   |    | ['DataItem61', 'Flag Row 7', 'Flag Row 7DataItem']
+   |    | child_window(title="Flag Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Status Row 7'    (L522, T278, R622, B300)
+   |    | ['Status Row 7', 'DataItem62', 'Status Row 7DataItem']
+   |    | child_window(title="Status Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Maker Remarks Row 7'    (L622, T278, R722, B300)
+   |    | ['DataItem63', 'Maker Remarks Row 7DataItem', 'Maker Remarks Row 7']
+   |    | child_window(title="Maker Remarks Row 7", control_type="DataItem")
+   |    |
+   |    | DataItem - 'Edit Row 7'    (L722, T278, R822, B300)
+   |    | ['DataItem64', 'Edit Row 7DataItem', 'Edit Row 7']
+   |    | child_window(title="Edit Row 7", control_type="DataItem")
+2025-09-04 15:01:15,907 [ERROR] None
+2025-09-04 15:01:19,915 [WARNING] Attempt 1 failed for Exit: There is no active desktop required for moving mouse cursor!
+
+2025-09-04 15:01:25,697 [INFO] Clicked Exit (attempt 2)
+2025-09-04 15:01:27,181 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-04 15:01:32,712 [ERROR] Failed to click popup button with AutomationId=6: timed out
+2025-09-04 15:01:32,712 [INFO] Automation script completed successfully.
