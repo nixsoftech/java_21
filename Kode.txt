@@ -7,15 +7,32 @@ def handle_peak_margin(app, main_win):
     safe_click(peak_margin_win, title="Add", control_type="Button")
     time.sleep(1)
 
-    grid = peak_margin_win.child_window(control_type="Table")
+    # 🔎 --- CAPTURE ALL TABLES AND ROWS ---
+    tables = peak_margin_win.descendants(control_type="Table")
+    if not tables:
+        raise RuntimeError("No tables found in Peak Margin window after clicking Add")
+
+    logger.info(f"Found {len(tables)} tables inside Peak Margin window")
+    for t_index, tbl in enumerate(tables):
+        cells = tbl.descendants(control_type="DataItem")
+        logger.info(f"Table {t_index}: {len(cells)} data cells")
+        for c_index, cell in enumerate(cells):
+            logger.info(f"  [Table {t_index} | Cell {c_index}] "
+                        f"Name='{cell.element_info.name}', "
+                        f"ControlType='{cell.element_info.control_type}', "
+                        f"Class='{cell.element_info.class_name}', "
+                        f"AutomationId='{cell.element_info.automation_id}'")
+
+    # --- Choose first table for now (you can later filter by name) ---
+    grid = tables[0]
     grid.wait("exists ready", timeout=10)
 
     all_data_items = grid.descendants(control_type="DataItem")
     if not all_data_items:
-        raise RuntimeError("No data cells found in grid after clicking Add")
+        raise RuntimeError("No data cells found in selected table after clicking Add")
 
-    logger.info(f"Detected {len(all_data_items)} data cells in grid.")
-    columns_per_row = 4  # Start, End, Executable, Flag
+    logger.info(f"Detected {len(all_data_items)} data cells in table[0].")
+    columns_per_row = 4  # assumption
     rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
     last_row_cells = rows[-1]
     logger.info(f"Selected last row with {len(last_row_cells)} cells.")
