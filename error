@@ -1,91 +1,105 @@
 python test-case_pywinauto4.py
-2025-09-04 18:04:40,575 [INFO] Starting RMS Application...
-2025-09-04 18:04:44,498 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-04 18:04:46,045 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-04 18:04:49,639 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-04 18:04:52,623 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-04 18:04:54,626 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-04 18:04:55,297 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-04 18:04:55,297 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-04 18:04:56,907 [INFO] Clicked popup button with AutomationId=6
-2025-09-04 18:05:01,328 [INFO] Main RMS window is loaded.
-2025-09-04 18:05:16,332 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-04 18:05:36,630 [WARNING] No post-login popups appeared within timeout.
-2025-09-04 18:05:36,630 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-04 18:05:38,020 [INFO] Successfully opened Peak Margin window.
-2025-09-04 18:05:38,036 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-04 18:05:40,911 [INFO] Peak Margin panel detected. Clicking Add...
-2025-09-04 18:05:44,757 [INFO] Clicked Add (attempt 1)
-2025-09-04 18:05:47,429 [INFO] Found 1 tables inside Peak Margin window
-2025-09-04 18:05:47,804 [INFO] Table 0: 64 data cells
-2025-09-04 18:05:47,820 [INFO]   [Table 0 | Cell 0] Name='Sr. No Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,820 [INFO]   [Table 0 | Cell 1] Name='Start Time Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,835 [INFO]   [Table 0 | Cell 2] Name='End Time Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,835 [INFO]   [Table 0 | Cell 3] Name='Executable Time Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,835 [INFO]   [Table 0 | Cell 4] Name='Flag Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,851 [INFO]   [Table 0 | Cell 5] Name='Status Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,851 [INFO]   [Table 0 | Cell 6] Name='Maker Remarks Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,866 [INFO]   [Table 0 | Cell 7] Name='Edit Row 0', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,866 [INFO]   [Table 0 | Cell 8] Name='Sr. No Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,866 [INFO]   [Table 0 | Cell 9] Name='Start Time Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,882 [INFO]   [Table 0 | Cell 10] Name='End Time Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,882 [INFO]   [Table 0 | Cell 11] Name='Executable Time Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,882 [INFO]   [Table 0 | Cell 12] Name='Flag Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,898 [INFO]   [Table 0 | Cell 13] Name='Status Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,898 [INFO]   [Table 0 | Cell 14] Name='Maker Remarks Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,913 [INFO]   [Table 0 | Cell 15] Name='Edit Row 1', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,913 [INFO]   [Table 0 | Cell 16] Name='Sr. No Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,913 [INFO]   [Table 0 | Cell 17] Name='Start Time Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,929 [INFO]   [Table 0 | Cell 18] Name='End Time Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,929 [INFO]   [Table 0 | Cell 19] Name='Executable Time Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,945 [INFO]   [Table 0 | Cell 20] Name='Flag Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,945 [INFO]   [Table 0 | Cell 21] Name='Status Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,945 [INFO]   [Table 0 | Cell 22] Name='Maker Remarks Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,960 [INFO]   [Table 0 | Cell 23] Name='Edit Row 2', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,960 [INFO]   [Table 0 | Cell 24] Name='Sr. No Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,976 [INFO]   [Table 0 | Cell 25] Name='Start Time Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,976 [INFO]   [Table 0 | Cell 26] Name='End Time Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,991 [INFO]   [Table 0 | Cell 27] Name='Executable Time Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,991 [INFO]   [Table 0 | Cell 28] Name='Flag Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:47,991 [INFO]   [Table 0 | Cell 29] Name='Status Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,007 [INFO]   [Table 0 | Cell 30] Name='Maker Remarks Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,007 [INFO]   [Table 0 | Cell 31] Name='Edit Row 3', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,023 [INFO]   [Table 0 | Cell 32] Name='Sr. No Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,023 [INFO]   [Table 0 | Cell 33] Name='Start Time Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,023 [INFO]   [Table 0 | Cell 34] Name='End Time Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,038 [INFO]   [Table 0 | Cell 35] Name='Executable Time Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,038 [INFO]   [Table 0 | Cell 36] Name='Flag Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,054 [INFO]   [Table 0 | Cell 37] Name='Status Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,054 [INFO]   [Table 0 | Cell 38] Name='Maker Remarks Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,054 [INFO]   [Table 0 | Cell 39] Name='Edit Row 4', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,070 [INFO]   [Table 0 | Cell 40] Name='Sr. No Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,070 [INFO]   [Table 0 | Cell 41] Name='Start Time Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,085 [INFO]   [Table 0 | Cell 42] Name='End Time Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,085 [INFO]   [Table 0 | Cell 43] Name='Executable Time Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,085 [INFO]   [Table 0 | Cell 44] Name='Flag Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,101 [INFO]   [Table 0 | Cell 45] Name='Status Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,101 [INFO]   [Table 0 | Cell 46] Name='Maker Remarks Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,101 [INFO]   [Table 0 | Cell 47] Name='Edit Row 5', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,116 [INFO]   [Table 0 | Cell 48] Name='Sr. No Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,116 [INFO]   [Table 0 | Cell 49] Name='Start Time Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,132 [INFO]   [Table 0 | Cell 50] Name='End Time Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,132 [INFO]   [Table 0 | Cell 51] Name='Executable Time Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,132 [INFO]   [Table 0 | Cell 52] Name='Flag Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,148 [INFO]   [Table 0 | Cell 53] Name='Status Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,148 [INFO]   [Table 0 | Cell 54] Name='Maker Remarks Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,163 [INFO]   [Table 0 | Cell 55] Name='Edit Row 6', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,163 [INFO]   [Table 0 | Cell 56] Name='Sr. No Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,163 [INFO]   [Table 0 | Cell 57] Name='Start Time Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,179 [INFO]   [Table 0 | Cell 58] Name='End Time Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,179 [INFO]   [Table 0 | Cell 59] Name='Executable Time Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,195 [INFO]   [Table 0 | Cell 60] Name='Flag Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,195 [INFO]   [Table 0 | Cell 61] Name='Status Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,210 [INFO]   [Table 0 | Cell 62] Name='Maker Remarks Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,210 [INFO]   [Table 0 | Cell 63] Name='Edit Row 7', ControlType='DataItem', Class='', AutomationId=''
-2025-09-04 18:05:48,210 [ERROR] Automation failed: 'ListViewWrapper' object has no attribute 'wait'
+2025-09-04 18:12:03,177 [INFO] Starting RMS Application...
+2025-09-04 18:12:07,036 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-04 18:12:08,630 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-04 18:12:12,209 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-04 18:12:15,209 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-04 18:12:17,272 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-04 18:12:17,912 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-04 18:12:17,912 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-04 18:12:19,600 [INFO] Clicked popup button with AutomationId=6
+2025-09-04 18:12:23,881 [INFO] Main RMS window is loaded.
+2025-09-04 18:12:38,881 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-04 18:12:58,915 [WARNING] No post-login popups appeared within timeout.
+2025-09-04 18:12:58,915 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-04 18:13:00,243 [INFO] Successfully opened Peak Margin window.
+2025-09-04 18:13:00,243 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-04 18:13:03,071 [INFO] Peak Margin panel detected. Clicking Add...
+2025-09-04 18:13:06,933 [INFO] Clicked Add (attempt 1)
+2025-09-04 18:13:11,230 [INFO] Found 1 table/list controls inside Peak Margin window
+2025-09-04 18:13:11,605 [INFO] Table/List 0: 64 data cells
+2025-09-04 18:13:11,620 [INFO]   [Table 0 | Cell 0] Name='Sr. No Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,636 [INFO]   [Table 0 | Cell 1] Name='Start Time Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,636 [INFO]   [Table 0 | Cell 2] Name='End Time Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,636 [INFO]   [Table 0 | Cell 3] Name='Executable Time Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,652 [INFO]   [Table 0 | Cell 4] Name='Flag Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,652 [INFO]   [Table 0 | Cell 5] Name='Status Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,667 [INFO]   [Table 0 | Cell 6] Name='Maker Remarks Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,667 [INFO]   [Table 0 | Cell 7] Name='Edit Row 0', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,683 [INFO]   [Table 0 | Cell 8] Name='Sr. No Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,683 [INFO]   [Table 0 | Cell 9] Name='Start Time Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,699 [INFO]   [Table 0 | Cell 10] Name='End Time Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,699 [INFO]   [Table 0 | Cell 11] Name='Executable Time Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,699 [INFO]   [Table 0 | Cell 12] Name='Flag Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,714 [INFO]   [Table 0 | Cell 13] Name='Status Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,714 [INFO]   [Table 0 | Cell 14] Name='Maker Remarks Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,730 [INFO]   [Table 0 | Cell 15] Name='Edit Row 1', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,730 [INFO]   [Table 0 | Cell 16] Name='Sr. No Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,745 [INFO]   [Table 0 | Cell 17] Name='Start Time Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,745 [INFO]   [Table 0 | Cell 18] Name='End Time Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,761 [INFO]   [Table 0 | Cell 19] Name='Executable Time Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,761 [INFO]   [Table 0 | Cell 20] Name='Flag Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,777 [INFO]   [Table 0 | Cell 21] Name='Status Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,777 [INFO]   [Table 0 | Cell 22] Name='Maker Remarks Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,777 [INFO]   [Table 0 | Cell 23] Name='Edit Row 2', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,792 [INFO]   [Table 0 | Cell 24] Name='Sr. No Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,792 [INFO]   [Table 0 | Cell 25] Name='Start Time Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,808 [INFO]   [Table 0 | Cell 26] Name='End Time Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,808 [INFO]   [Table 0 | Cell 27] Name='Executable Time Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,824 [INFO]   [Table 0 | Cell 28] Name='Flag Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,824 [INFO]   [Table 0 | Cell 29] Name='Status Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,839 [INFO]   [Table 0 | Cell 30] Name='Maker Remarks Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,839 [INFO]   [Table 0 | Cell 31] Name='Edit Row 3', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,855 [INFO]   [Table 0 | Cell 32] Name='Sr. No Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,855 [INFO]   [Table 0 | Cell 33] Name='Start Time Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,870 [INFO]   [Table 0 | Cell 34] Name='End Time Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,870 [INFO]   [Table 0 | Cell 35] Name='Executable Time Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,870 [INFO]   [Table 0 | Cell 36] Name='Flag Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,886 [INFO]   [Table 0 | Cell 37] Name='Status Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,886 [INFO]   [Table 0 | Cell 38] Name='Maker Remarks Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,902 [INFO]   [Table 0 | Cell 39] Name='Edit Row 4', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,902 [INFO]   [Table 0 | Cell 40] Name='Sr. No Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,917 [INFO]   [Table 0 | Cell 41] Name='Start Time Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,917 [INFO]   [Table 0 | Cell 42] Name='End Time Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,933 [INFO]   [Table 0 | Cell 43] Name='Executable Time Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,933 [INFO]   [Table 0 | Cell 44] Name='Flag Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,949 [INFO]   [Table 0 | Cell 45] Name='Status Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,949 [INFO]   [Table 0 | Cell 46] Name='Maker Remarks Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,949 [INFO]   [Table 0 | Cell 47] Name='Edit Row 5', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,964 [INFO]   [Table 0 | Cell 48] Name='Sr. No Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,964 [INFO]   [Table 0 | Cell 49] Name='Start Time Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,980 [INFO]   [Table 0 | Cell 50] Name='End Time Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,980 [INFO]   [Table 0 | Cell 51] Name='Executable Time Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,980 [INFO]   [Table 0 | Cell 52] Name='Flag Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,995 [INFO]   [Table 0 | Cell 53] Name='Status Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:11,995 [INFO]   [Table 0 | Cell 54] Name='Maker Remarks Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,011 [INFO]   [Table 0 | Cell 55] Name='Edit Row 6', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,011 [INFO]   [Table 0 | Cell 56] Name='Sr. No Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,011 [INFO]   [Table 0 | Cell 57] Name='Start Time Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,027 [INFO]   [Table 0 | Cell 58] Name='End Time Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,027 [INFO]   [Table 0 | Cell 59] Name='Executable Time Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,042 [INFO]   [Table 0 | Cell 60] Name='Flag Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,042 [INFO]   [Table 0 | Cell 61] Name='Status Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,042 [INFO]   [Table 0 | Cell 62] Name='Maker Remarks Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,058 [INFO]   [Table 0 | Cell 63] Name='Edit Row 7', ControlType='DataItem', Class='', AutomationId=''
+2025-09-04 18:13:12,417 [INFO] Detected 64 data cells in table/list[0].
+2025-09-04 18:13:12,417 [INFO] Selected last row with 8 cells.
+2025-09-04 18:13:12,480 [INFO] Row dump after Add:
+[{'index': 0, 'name': 'Sr. No Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 1, 'name': 'Start Time Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 2, 'name': 'End Time Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 3, 'name': 'Executable Time Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 4, 'name': 'Flag Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 5, 'name': 'Status Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 6, 'name': 'Maker Remarks Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 7, 'name': 'Edit Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}]
+2025-09-04 18:13:12,480 [INFO] Filling new row with Start=17:28:00, End=17:38:00 (Executable/Flag skipped)
+2025-09-04 18:13:12,605 [INFO] Clicked cell, waiting for edit control (attempt 1)
+2025-09-04 18:13:15,605 [WARNING] Attempt 1 failed: timed out
+2025-09-04 18:13:16,261 [INFO] Clicked cell, waiting for edit control (attempt 2)
+2025-09-04 18:13:19,277 [WARNING] Attempt 2 failed: timed out
+2025-09-04 18:13:19,902 [INFO] Clicked cell, waiting for edit control (attempt 3)
+2025-09-04 18:13:22,918 [WARNING] Attempt 3 failed: timed out
+2025-09-04 18:13:23,418 [ERROR] Row filling failed: Failed to set and verify value '17:28:00' after 3 attempts
+2025-09-04 18:13:23,418 [ERROR] Automation failed: Failed to set and verify value '17:28:00' after 3 attempts
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 265, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 264, in main
     handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 151, in handle_peak_margin
-    grid.wait("exists ready", timeout=10)
-AttributeError: 'ListViewWrapper' object has no attribute 'wait'
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 227, in handle_peak_margin
+    set_cell_value(last_row_cells[1], start_time)  # Start Time (skip Sr.No)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 224, in set_cell_value
+    raise TimeoutError(f"Failed to set and verify value '{value}' after {max_attempts} attempts")
+pywinauto.timings.TimeoutError: Failed to set and verify value '17:28:00' after 3 attempts
