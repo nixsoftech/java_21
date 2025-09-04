@@ -14,24 +14,40 @@ def handle_peak_margin(app, main_win):
     safe_click(peak_margin_win, title="Add", control_type="Button")
     time.sleep(1)
 
-    # ---- Get last row ----
-    grid = peak_margin_win.child_window(control_type="Table")
-    grid.wait("exists", timeout=10)
-    rows = grid.children(control_type="DataItem")
-    if not rows:
-        logger.error("No rows detected in Peak Margin grid!")
+    # ---- Find the grid ----
+    try:
+        grid = peak_margin_win.child_window(control_type="Table")
+        grid.wait("exists", timeout=10)
+        logger.info("Grid located successfully.")
+    except TimeoutError:
+        logger.error("Grid not found at all. Dumping Peak Margin children for debugging...")
+        logger.error(peak_margin_win.print_control_identifiers())
         return
 
+    # ---- Wait up to 5s for rows to appear ----
+    for i in range(5):
+        rows = grid.children(control_type="DataItem")
+        if rows:
+            logger.info(f"Detected {len(rows)} rows in grid.")
+            break
+        logger.warning(f"No rows detected yet, retrying... ({i+1}/5)")
+        time.sleep(1)
+    else:
+        logger.error("Still no rows detected after waiting. Dumping grid children for debugging...")
+        logger.error(grid.print_control_identifiers())
+        return  # stop further execution
+
+    # ---- Work with last row ----
     last_row = rows[-1]
     last_row_value = last_row.legacy_properties().get("Value", "")
     logger.info(f"Last row legacy value: {last_row_value}")
 
-    # ---- Check if it's a new row ----
     if "(null)" not in last_row_value:
         logger.warning("Last row already has data, skipping adding new row.")
         return
 
     # ---- Prepare random times ----
+    from datetime import datetime, timedelta
     now = datetime.now()
     start_time = (datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17) +
                   timedelta(minutes=random.randint(0, 59))).strftime("%H:%M:%S")
@@ -40,20 +56,19 @@ def handle_peak_margin(app, main_win):
 
     logger.info(f"Filling last row with Start={start_time}, End={end_time}")
 
-    # Helper to edit a cell
+    # ---- Edit cells ----
     def edit_cell(cell, value):
         try:
             cell.click_input(double=True)
             cell.type_keys("{F2}")
             time.sleep(0.3)
-            cell.type_keys("^a{DEL}")  # clear existing value if any
+            cell.type_keys("^a{DEL}")
             cell.type_keys(value, with_spaces=True)
             cell.type_keys("{ENTER}")
-            logger.info(f"Entered value '{value}' into cell: {cell.element_info.name}")
+            logger.info(f"Entered '{value}' into cell '{cell.element_info.name}'")
         except Exception as e:
-            logger.error(f"Failed to enter value '{value}' into {cell.element_info.name}: {e}")
+            logger.error(f"Failed to enter '{value}' into {cell.element_info.name}: {e}")
 
-    # ---- Fill columns ----
     try:
         edit_cell(last_row.child_window(title_re="Start Time.*", control_type="DataItem"), start_time)
         edit_cell(last_row.child_window(title_re="End Time.*", control_type="DataItem"), end_time)
@@ -67,7 +82,7 @@ def handle_peak_margin(app, main_win):
     safe_click(peak_margin_win, title="Save", control_type="Button")
     time.sleep(3)
 
-    # ---- Verify status ----
+    # ---- Verify Status ----
     try:
         status_cell = last_row.child_window(title_re="Status.*", control_type="DataItem")
         status_text = status_cell.window_text().strip()
