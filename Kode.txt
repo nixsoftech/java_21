@@ -14,7 +14,7 @@ def handle_peak_margin(app, main_win):
     safe_click(peak_margin_win, title="Add", control_type="Button")
     time.sleep(1)
 
-    # ---- Get all rows ----
+    # ---- Get last row ----
     grid = peak_margin_win.child_window(control_type="Table")
     grid.wait("exists", timeout=10)
     rows = grid.children(control_type="DataItem")
@@ -31,7 +31,7 @@ def handle_peak_margin(app, main_win):
         logger.warning("Last row already has data, skipping adding new row.")
         return
 
-    # ---- Fill columns ----
+    # ---- Prepare random times ----
     now = datetime.now()
     start_time = (datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17) +
                   timedelta(minutes=random.randint(0, 59))).strftime("%H:%M:%S")
@@ -40,24 +40,25 @@ def handle_peak_margin(app, main_win):
 
     logger.info(f"Filling last row with Start={start_time}, End={end_time}")
 
-    # Target individual cells by title
+    # Helper to edit a cell
+    def edit_cell(cell, value):
+        try:
+            cell.click_input(double=True)
+            cell.type_keys("{F2}")
+            time.sleep(0.3)
+            cell.type_keys("^a{DEL}")  # clear existing value if any
+            cell.type_keys(value, with_spaces=True)
+            cell.type_keys("{ENTER}")
+            logger.info(f"Entered value '{value}' into cell: {cell.element_info.name}")
+        except Exception as e:
+            logger.error(f"Failed to enter value '{value}' into {cell.element_info.name}: {e}")
+
+    # ---- Fill columns ----
     try:
-        start_cell = last_row.child_window(title_re="Start Time.*", control_type="DataItem")
-        start_cell.double_click_input()
-        start_cell.type_keys(start_time, with_spaces=True)
-
-        end_cell = last_row.child_window(title_re="End Time.*", control_type="DataItem")
-        end_cell.double_click_input()
-        end_cell.type_keys(end_time, with_spaces=True)
-
-        exec_cell = last_row.child_window(title_re="Executable Time.*", control_type="DataItem")
-        exec_cell.double_click_input()
-        exec_cell.type_keys(exec_time, with_spaces=True)
-
-        flag_cell = last_row.child_window(title_re="Flag.*", control_type="DataItem")
-        flag_cell.double_click_input()
-        flag_cell.type_keys("Y")
-
+        edit_cell(last_row.child_window(title_re="Start Time.*", control_type="DataItem"), start_time)
+        edit_cell(last_row.child_window(title_re="End Time.*", control_type="DataItem"), end_time)
+        edit_cell(last_row.child_window(title_re="Executable Time.*", control_type="DataItem"), exec_time)
+        edit_cell(last_row.child_window(title_re="Flag.*", control_type="DataItem"), "Y")
     except Exception as e:
         logger.error(f"Failed to fill row cells: {e}")
         return
@@ -67,9 +68,12 @@ def handle_peak_margin(app, main_win):
     time.sleep(3)
 
     # ---- Verify status ----
-    status_cell = last_row.child_window(title_re="Status.*", control_type="DataItem")
-    status_text = status_cell.window_text().strip()
-    if "PENDING" in status_text.upper():
-        logger.info(f"Status verification PASSED: {status_text}")
-    else:
-        logger.warning(f"Status verification FAILED: Status is '{status_text}'")
+    try:
+        status_cell = last_row.child_window(title_re="Status.*", control_type="DataItem")
+        status_text = status_cell.window_text().strip()
+        if "PENDING" in status_text.upper():
+            logger.info(f"Status verification PASSED: {status_text}")
+        else:
+            logger.warning(f"Status verification FAILED: Status is '{status_text}'")
+    except Exception as e:
+        logger.error(f"Could not verify status cell: {e}")
