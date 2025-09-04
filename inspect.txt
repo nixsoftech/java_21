@@ -1,27 +1,186 @@
-After opening peak margin, click on add button , 
-a emtpy row will be created on that form
-we need to add random time after 17 hrs with 15 mins gap for start and end time (eg 17:45:00) in the Start Time column name
-likewise for End Time (eg 18:00:00)
-after adding time (24 hrs time format) we need to click on save.
-after clicking on save we need to verify the status column should show pending
-
-=====================
-Name:	"Add"
-ControlType:	UIA_ButtonControlTypeId (0xC350)
-LocalizedControlType:	"button"
-BoundingRectangle:	{l:14 t:493 r:89 b:516}
+ControlType:	UIA_WindowControlTypeId (0xC370)
+Name:	"Peak Margin"
+LocalizedControlType:	"window"
+BoundingRectangle:	{l:-74 t:98 r:845 b:597}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	18280
-RuntimeId:	[2A.5B0392]
+ProcessId:	5088
+RuntimeId:	[2A.50638]
+AutomationId:	"mnuPeakMargin"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.Window.8.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x50638
+ProviderDescription:	"[pid:14816,providerId:0x50638 Main:Nested [pid:5088,providerId:0x50638 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Peak Margin"
+LegacyIAccessible.Role:	client (0xA)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+Transform.CanMove:	true
+Transform.CanResize:	false
+Transform.CanRotate:	false
+Window.CanMaximize:	true
+Window.CanMinimize:	true
+Window.IsModal:	false
+Window.IsTopmost:	false
+Window.WindowInteractionState:	ReadyForUserInteraction (2)
+Window.WindowVisualState:	Normal (0)
+FirstChild:	"Export" button
+LastChild:	(null) title bar
+Next:	"Horizontal" scroll bar
+Previous:	[null]
+Other Props:	Object has no additional properties
+Children:	"Export" button
+	"Save" button
+	"Delete" button
+	"Add" button
+	"DataGridView" table
+	(null) title bar
+Ancestors:	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+=====================================
+Name:	"Export"
+ControlType:	UIA_ButtonControlTypeId (0xC350)
+LocalizedControlType:	"button"
+BoundingRectangle:	{l:752 t:544 r:827 b:567}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+RuntimeId:	[2A.70626]
+AutomationId:	"cmdExport"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x70626
+ProviderDescription:	"[pid:14816,providerId:0x70626 Main:Nested [pid:5088,providerId:0x70626 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	"Press"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Export"
+LegacyIAccessible.Role:	push button (0x2B)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+Next:	"Save" button
+Previous:	[null]
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+=============================
+Name:	"Save"
+ControlType:	UIA_ButtonControlTypeId (0xC350)
+LocalizedControlType:	"button"
+BoundingRectangle:	{l:671 t:544 r:746 b:567}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+RuntimeId:	[2A.40594]
+AutomationId:	"cmdSave"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x40594
+ProviderDescription:	"[pid:14816,providerId:0x40594 Main:Nested [pid:5088,providerId:0x40594 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	"Press"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Save"
+LegacyIAccessible.Role:	push button (0x2B)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+Next:	"Delete" button
+Previous:	"Export" button
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+=============================
+Name:	"Delete"
+ControlType:	UIA_ButtonControlTypeId (0xC350)
+LocalizedControlType:	"button"
+BoundingRectangle:	{l:19 t:544 r:94 b:567}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+RuntimeId:	[2A.50628]
+AutomationId:	"cmdDelete"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x50628
+ProviderDescription:	"[pid:14816,providerId:0x50628 Main:Nested [pid:5088,providerId:0x50628 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	"Press"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Delete"
+LegacyIAccessible.Role:	push button (0x2B)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+Next:	"Add" button
+Previous:	"Save" button
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+=============================
+Name:	"Add"
+ControlType:	UIA_ButtonControlTypeId (0xC350)
+LocalizedControlType:	"button"
+BoundingRectangle:	{l:-62 t:544 r:13 b:567}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+RuntimeId:	[2A.E0636]
 AutomationId:	"cmdAdd"
 FrameworkId:	"WinForm"
 ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x5B0392
-ProviderDescription:	"[pid:3656,providerId:0x5B0392 Main:Nested [pid:18280,providerId:0x5B0392 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+NativeWindowHandle:	0xE0636
+ProviderDescription:	"[pid:14816,providerId:0xE0636 Main:Nested [pid:5088,providerId:0xE0636 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
@@ -34,43 +193,6 @@ LegacyIAccessible.Name:	"Add"
 LegacyIAccessible.Role:	push button (0x2B)
 LegacyIAccessible.State:	focusable (0x100000)
 LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
 Next:	"DataGridView" table
 Previous:	"Delete" button
 Other Props:	Object has no additional properties
@@ -80,18 +202,102 @@ Ancestors:	"Peak Margin" window
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
-================================
-Name:	"Start Time"
+===============================
+Name:	"DataGridView"
+ControlType:	UIA_TableControlTypeId (0xC374)
+LocalizedControlType:	"table"
+BoundingRectangle:	{l:-56 t:143 r:833 b:529}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+RuntimeId:	[2A.90634]
+AutomationId:	"grdPeakMargin"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.Window.8.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x90634
+ProviderDescription:	"[pid:14816,providerId:0x90634 Main:Nested [pid:5088,providerId:0x90634 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"DataGridView"
+LegacyIAccessible.Role:	table (0x18)
+LegacyIAccessible.State:	focusable (0x100000)
+LegacyIAccessible.Value:	""
+FirstChild:	"Top Row" 
+LastChild:	"Row 6" 
+Next:	(null) title bar
+Previous:	"Add" button
+Other Props:	Object has no additional properties
+Children:	"Top Row" 
+	"Row 0" 
+	"Row 1" 
+	"Row 2" 
+	"Row 3" 
+	"Row 4" 
+	"Row 5" 
+	"Row 6" 
+Ancestors:	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+=============================
+Name:	"Sr. No"
 ControlType:	UIA_HeaderControlTypeId (0xC372)
 LocalizedControlType:	"header"
-BoundingRectangle:	{l:122 t:92 r:222 b:124}
+BoundingRectangle:	{l:-54 t:143 r:46 b:175}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	false
 HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	18280
-ProviderDescription:	"[pid:18280,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Sr. No"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Sr. No"
+Value.IsReadOnly:	false
+Value.Value:	"Sr. No"
+Next:	"Start Time" header
+Previous:	[null]
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+========================================
+Name:	"Start Time"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:46 t:143 r:146 b:175}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
 IsDialog:	false
@@ -106,43 +312,6 @@ LegacyIAccessible.State:	selectable (0x200000)
 LegacyIAccessible.Value:	"Start Time"
 Value.IsReadOnly:	false
 Value.Value:	"Start Time"
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	true
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
 Next:	"End Time" header
 Previous:	"Sr. No" header
 Other Props:	Object has no additional properties
@@ -154,18 +323,18 @@ Ancestors:	"Top Row"
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
-===============================
+=================================
 Name:	"End Time"
 ControlType:	UIA_HeaderControlTypeId (0xC372)
 LocalizedControlType:	"header"
-BoundingRectangle:	{l:222 t:92 r:322 b:124}
+BoundingRectangle:	{l:146 t:143 r:246 b:175}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	false
 HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	18280
-ProviderDescription:	"[pid:18280,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
 IsDialog:	false
@@ -180,43 +349,6 @@ LegacyIAccessible.State:	selectable (0x200000)
 LegacyIAccessible.Value:	"End Time"
 Value.IsReadOnly:	false
 Value.Value:	"End Time"
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	true
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
 Next:	"Executable Time" header
 Previous:	"Start Time" header
 Other Props:	Object has no additional properties
@@ -228,93 +360,92 @@ Ancestors:	"Top Row"
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
-==================================
-Name:	"Save"
-ControlType:	UIA_ButtonControlTypeId (0xC350)
-LocalizedControlType:	"button"
-BoundingRectangle:	{l:181 t:519 r:256 b:542}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	18280
-RuntimeId:	[2A.1803E4]
-AutomationId:	"cmdSave"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.BUTTON.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x1803E4
-ProviderDescription:	"[pid:3656,providerId:0x1803E4 Main:Nested [pid:18280,providerId:0x1803E4 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	"Press"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Save"
-LegacyIAccessible.Role:	push button (0x2B)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"Delete" button
-Previous:	"Export" button
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Peak Margin" window
-	"" pane
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-=========================
-Name:	"Status"
+==============================================
+Name:	"Executable Time"
 ControlType:	UIA_HeaderControlTypeId (0xC372)
 LocalizedControlType:	"header"
-BoundingRectangle:	{l:513 t:103 r:613 b:135}
+BoundingRectangle:	{l:246 t:143 r:346 b:175}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	false
 HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	18280
-ProviderDescription:	"[pid:18280,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Executable Time"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Executable Time"
+Value.IsReadOnly:	false
+Value.Value:	"Executable Time"
+Next:	"Flag" header
+Previous:	"End Time" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+============================
+Name:	"Flag"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:346 t:143 r:446 b:175}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Flag"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Flag"
+Value.IsReadOnly:	false
+Value.Value:	"Flag"
+Next:	"Status" header
+Previous:	"Executable Time" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+===============================
+Name:	"Status"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:446 t:143 r:546 b:175}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
 IsDialog:	false
@@ -329,43 +460,6 @@ LegacyIAccessible.State:	selectable (0x200000)
 LegacyIAccessible.Value:	"Status"
 Value.IsReadOnly:	false
 Value.Value:	"Status"
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	true
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
 Next:	"Maker Remarks" header
 Previous:	"Flag" header
 Other Props:	Object has no additional properties
@@ -377,3 +471,77 @@ Ancestors:	"Top Row"
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
+===============================
+Name:	"Maker Remarks"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:546 t:143 r:646 b:175}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Maker Remarks"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Maker Remarks"
+Value.IsReadOnly:	false
+Value.Value:	"Maker Remarks"
+Next:	"Edit" header
+Previous:	"Status" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+==============================
+Name:	"Edit"
+ControlType:	UIA_HeaderControlTypeId (0xC372)
+LocalizedControlType:	"header"
+BoundingRectangle:	{l:646 t:143 r:746 b:175}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	5088
+ProviderDescription:	"[pid:5088,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewColumnHeaderCell(DataGridViewHeaderCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Edit"
+LegacyIAccessible.Role:	column header (0x19)
+LegacyIAccessible.State:	selectable (0x200000)
+LegacyIAccessible.Value:	"Edit"
+Value.IsReadOnly:	false
+Value.Value:	"Edit"
+Previous:	"Maker Remarks" header
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Top Row" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+
