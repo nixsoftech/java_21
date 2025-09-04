@@ -1,3 +1,148 @@
+
+import time
+import os
+import random
+import logging
+from datetime import datetime, timedelta
+from pywinauto.application import Application
+from pywinauto.keyboard import send_keys
+from pywinauto.timings import TimeoutError
+
+# ---------------- Logging Setup ----------------
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+log_dir = os.path.join(os.getcwd(), "logs")
+os.makedirs(log_dir, exist_ok=True)
+
+timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# ---------------- Helper Functions ----------------
+def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
+            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
+
+def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).select(value)
+            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
+
+def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            if auto_id:
+                ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            else:
+                ctrl = window.child_window(title=title, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).click_input()
+            time.sleep(0.5)
+            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+
+def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
+    try:
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=timeout)
+        popup_text = popup.window_text().strip()
+        logger.info(f"Popup detected: '{popup_text}'")
+
+        if expected_substring and expected_substring.lower() not in popup_text.lower():
+            logger.warning(f"Popup text mismatch. Expected '{expected_substring}' but got '{popup_text}'")
+
+        if auto_id_to_click:
+            try:
+                btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                btn.wait("enabled", timeout=5).click_input()
+                logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
+            except Exception as e:
+                logger.error(f"Failed to click popup button with AutomationId={auto_id_to_click}: {e}")
+        return True
+
+    except TimeoutError:
+        logger.info(f"No popup appeared within {timeout}s.")
+        return False
+
+def handle_post_login_popups(app, main_win, timeout=20):
+    """
+    Handles sequential popups after login:
+    1. "BMS OpmsEngine Got abandoned..." -> OK (AutomationId=2)
+    2. "Do you want to close RMS ?" -> NO (AutomationId=7)
+    """
+
+    try:
+        logger.info("Waiting for 'BMS OpmsEngine Got abandoned' popup...")
+        popup1 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup1.wait("visible", timeout=timeout)
+        popup1_text = popup1.window_text().strip()
+        logger.info(f"[Popup1] Detected: '{popup1_text}'")
+
+        try:
+            btn_ok = popup1.child_window(auto_id="2", control_type="Button")
+            btn_ok.wait("enabled", timeout=5).click_input()
+            logger.info("[Popup1] Clicked OK (AutomationId=2)")
+        except Exception as e:
+            logger.error(f"[Popup1] Failed to click OK: {e}")
+            logger.error(popup1.print_control_identifiers())
+
+        time.sleep(2)
+
+        logger.info("Waiting for 'Do you want to close RMS' popup...")
+        popup2 = main_win.child_window(title_re=".*", control_type="Window")
+        popup2.wait("visible", timeout=timeout)
+        popup2_text = popup2.window_text().strip()
+        logger.info(f"[Popup2] Detected: '{popup2_text}'")
+
+        try:
+            btn_no = popup2.child_window(auto_id="7", control_type="Button")
+            btn_no.wait("enabled", timeout=5).click_input()
+            logger.info("[Popup2] Clicked NO (AutomationId=7)")
+        except Exception as e:
+            logger.error(f"[Popup2] Failed to click NO: {e}")
+            logger.error(popup2.print_control_identifiers())
+
+    except TimeoutError:
+        logger.warning("No post-login popups appeared within timeout.")
+
+def click_rms_configuration_and_peak_margin(main_win):
+    try:
+        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin window.")
+    except Exception as e:
+        logger.error(f"menu_select failed: {e}")
+        logger.info("Falling back to manual click...")
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(1)
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+
 def handle_peak_margin(app, main_win):
     logger.info("Looking for Peak Margin panel inside main window...")
 
@@ -73,3 +218,43 @@ def handle_peak_margin(app, main_win):
     time.sleep(2)
 
     logger.info("Row filled and saved successfully.")
+
+# ---------------- Main Script ----------------
+def main():
+    try:
+        logger.info("Starting RMS Application...")
+        app = Application(backend="uia").start(
+            r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+        )
+
+        dlg = app.window(title_re=".*Risk Management System - Login")
+        dlg.wait("visible", timeout=30)
+
+        safe_type(dlg, "txt_UserId", "Edit", "QA1")
+        safe_type(dlg, "txt_Password", "Edit", "change@1212")
+        safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
+        safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
+        safe_click(dlg, auto_id="btn_Submit", control_type="Button")
+
+        # Handle login confirmation popup (already working earlier)
+        handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
+
+        main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+        main_win.wait("visible", timeout=40)
+        logger.info("Main RMS window is loaded.")
+
+        time.sleep(15)  # wait for extra popups
+        handle_post_login_popups(app, main_win, timeout=15)
+
+        click_rms_configuration_and_peak_margin(main_win)
+        handle_peak_margin(app, main_win)
+
+        safe_click(main_win, title="Exit", control_type="MenuItem")
+        handle_popup(app, auto_id_to_click="6", timeout=10)
+        logger.info("Automation script completed successfully.")
+
+    except Exception as e:
+        logger.exception(f"Automation failed: {e}")
+
+if __name__ == "__main__":
+    main()
