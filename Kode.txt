@@ -9,49 +9,35 @@ def handle_post_login_popups(app, timeout=15):
                 popup_text = popup.window_text().strip()
                 logger.info(f"Post-login popup detected: '{popup_text}'")
 
-                # Dump all available buttons with their automation IDs for debug
-                try:
-                    for btn in popup.children(control_type="Button"):
-                        logger.info(f"Found button: '{btn.window_text()}' AutomationId={btn.automation_id()}")
-                except Exception as e:
-                    logger.warning(f"Unable to list popup buttons: {e}")
-
-                # --- Handle "Do you want to close the RMS ?" popup (Click NO by AutomationId) ---
+                # Handle "Do you want to close the RMS ?" popup -> Click NO (AutomationId=7)
                 if "do you want to close the rms" in popup_text.lower():
                     try:
-                        no_btn = popup.child_window(auto_id="7", control_type="Button")  # example AutomationId
-                        if no_btn.exists():
-                            no_btn.click_input()
-                            logger.info("Clicked NO (AutomationId=7) on 'Do you want to close the RMS ?' popup.")
-                            time.sleep(1)
-                            continue
-                    except Exception as e:
-                        logger.error(f"Failed to click NO by AutomationId: {e}")
-
-                # --- Handle "BMS OpmsEngine Got abandoned at Primary" popup (Click OK by AutomationId) ---
-                if "bms opmsengine got abandoned" in popup_text.lower():
-                    try:
-                        ok_btn = popup.child_window(auto_id="6", control_type="Button")  # example AutomationId
-                        if ok_btn.exists():
-                            ok_btn.click_input()
-                            logger.info("Clicked OK (AutomationId=6) on 'BMS OpmsEngine Got abandoned at Primary' popup.")
-                            time.sleep(1)
-                            continue
-                    except Exception as e:
-                        logger.error(f"Failed to click OK by AutomationId: {e}")
-
-                # --- Generic fallback: click first available button ---
-                try:
-                    first_btn = popup.child_window(control_type="Button")
-                    if first_btn.exists():
-                        first_btn.click_input()
-                        logger.info(f"Clicked fallback button '{first_btn.window_text()}' AutomationId={first_btn.automation_id()}")
+                        no_btn = popup.child_window(auto_id="7", control_type="Button")
+                        no_btn.wait("enabled", timeout=5).click_input()
+                        logger.info("Clicked NO (AutomationId=7) on 'Do you want to close the RMS ?' popup.")
                         time.sleep(1)
                         continue
-                except Exception:
-                    pass
+                    except Exception as e:
+                        logger.error(f"Failed to click NO button: {e}")
+
+                # Handle "BMS OpmsEngine Got abandoned at Primary" popup -> Click OK (AutomationId=2)
+                elif "bms opmsengine got abandoned" in popup_text.lower():
+                    try:
+                        ok_btn = popup.child_window(auto_id="2", control_type="Button")
+                        ok_btn.wait("enabled", timeout=5).click_input()
+                        logger.info("Clicked OK (AutomationId=2) on 'BMS OpmsEngine Got abandoned at Primary' popup.")
+                        time.sleep(1)
+                        continue
+                    except Exception as e:
+                        logger.error(f"Failed to click OK button: {e}")
+
+                # If popup is unknown, just log and do not click anything
+                else:
+                    logger.warning(f"Unknown popup detected, skipping click: '{popup_text}'")
+                    time.sleep(1)
             else:
                 time.sleep(0.5)
 
-        except Exception:
+        except Exception as e:
+            logger.debug(f"No popup detected yet: {e}")
             time.sleep(0.5)
