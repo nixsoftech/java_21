@@ -15,7 +15,7 @@ def handle_peak_margin(app, main_win):
         raise RuntimeError("No data cells found in grid after clicking Add")
 
     logger.info(f"Detected {len(all_data_items)} data cells in grid.")
-    columns_per_row = 4  # Assuming: Start, End, Exec, Flag
+    columns_per_row = 4  # assuming 4 columns per row
     rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
     last_row_cells = rows[-1]
     logger.info(f"Selected last row with {len(last_row_cells)} cells.")
@@ -25,51 +25,32 @@ def handle_peak_margin(app, main_win):
                   timedelta(hours=17, minutes=random.randint(0, 59))).strftime("%H:%M:%S")
     end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
 
-    logger.info(f"Filling new row with Start={start_time}, End={end_time}, Flag=Y (Executable Time skipped)")
-
-    def fill_cell_and_validate(cell, value):
-        """Click cell, wait for edit control, set text, and validate it."""
-        for attempt in range(1, 4):
-            try:
-                cell.click_input()
-                cell.double_click_input()
-                time.sleep(0.3)
-
-                edit = app.window(control_type="Edit")
-                if not edit.exists(timeout=2):
-                    send_keys("{F2}")
-                    edit.wait("exists ready", timeout=2)
-
-                edit.set_focus()
-                edit.set_edit_text(value)
-                logger.info(f"Filled '{value}' (attempt {attempt})")
-                send_keys("{TAB}")
-                time.sleep(0.5)
-
-                # --- Validation ---
-                current_text = cell.window_text().strip()
-                if current_text == value:
-                    logger.info(f"Validation passed: '{value}' correctly set.")
-                    return
-                else:
-                    logger.warning(f"Validation failed: expected '{value}', got '{current_text}'. Retrying...")
-
-            except Exception as e:
-                logger.warning(f"Attempt {attempt} failed for value '{value}': {e}")
-
-            time.sleep(0.5)
-
-        raise TimeoutError(f"Failed to set and validate cell value '{value}' after 3 attempts")
+    logger.info(f"Filling new row with Start={start_time}, End={end_time} (Executable/Flag skipped)")
 
     try:
-        fill_cell_and_validate(last_row_cells[0], start_time)  # Start Time
-        fill_cell_and_validate(last_row_cells[1], end_time)    # End Time
-        # Skipping Executable Time intentionally
-        fill_cell_and_validate(last_row_cells[3], "Y")         # Flag
+        # --- Step 1: Select first cell and type Start Time ---
+        last_row_cells[0].click_input()
+        time.sleep(0.3)
+        send_keys("^a{BACKSPACE}")  # clear cell
+        send_keys(start_time)
+        send_keys("{TAB}")
+        logger.info(f"Entered Start Time: {start_time}")
+
+        time.sleep(0.3)
+
+        # --- Step 2: Type End Time in next cell ---
+        send_keys("^a{BACKSPACE}")
+        send_keys(end_time)
+        send_keys("{TAB}")
+        logger.info(f"Entered End Time: {end_time}")
+
+        time.sleep(0.5)
+
     except Exception as e:
-        logger.error(f"Row filling failed: {e}")
+        logger.error(f"Failed to fill row data: {e}")
         raise
 
+    # Save the entry
     safe_click(peak_margin_win, title="Save", control_type="Button")
     time.sleep(2)
-    logger.info("Row filled, validated, and saved successfully.")
+    logger.info("Row filled (Start & End) and saved successfully.")
