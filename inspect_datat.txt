@@ -1,19 +1,93 @@
-Name:	"BMS OpmsEngine Got abandoned at Primary"
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:243 t:377 r:474 b:392}
+Name:	"Start Time Row 7"
+ControlType:	UIA_DataItemControlTypeId (0xC36D)
+LocalizedControlType:	"item"
+BoundingRectangle:	{l:122 t:278 r:222 b:300}
 IsEnabled:	true
 IsOffscreen:	false
-IsKeyboardFocusable:	false
-HasKeyboardFocus:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	true
 AccessKey:	""
-ProcessId:	1912
-RuntimeId:	[2A.1202D4]
-AutomationId:	"65535"
-FrameworkId:	"Win32"
-ClassName:	"Static"
-NativeWindowHandle:	0x1202D4
-ProviderDescription:	"[pid:11560,providerId:0x1202D4 Main:Nested [pid:1912,providerId:0x1202D4 Annotation(parent link):Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main:Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	15400
+ProviderDescription:	"[pid:15400,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewTextBoxCell(DataGridViewCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	"Edit"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewTextBoxCell(DataGridViewCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Start Time Row 7"
+LegacyIAccessible.Role:	cell (0x1D)
+LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
+LegacyIAccessible.Value:	"(null)"
+Value.IsReadOnly:	false
+Value.Value:	"(null)"
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	true
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	true
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"End Time Row 7" item
+Previous:	"Sr. No Row 7" item
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Row 7" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+========================
+Name:	"Editing Control"
+ControlType:	UIA_EditControlTypeId (0xC354)
+LocalizedControlType:	"edit"
+BoundingRectangle:	{l:125 t:282 r:220 b:296}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	true
+AccessKey:	""
+ProcessId:	15400
+RuntimeId:	[2A.4605C8]
+AutomationId:	"4589000"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.EDIT.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0x4605C8
+ProviderDescription:	"[pid:11084,providerId:0x4605C8 Main:Nested [pid:15400,providerId:0x4605C8 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
@@ -22,10 +96,12 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"BMS OpmsEngine Got abandoned at Primary"
-LegacyIAccessible.Role:	text (0x29)
-LegacyIAccessible.State:	read only (0x40)
+LegacyIAccessible.Name:	"Editing Control"
+LegacyIAccessible.Role:	editable text (0x2A)
+LegacyIAccessible.State:	focused,focusable (0x100004)
 LegacyIAccessible.Value:	""
+Value.IsReadOnly:	false
+Value.Value:	""
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -56,93 +132,22 @@ IsTextPattern2Available:	false
 IsTogglePatternAvailable:	false
 IsTransformPatternAvailable:	false
 IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
+IsValuePatternAvailable:	true
 IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	(null) title bar
-Previous:	"" image
+Next:	[null]
+Previous:	[null]
 Other Props:	Object has no additional properties
 Children:	Container has no children
-Ancestors:	"Risk Management System" dialog
+Ancestors:	"Editing Panel" pane
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
 
-===============
-Name:	"Do you want to close the RMS ?"
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:179 t:368 r:344 b:383}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	false
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	1912
-RuntimeId:	[2A.A0460]
-AutomationId:	"65535"
-FrameworkId:	"Win32"
-ClassName:	"Static"
-NativeWindowHandle:	0xA0460
-ProviderDescription:	"[pid:11560,providerId:0xA0460 Main:Nested [pid:1912,providerId:0xA0460 Annotation(parent link):Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main:Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	""
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Do you want to close the RMS ?"
-LegacyIAccessible.Role:	text (0x29)
-LegacyIAccessible.State:	read only (0x40)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	(null) title bar
-Previous:	"No" button
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Risk Management System" dialog
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
