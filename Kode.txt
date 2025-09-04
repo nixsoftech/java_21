@@ -20,6 +20,23 @@ def handle_peak_margin(app, main_win):
     last_row_cells = rows[-1]
     logger.info(f"Selected last row with {len(last_row_cells)} cells.")
 
+    # 🔎 --- DUMP ONLY ROW-RELATED INFO ---
+    try:
+        row_dump = []
+        for idx, cell in enumerate(last_row_cells):
+            row_dump.append({
+                "index": idx,
+                "name": cell.element_info.name,
+                "control_type": cell.element_info.control_type,
+                "class_name": cell.element_info.class_name,
+                "automation_id": cell.element_info.automation_id,
+                "is_enabled": cell.is_enabled(),
+                "is_visible": cell.is_visible(),
+            })
+        logger.info(f"Row dump after Add:\n{row_dump}")
+    except Exception as dump_err:
+        logger.warning(f"Could not dump last row info: {dump_err}")
+
     now = datetime.now()
     start_time = (datetime.combine(now.date(), datetime.min.time()) +
                   timedelta(hours=17, minutes=random.randint(0, 59))).strftime("%H:%M:%S")
@@ -27,10 +44,7 @@ def handle_peak_margin(app, main_win):
 
     logger.info(f"Filling new row with Start={start_time}, End={end_time} (Executable/Flag skipped)")
 
-    from pywinauto.findwindows import find_elements
-
     def wait_for_edit_control(timeout=3):
-        """Wait until any edit control is visible (activated cell edit box)."""
         timings.wait_until(
             timeout,
             0.2,
@@ -40,10 +54,10 @@ def handle_peak_margin(app, main_win):
         return elements[0] if elements else None
 
     def set_cell_value(cell, value, max_attempts=3):
-        """Activate cell, wait for editor, clear, type value, and verify."""
         for attempt in range(1, max_attempts + 1):
             try:
                 cell.click_input(double=True)
+                logger.info(f"Clicked cell, waiting for edit control (attempt {attempt})")
                 edit_elem = wait_for_edit_control(timeout=3)
                 if not edit_elem:
                     raise TimeoutError("Edit control did not appear")
@@ -56,7 +70,6 @@ def handle_peak_margin(app, main_win):
                 edit.type_keys(value, with_spaces=True, set_foreground=True)
                 time.sleep(0.2)
 
-                # Verification step: read back the value from UI
                 typed_value = edit.window_text().strip()
                 if typed_value == value:
                     logger.info(f"Successfully set cell value '{value}' on attempt {attempt}")
@@ -69,7 +82,6 @@ def handle_peak_margin(app, main_win):
                 logger.warning(f"Attempt {attempt} failed: {e}")
                 time.sleep(0.5)
 
-        # If we reach here, all attempts failed
         raise TimeoutError(f"Failed to set and verify value '{value}' after {max_attempts} attempts")
 
     try:
