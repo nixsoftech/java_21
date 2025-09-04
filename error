@@ -1,18 +1,18 @@
 Peak Margin panel detected. Clicking Add...
-2025-09-04 17:11:47,219 [INFO] Clicked Add (attempt 1)
-2025-09-04 17:11:56,969 [INFO] Detected 64 data cells in grid.
-2025-09-04 17:11:56,969 [INFO] Selected last row with 4 cells.
-2025-09-04 17:11:56,985 [INFO] Filling new row with Start=17:52:00, End=18:02:00, Flag=Y (Executable Time skipped)
-2025-09-04 17:12:02,552 [WARNING] Attempt 1 failed for value '17:52:00': timed out
-2025-09-04 17:12:08,756 [WARNING] Attempt 2 failed for value '17:52:00': timed out
-2025-09-04 17:12:14,944 [WARNING] Attempt 3 failed for value '17:52:00': timed out
-2025-09-04 17:12:15,444 [ERROR] Row filling failed: Failed to set and validate cell value '17:52:00' after 3 attempts
-2025-09-04 17:12:15,444 [ERROR] Automation failed: Failed to set and validate cell value '17:52:00' after 3 attempts
+2025-09-04 17:32:14,644 [INFO] Clicked Add (attempt 1)
+2025-09-04 17:32:24,332 [INFO] Detected 64 data cells in grid.
+2025-09-04 17:32:24,347 [INFO] Selected last row with 4 cells.
+2025-09-04 17:32:24,347 [INFO] Filling new row with Start=17:40:00, End=17:50:00 (Executable/Flag skipped)
+2025-09-04 17:32:24,472 [WARNING] Attempt 1 failed: name 'timings' is not defined
+2025-09-04 17:32:25,129 [WARNING] Attempt 2 failed: name 'timings' is not defined
+2025-09-04 17:32:25,754 [WARNING] Attempt 3 failed: name 'timings' is not defined
+2025-09-04 17:32:26,254 [ERROR] Row filling failed: Failed to set and verify value '17:40:00' after 3 attempts
+2025-09-04 17:32:26,254 [ERROR] Automation failed: Failed to set and verify value '17:40:00' after 3 attempts
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 225, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 235, in main
     handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 186, in handle_peak_margin
-    fill_cell_and_validate(last_row_cells[0], start_time)  # Start Time
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 183, in fill_cell_and_validate
-    raise TimeoutError(f"Failed to set and validate cell value '{value}' after 3 attempts")
-pywinauto.timings.TimeoutError: Failed to set and validate cell value '17:52:00' after 3 attempts
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 198, in handle_peak_margin
+    set_cell_value(last_row_cells[0], start_time)  # Start Time
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 195, in set_cell_value
+    raise TimeoutError(f"Failed to set and verify value '{value}' after {max_attempts} attempts")
+pywinauto.timings.TimeoutError: Failed to set and verify value '17:40:00' after 3 attempts
