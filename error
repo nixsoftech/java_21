@@ -1,359 +1,1086 @@
 python test-case_pywinauto3.py
-2025-09-04 14:59:36,856 [INFO] Starting RMS Application...
-2025-09-04 14:59:42,124 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-04 14:59:43,968 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-04 14:59:46,921 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-04 14:59:49,983 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-04 14:59:51,984 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-04 14:59:52,640 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-04 14:59:52,640 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-04 14:59:54,312 [INFO] Clicked popup button with AutomationId=6
-2025-09-04 14:59:57,500 [INFO] Main RMS window is loaded.
-2025-09-04 15:00:27,504 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-04 15:00:29,535 [INFO] Successfully opened Peak Margin window.
-2025-09-04 15:00:29,551 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-04 15:00:32,160 [INFO] Peak Margin panel detected and ready.
-2025-09-04 15:00:35,975 [INFO] Clicked Add (attempt 1)
-2025-09-04 15:00:40,242 [INFO] Grid located successfully.
-2025-09-04 15:00:41,992 [WARNING] No rows detected yet, retrying... (1/5)
-2025-09-04 15:00:44,679 [WARNING] No rows detected yet, retrying... (2/5)
-2025-09-04 15:00:47,476 [WARNING] No rows detected yet, retrying... (3/5)
-2025-09-04 15:00:50,132 [WARNING] No rows detected yet, retrying... (4/5)
-2025-09-04 15:00:52,853 [WARNING] No rows detected yet, retrying... (5/5)
-2025-09-04 15:00:53,868 [ERROR] Still no rows detected after waiting. Dumping grid children for debugging...
+2025-09-04 16:13:22,420 [INFO] Starting RMS Application...
+2025-09-04 16:13:26,404 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-04 16:13:27,983 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-04 16:13:31,608 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-04 16:13:34,592 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-04 16:13:36,655 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-04 16:13:37,296 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-04 16:13:37,296 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-04 16:13:38,984 [INFO] Clicked popup button with AutomationId=6
+2025-09-04 16:13:43,281 [INFO] Main RMS window is loaded.
+2025-09-04 16:13:59,130 [INFO] [Popup1] Detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-04 16:13:59,130 [WARNING] [Popup1] Unexpected popup text, dumping control identifiers:
 Control Identifiers:
 
-Table - 'DataGridView'    (L20, T92, R909, B478)
-['DataGridViewTable', 'DataGridView', 'Table']
-child_window(title="DataGridView", auto_id="grdPeakMargin", control_type="Table")
+Dialog - 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'    (L-8, T-8, R1374, B736)
+['NCDEX RISK MANAGEMENT SYSTEM 6.3.0', 'Dialog', 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0Dialog', 'Dialog0', 'Dialog1']
+child_window(title="NCDEX RISK MANAGEMENT SYSTEM 6.3.0", auto_id="frmmain", control_type="Window")
    |
-   | Custom - 'Top Row'    (L20, T92, R908, B124)
-   | ['Top RowCustom', 'Top Row', 'Custom', 'Custom0', 'Custom1']
-   | child_window(title="Top Row", control_type="Custom")
+   | Dialog - 'Risk Management System'    (L522, T315, R859, B474)
+   | ['Risk Management System', 'Risk Management SystemDialog', 'Dialog2']
+   | child_window(title="Risk Management System", control_type="Window")
    |    |
-   |    | Header - 'Sr. No'    (L22, T92, R122, B124)
-   |    | ['Sr. No', 'Sr. NoHeader', 'Header', 'Header0', 'Header1']
-   |    | child_window(title="Sr. No", control_type="Header")
+   |    | Button - 'OK'    (L761, T434, R836, B457)
+   |    | ['Button', 'OK', 'OKButton', 'Button0', 'Button1']
+   |    | child_window(title="OK", auto_id="2", control_type="Button")
    |    |
-   |    | Header - 'Start Time'    (L122, T92, R222, B124)
-   |    | ['Start Time', 'Header2', 'Start TimeHeader']
-   |    | child_window(title="Start Time", control_type="Header")
+   |    | Image - ''    (L551, T369, R583, B401)
+   |    | ['Image']
+   |    | child_window(auto_id="20", control_type="Image")
    |    |
-   |    | Header - 'End Time'    (L222, T92, R322, B124)
-   |    | ['End TimeHeader', 'End Time', 'Header3']
-   |    | child_window(title="End Time", control_type="Header")
+   |    | Static - 'BMS OpmsEngine Got abandoned at Primary'    (L592, T379, R823, B394)
+   |    | ['Static', 'BMS OpmsEngine Got abandoned at Primary', 'BMS OpmsEngine Got abandoned at PrimaryStatic', 'Static0', 'Static1']
+   |    | child_window(title="BMS OpmsEngine Got abandoned at Primary", auto_id="65535", control_type="Text")
    |    |
-   |    | Header - 'Executable Time'    (L322, T92, R422, B124)
-   |    | ['Executable TimeHeader', 'Executable Time', 'Header4']
-   |    | child_window(title="Executable Time", control_type="Header")
-   |    |
-   |    | Header - 'Flag'    (L422, T92, R522, B124)
-   |    | ['FlagHeader', 'Flag', 'Header5']
-   |    | child_window(title="Flag", control_type="Header")
-   |    |
-   |    | Header - 'Status'    (L522, T92, R622, B124)
-   |    | ['Status', 'StatusHeader', 'Header6']
-   |    | child_window(title="Status", control_type="Header")
-   |    |
-   |    | Header - 'Maker Remarks'    (L622, T92, R722, B124)
-   |    | ['Maker Remarks', 'Header7', 'Maker RemarksHeader']
-   |    | child_window(title="Maker Remarks", control_type="Header")
-   |    |
-   |    | Header - 'Edit'    (L722, T92, R822, B124)
-   |    | ['EditHeader', 'Edit', 'Header8']
-   |    | child_window(title="Edit", control_type="Header")
+   |    | TitleBar - ''    (L530, T318, R851, B346)
+   |    | ['TitleBar', 'TitleBar0', 'TitleBar1']
+   |    |    |
+   |    |    | Button - 'Close'    (L818, T316, R852, B346)
+   |    |    | ['CloseButton', 'Button2', 'Close', 'CloseButton0', 'CloseButton1', 'Close0', 'Close1']
+   |    |    | child_window(title="Close", control_type="Button")
    |
-   | Custom - 'Row 0'    (L22, T124, R908, B146)
-   | ['Row 0', 'Row 0Custom', 'Custom2']
-   | child_window(title="Row 0", control_type="Custom")
+   | StatusBar - 'statusStrip1'    (L0, T706, R1366, B728)
+   | ['statusStrip1', 'statusStrip1StatusBar', 'StatusBar']
+   | child_window(title="statusStrip1", auto_id="sttsStrip_LoginUsr", control_type="StatusBar")
    |    |
-   |    | DataItem - 'Sr. No Row 0'    (L22, T124, R122, B146)
-   |    | ['Sr. No Row 0DataItem', 'Sr. No Row 0', 'DataItem', 'DataItem0', 'DataItem1']
-   |    | child_window(title="Sr. No Row 0", control_type="DataItem")
+   |    | Thumb - 'Grip'    (L3, T706, R8, B728)
+   |    | ['Thumb', 'Grip', 'GripThumb']
+   |    | child_window(title="Grip", control_type="Thumb")
    |    |
-   |    | DataItem - 'Start Time Row 0'    (L122, T124, R222, B146)
-   |    | ['Start Time Row 0', 'Start Time Row 0DataItem', 'DataItem2']
-   |    | child_window(title="Start Time Row 0", control_type="DataItem")
+   |    | Static - 'QA1 [Last Login : 04-Sep-2025 04:13 PM]'    (L1, T709, R347, B726)
+   |    | ['Static2', 'QA1 [Last Login : 04-Sep-2025 04:13 PM]Static', 'QA1 [Last Login : 04-Sep-2025 04:13 PM]']
+   |    | child_window(title="QA1 [Last Login : 04-Sep-2025 04:13 PM]", control_type="Text")
    |    |
-   |    | DataItem - 'End Time Row 0'    (L222, T124, R322, B146)
-   |    | ['End Time Row 0DataItem', 'End Time Row 0', 'DataItem3']
-   |    | child_window(title="End Time Row 0", control_type="DataItem")
+   |    | Static - '04-Sep-2025'    (L347, T709, R445, B726)
+   |    | ['Static3', '04-Sep-2025Static', '04-Sep-2025']
+   |    | child_window(title="04-Sep-2025", control_type="Text")
    |    |
-   |    | DataItem - 'Executable Time Row 0'    (L322, T124, R422, B146)
-   |    | ['Executable Time Row 0DataItem', 'DataItem4', 'Executable Time Row 0']
-   |    | child_window(title="Executable Time Row 0", control_type="DataItem")
+   |    | Static - 'RMS Running     Trades Processed : 2     04:14:02 PM'    (L445, T709, R824, B726)
+   |    | ['Static4', 'RMS Running     Trades Processed : 2     04:13:57 PM', 'RMS Running     Trades Processed : 2     04:13:57 PMStatic']
+   |    | child_window(title="RMS Running     Trades Processed : 2     04:14:02 PM", control_type="Text")
    |    |
-   |    | DataItem - 'Flag Row 0'    (L422, T124, R522, B146)
-   |    | ['Flag Row 0', 'DataItem5', 'Flag Row 0DataItem']
-   |    | child_window(title="Flag Row 0", control_type="DataItem")
+   |    | Static - '[0 Trades/Sec]  '    (L824, T709, R947, B726)
+   |    | ['Static5', '[0 Trades/Sec]  Static', '[0 Trades/Sec]  ']
+   |    | child_window(title="[0 Trades/Sec]  ", control_type="Text")
    |    |
-   |    | DataItem - 'Status Row 0'    (L522, T124, R622, B146)
-   |    | ['Status Row 0DataItem', 'DataItem6', 'Status Row 0']
-   |    | child_window(title="Status Row 0", control_type="DataItem")
+   |    | Static - 'UAT'    (L947, T709, R1015, B726)
+   |    | ['Static6', 'UATStatic', 'UAT']
+   |    | child_window(title="UAT", control_type="Text")
    |    |
-   |    | DataItem - 'Maker Remarks Row 0'    (L622, T124, R722, B146)
-   |    | ['Maker Remarks Row 0', 'DataItem7', 'Maker Remarks Row 0DataItem']
-   |    | child_window(title="Maker Remarks Row 0", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 0'    (L722, T124, R822, B146)
-   |    | ['Edit Row 0DataItem', 'Edit Row 0', 'DataItem8']
-   |    | child_window(title="Edit Row 0", control_type="DataItem")
+   |    | Static - 'Status - Mode  [A-N]'    (L1015, T709, R1153, B726)
+   |    | ['Static7', 'Status - Mode  [A-N]', 'Status - Mode  [A-N]Static']
+   |    | child_window(title="Status - Mode  [A-N]", control_type="Text")
    |
-   | Custom - 'Row 1'    (L22, T146, R908, B168)
-   | ['Row 1Custom', 'Custom3', 'Row 1']
-   | child_window(title="Row 1", control_type="Custom")
+   | Menu - 'Main Menu'    (L0, T23, R1366, B45)
+   | ['Menu', 'Main Menu', 'Main MenuMenu', 'Menu0', 'Menu1']
+   | child_window(title="Main Menu", auto_id="mnu_Main", control_type="MenuBar")
    |    |
-   |    | DataItem - 'Sr. No Row 1'    (L22, T146, R122, B168)
-   |    | ['Sr. No Row 1', 'DataItem9', 'Sr. No Row 1DataItem']
-   |    | child_window(title="Sr. No Row 1", control_type="DataItem")
+   |    | MenuItem - 'Risk Parameters'    (L7, T25, R128, B43)
+   |    | ['Risk Parameters', 'Risk ParametersMenuItem', 'MenuItem', 'MenuItem0', 'MenuItem1']
+   |    | child_window(title="Risk Parameters", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'System Specific'    (L0, T0, R0, B0)
+   |    |    | ['System SpecificMenuItem', 'System Specific', 'MenuItem2']
+   |    |    | child_window(title="System Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Symbol Specific'    (L0, T0, R0, B0)
+   |    |    | ['Symbol SpecificMenuItem', 'MenuItem3', 'Symbol Specific']
+   |    |    | child_window(title="Symbol Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Future Specific'    (L0, T0, R0, B0)
+   |    |    | ['Future Specific', 'Future SpecificMenuItem', 'MenuItem4']
+   |    |    | child_window(title="Future Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Contract Specific'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem5', 'Contract SpecificMenuItem', 'Contract Specific']
+   |    |    | child_window(title="Contract Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Option Specific'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem6', 'Option SpecificMenuItem', 'Option Specific']
+   |    |    | child_window(title="Option Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Commodity Master'    (L0, T0, R0, B0)
+   |    |    | ['Commodity Master', 'MenuItem7', 'Commodity MasterMenuItem']
+   |    |    | child_window(title="Commodity Master", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Commodity Symbol Pair'    (L0, T0, R0, B0)
+   |    |    | ['Commodity Symbol PairMenuItem', 'Commodity Symbol Pair', 'MenuItem8']
+   |    |    | child_window(title="Commodity Symbol Pair", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Volatility Scan Range'    (L0, T0, R0, B0)
+   |    |    | ['Volatility Scan RangeMenuItem', 'Volatility Scan Range', 'MenuItem9']
+   |    |    | child_window(title="Volatility Scan Range", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Net Delta Calculation'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem10', 'Net Delta CalculationMenuItem', 'Net Delta Calculation']
+   |    |    | child_window(title="Net Delta Calculation", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'View Correlation Matrix'    (L0, T0, R0, B0)
+   |    |    | ['View Correlation MatrixMenuItem', 'View Correlation Matrix', 'MenuItem11']
+   |    |    | child_window(title="View Correlation Matrix", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Back End'    (L0, T0, R0, B0)
+   |    |    |    | ['Back EndMenuItem', 'MenuItem12', 'Back End']
+   |    |    |    | child_window(title="Back End", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Front End'    (L0, T0, R0, B0)
+   |    |    |    | ['Front EndMenuItem', 'Front End', 'MenuItem13']
+   |    |    |    | child_window(title="Front End", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'ELM % Report'    (L0, T0, R0, B0)
+   |    |    | ['ELM % Report', 'ELM % ReportMenuItem', 'MenuItem14']
+   |    |    | child_window(title="ELM % Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting Future Report'    (L0, T0, R0, B0)
+   |    |    |    | ['BackTesting Future ReportMenuItem', 'BackTesting Future Report', 'MenuItem15']
+   |    |    |    | child_window(title="BackTesting Future Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting Spot Report'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem16', 'BackTesting Spot Report', 'BackTesting Spot ReportMenuItem']
+   |    |    |    | child_window(title="BackTesting Spot Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting Spread Report'    (L0, T0, R0, B0)
+   |    |    |    | ['BackTesting Spread ReportMenuItem', 'BackTesting Spread Report', 'MenuItem17']
+   |    |    |    | child_window(title="BackTesting Spread Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting High Low Future Report'    (L0, T0, R0, B0)
+   |    |    |    | ['BackTesting High Low Future Report', 'BackTesting High Low Future ReportMenuItem', 'MenuItem18']
+   |    |    |    | child_window(title="BackTesting High Low Future Report", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Intra Symbol Spreads'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem19', 'Intra Symbol SpreadsMenuItem', 'Intra Symbol Spreads']
+   |    |    | child_window(title="Intra Symbol Spreads", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Inter Commodity Spreads'    (L0, T0, R0, B0)
+   |    |    | ['Inter Commodity SpreadsMenuItem', 'MenuItem20', 'Inter Commodity Spreads']
+   |    |    | child_window(title="Inter Commodity Spreads", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Commodity OI Limits'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem21', 'Commodity OI LimitsMenuItem', 'Commodity OI Limits']
+   |    |    | child_window(title="Commodity OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures Commodity OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Futures Commodity OI LimitsMenuItem', 'Futures Commodity OI Limits', 'MenuItem22']
+   |    |    |    | child_window(title="Futures Commodity OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options Commodity OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Options Commodity OI LimitsMenuItem', 'Options Commodity OI Limits', 'MenuItem23']
+   |    |    |    | child_window(title="Options Commodity OI Limits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Underlying OI Limits'    (L0, T0, R0, B0)
+   |    |    | ['Underlying OI Limits', 'Underlying OI LimitsMenuItem', 'MenuItem24']
+   |    |    | child_window(title="Underlying OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures Underlying OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem25', 'Futures Underlying OI Limits', 'Futures Underlying OI LimitsMenuItem']
+   |    |    |    | child_window(title="Futures Underlying OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options Underlying OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem26', 'Options Underlying OI Limits', 'Options Underlying OI LimitsMenuItem']
+   |    |    |    | child_window(title="Options Underlying OI Limits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Contract OI Limits'    (L0, T0, R0, B0)
+   |    |    | ['Contract OI LimitsMenuItem', 'Contract OI Limits', 'MenuItem27']
+   |    |    | child_window(title="Contract OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures Contract OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Futures Contract OI LimitsMenuItem', 'MenuItem28', 'Futures Contract OI Limits']
+   |    |    |    | child_window(title="Futures Contract OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options Contract OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Options Contract OI Limits', 'Options Contract OI LimitsMenuItem', 'MenuItem29']
+   |    |    |    | child_window(title="Options Contract OI Limits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Collateral Limits'    (L0, T0, R0, B0)
+   |    |    | ['Collateral Limits', 'Collateral LimitsMenuItem', 'MenuItem30']
+   |    |    | child_window(title="Collateral Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Collateral Parameters'    (L0, T0, R0, B0)
+   |    |    |    | ['Collateral ParametersMenuItem', 'Collateral Parameters', 'MenuItem31']
+   |    |    |    | child_window(title="Collateral Parameters", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'EASM'    (L0, T0, R0, B0)
+   |    |    | ['EASM', 'EASMMenuItem', 'MenuItem32']
+   |    |    | child_window(title="EASM", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Parameters'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM ParametersMenuItem', 'EASM Parameters', 'MenuItem33']
+   |    |    |    | child_window(title="EASM Parameters", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Calc Report'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM Calc ReportMenuItem', 'MenuItem34', 'EASM Calc Report']
+   |    |    |    | child_window(title="EASM Calc Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Trigger Report'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM Trigger ReportMenuItem', 'EASM Trigger Report', 'MenuItem35']
+   |    |    |    | child_window(title="EASM Trigger Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Margin% Report'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM Margin% ReportMenuItem', 'EASM Margin% Report', 'MenuItem36']
+   |    |    |    | child_window(title="EASM Margin% Report", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Hedge OI LImits'    (L0, T0, R0, B0)
+   |    |    | ['Hedge OI LImitsMenuItem', 'Hedge OI LImits', 'MenuItem37']
+   |    |    | child_window(title="Hedge OI LImits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'CM Collateral'    (L0, T0, R0, B0)
+   |    |    | ['CM Collateral', 'CM CollateralMenuItem', 'MenuItem38']
+   |    |    | child_window(title="CM Collateral", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'TM Collateral'    (L0, T0, R0, B0)
+   |    |    | ['TM Collateral', 'TM CollateralMenuItem', 'MenuItem39']
+   |    |    | child_window(title="TM Collateral", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Minimum Penalty'    (L0, T0, R0, B0)
+   |    |    | ['Minimum PenaltyMenuItem', 'MenuItem40', 'Minimum Penalty']
+   |    |    | child_window(title="Minimum Penalty", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Unidirectional Price Margin'    (L0, T0, R0, B0)
+   |    |    | ['Unidirectional Price MarginMenuItem', 'Unidirectional Price Margin', 'MenuItem41']
+   |    |    | child_window(title="Unidirectional Price Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Cash Margin'    (L0, T0, R0, B0)
+   |    |    | ['Cash MarginMenuItem', 'Cash Margin', 'MenuItem42', 'Cash MarginMenuItem0', 'Cash MarginMenuItem1', 'Cash Margin0', 'Cash Margin1']
+   |    |    | child_window(title="Cash Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Adhoc Margin'    (L0, T0, R0, B0)
+   |    |    | ['Adhoc Margin', 'Adhoc MarginMenuItem', 'MenuItem43']
+   |    |    | child_window(title="Adhoc Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Concentration Margin'    (L0, T0, R0, B0)
+   |    |    | ['Concentration Margin', 'Concentration MarginMenuItem', 'MenuItem44']
+   |    |    | child_window(title="Concentration Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures'    (L0, T0, R0, B0)
+   |    |    |    | ['Futures', 'MenuItem45', 'FuturesMenuItem']
+   |    |    |    | child_window(title="Futures", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem46', 'Options', 'OptionsMenuItem']
+   |    |    |    | child_window(title="Options", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Margin Exemption For Hedgers'    (L0, T0, R0, B0)
+   |    |    | ['Margin Exemption For Hedgers', 'Margin Exemption For HedgersMenuItem', 'MenuItem47']
+   |    |    | child_window(title="Margin Exemption For Hedgers", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Advance Risk Parameters'    (L0, T0, R0, B0)
+   |    |    | ['Advance Risk ParametersMenuItem', 'MenuItem48', 'Advance Risk Parameters']
+   |    |    | child_window(title="Advance Risk Parameters", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Commodity Specific'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Commodity Specific', 'Advance Commodity SpecificMenuItem', 'MenuItem49']
+   |    |    |    | child_window(title="Advance Commodity Specific", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Future/Option Specific'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Future/Option SpecificMenuItem', 'Advance Future/Option Specific', 'MenuItem50']
+   |    |    |    | child_window(title="Advance Future/Option Specific", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Additional Margins'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Additional MarginsMenuItem', 'Advance Additional Margins', 'MenuItem51']
+   |    |    |    | child_window(title="Advance Additional Margins", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Margin Exemption For Hedgers'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Margin Exemption For Hedgers', 'Advance Margin Exemption For HedgersMenuItem', 'MenuItem52']
+   |    |    |    | child_window(title="Advance Margin Exemption For Hedgers", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Start Time Row 1'    (L122, T146, R222, B168)
-   |    | ['Start Time Row 1', 'Start Time Row 1DataItem', 'DataItem10']
-   |    | child_window(title="Start Time Row 1", control_type="DataItem")
+   |    | MenuItem - 'Online Monitoring'    (L128, T25, R257, B43)
+   |    | ['Online Monitoring', 'Online MonitoringMenuItem', 'MenuItem53']
+   |    | child_window(title="Online Monitoring", control_type="MenuItem")
    |    |
-   |    | DataItem - 'End Time Row 1'    (L222, T146, R322, B168)
-   |    | ['End Time Row 1', 'End Time Row 1DataItem', 'DataItem11']
-   |    | child_window(title="End Time Row 1", control_type="DataItem")
+   |    | MenuItem - 'Regain Match Book'    (L257, T25, R395, B43)
+   |    | ['Regain Match BookMenuItem', 'Regain Match Book', 'MenuItem54']
+   |    | child_window(title="Regain Match Book", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Closeout/ liquidation'    (L0, T0, R0, B0)
+   |    |    | ['Closeout/ liquidation', 'Closeout/ liquidationMenuItem', 'MenuItem55']
+   |    |    | child_window(title="Closeout/ liquidation", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'AUC/VOT/PAT'    (L0, T0, R0, B0)
+   |    |    | ['AUC/VOT/PATMenuItem', 'MenuItem56', 'AUC/VOT/PAT']
+   |    |    | child_window(title="AUC/VOT/PAT", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Executable Time Row 1'    (L322, T146, R422, B168)
-   |    | ['DataItem12', 'Executable Time Row 1', 'Executable Time Row 1DataItem']
-   |    | child_window(title="Executable Time Row 1", control_type="DataItem")
+   |    | MenuItem - 'Report'    (L395, T25, R456, B43)
+   |    | ['ReportMenuItem', 'Report', 'MenuItem57']
+   |    | child_window(title="Report", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'OnLine Reports'    (L0, T0, R0, B0)
+   |    |    | ['OnLine ReportsMenuItem', 'OnLine Reports', 'MenuItem58']
+   |    |    | child_window(title="OnLine Reports", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'MarketWide OI'    (L0, T0, R0, B0)
+   |    |    |    | ['MarketWide OI', 'MarketWide OIMenuItem', 'MenuItem59']
+   |    |    |    | child_window(title="MarketWide OI", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Delivery Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Delivery Margin', 'Delivery MarginMenuItem', 'MenuItem60', 'Delivery Margin0', 'Delivery Margin1', 'Delivery MarginMenuItem0', 'Delivery MarginMenuItem1']
+   |    |    |    | child_window(title="Delivery Margin", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Delivery Margin'    (L0, T0, R0, B0)
+   |    |    |    |    | ['Delivery Margin', 'Delivery MarginMenuItem', 'MenuItem60', 'Delivery Margin0', 'Delivery Margin1', 'Delivery MarginMenuItem0', 'Delivery MarginMenuItem1']
+   |    |    |    |    | child_window(title="Delivery Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Cash Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Cash MarginMenuItem', 'Cash Margin', 'MenuItem42', 'Cash MarginMenuItem0', 'Cash MarginMenuItem1', 'Cash Margin0', 'Cash Margin1']
+   |    |    |    | child_window(title="Cash Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'GetCurrentOI'    (L0, T0, R0, B0)
+   |    |    |    | ['GetCurrentOI', 'GetCurrentOIMenuItem', 'MenuItem64']
+   |    |    |    | child_window(title="GetCurrentOI", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'OffLine Reports'    (L0, T0, R0, B0)
+   |    |    | ['OffLine ReportsMenuItem', 'OffLine Reports', 'MenuItem65']
+   |    |    | child_window(title="OffLine Reports", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Utilization Summary'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Utilization Summary', 'Margin Utilization SummaryMenuItem', 'MenuItem66']
+   |    |    |    | child_window(title="Margin Utilization Summary", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Market Wide OI'    (L0, T0, R0, B0)
+   |    |    |    | ['Market Wide OI', 'Market Wide OIMenuItem', 'MenuItem67']
+   |    |    |    | child_window(title="Market Wide OI", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Delivery Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Delivery Margin', 'Delivery MarginMenuItem', 'MenuItem60', 'Delivery Margin0', 'Delivery Margin1', 'Delivery MarginMenuItem0', 'Delivery MarginMenuItem1']
+   |    |    |    | child_window(title="Delivery Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Cash Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Cash MarginMenuItem', 'Cash Margin', 'MenuItem42', 'Cash MarginMenuItem0', 'Cash MarginMenuItem1', 'Cash Margin0', 'Cash Margin1']
+   |    |    |    | child_window(title="Cash Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Financial Summary'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Financial SummaryMenuItem', 'MenuItem70', 'Margin Financial Summary']
+   |    |    |    | child_window(title="Margin Financial Summary", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Percentage Summary'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Percentage SummaryMenuItem', 'Margin Percentage Summary', 'MenuItem71']
+   |    |    |    | child_window(title="Margin Percentage Summary", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Penalty Report'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Penalty ReportMenuItem', 'Margin Penalty Report', 'MenuItem72']
+   |    |    |    | child_window(title="Margin Penalty Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Violation'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin ViolationMenuItem', 'Margin Violation', 'MenuItem73']
+   |    |    |    | child_window(title="Margin Violation", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'OI Violation'    (L0, T0, R0, B0)
+   |    |    |    | ['OI ViolationMenuItem', 'MenuItem74', 'OI Violation']
+   |    |    |    | child_window(title="OI Violation", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Flag Row 1'    (L422, T146, R522, B168)
-   |    | ['Flag Row 1', 'DataItem13', 'Flag Row 1DataItem']
-   |    | child_window(title="Flag Row 1", control_type="DataItem")
+   |    | MenuItem - 'Client Collateral'    (L456, T25, R575, B43)
+   |    | ['Client CollateralMenuItem', 'Client Collateral', 'MenuItem75']
+   |    | child_window(title="Client Collateral", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Collateral Upload/Valuate'    (L0, T0, R0, B0)
+   |    |    | ['Collateral Upload/Valuate', 'Collateral Upload/ValuateMenuItem', 'MenuItem76']
+   |    |    | child_window(title="Collateral Upload/Valuate", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'AMC Master Upload'    (L0, T0, R0, B0)
+   |    |    | ['AMC Master UploadMenuItem', 'MenuItem77', 'AMC Master Upload']
+   |    |    | child_window(title="AMC Master Upload", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Reports'    (L0, T0, R0, B0)
+   |    |    | ['Reports', 'MenuItem78', 'ReportsMenuItem']
+   |    |    | child_window(title="Reports", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Online'    (L0, T0, R0, B0)
+   |    |    |    | ['OnlineMenuItem', 'MenuItem79', 'Online']
+   |    |    |    | child_window(title="Online", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Client Collateral Valuation Report'    (L0, T0, R0, B0)
+   |    |    |    |    | ['Client Collateral Valuation Report', 'Client Collateral Valuation ReportMenuItem', 'MenuItem80', 'Client Collateral Valuation Report0', 'Client Collateral Valuation Report1', 'Client Collateral Valuation ReportMenuItem0', 'Client Collateral Valuation ReportMenuItem1']
+   |    |    |    |    | child_window(title="Client Collateral Valuation Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Offline'    (L0, T0, R0, B0)
+   |    |    |    | ['Offline', 'MenuItem81', 'OfflineMenuItem']
+   |    |    |    | child_window(title="Offline", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Client Collateral Valuation Report'    (L0, T0, R0, B0)
+   |    |    |    |    | ['Client Collateral Valuation Report', 'Client Collateral Valuation ReportMenuItem', 'MenuItem80', 'Client Collateral Valuation Report0', 'Client Collateral Valuation Report1', 'Client Collateral Valuation ReportMenuItem0', 'Client Collateral Valuation ReportMenuItem1']
+   |    |    |    |    | child_window(title="Client Collateral Valuation Report", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Internal Audit Report for RMD'    (L0, T0, R0, B0)
+   |    |    |    |    | ['MenuItem83', 'Internal Audit Report for RMDMenuItem', 'Internal Audit Report for RMD']
+   |    |    |    |    | child_window(title="Internal Audit Report for RMD", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Status Row 1'    (L522, T146, R622, B168)
-   |    | ['Status Row 1DataItem', 'Status Row 1', 'DataItem14']
-   |    | child_window(title="Status Row 1", control_type="DataItem")
+   |    | MenuItem - 'RMS Configuration'    (L575, T25, R709, B43)
+   |    | ['RMS ConfigurationMenuItem', 'RMS Configuration', 'MenuItem84']
+   |    | child_window(title="RMS Configuration", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Start RMS'    (L0, T0, R0, B0)
+   |    |    | ['Start RMS', 'Start RMSMenuItem', 'MenuItem85']
+   |    |    | child_window(title="Start RMS", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Timings For Volatility Calculation'    (L0, T0, R0, B0)
+   |    |    | ['Timings For Volatility Calculation', 'Timings For Volatility CalculationMenuItem', 'MenuItem86']
+   |    |    | child_window(title="Timings For Volatility Calculation", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Timings For Drop Delivery Margin'    (L0, T0, R0, B0)
+   |    |    | ['Timings For Drop Delivery Margin', 'Timings For Drop Delivery MarginMenuItem', 'MenuItem87']
+   |    |    | child_window(title="Timings For Drop Delivery Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Change Password'    (L0, T0, R0, B0)
+   |    |    | ['Change Password', 'MenuItem88', 'Change PasswordMenuItem']
+   |    |    | child_window(title="Change Password", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Generate GPSP/Process BK01'    (L0, T0, R0, B0)
+   |    |    | ['Generate GPSP/Process BK01MenuItem', 'Generate GPSP/Process BK01', 'MenuItem89']
+   |    |    | child_window(title="Generate GPSP/Process BK01", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Drop Delivery Margin'    (L0, T0, R0, B0)
+   |    |    | ['Drop Delivery MarginMenuItem', 'Drop Delivery Margin', 'MenuItem62', 'Drop Delivery MarginMenuItem0', 'Drop Delivery MarginMenuItem1', 'Drop Delivery Margin0', 'Drop Delivery Margin1']
+   |    |    | child_window(title="Drop Delivery Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Process CRMS/FUNDS File'    (L0, T0, R0, B0)
+   |    |    | ['Process CRMS/FUNDS File', 'MenuItem91', 'Process CRMS/FUNDS FileMenuItem']
+   |    |    | child_window(title="Process CRMS/FUNDS File", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Timings for Intraday PSN'    (L0, T0, R0, B0)
+   |    |    | ['Timings for Intraday PSN', 'Timings for Intraday PSNMenuItem', 'MenuItem92']
+   |    |    | child_window(title="Timings for Intraday PSN", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Peak Margin'    (L0, T0, R0, B0)
+   |    |    | ['Peak Margin', 'Peak MarginMenuItem', 'MenuItem93']
+   |    |    | child_window(title="Peak Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'BMS File Upload'    (L0, T0, R0, B0)
+   |    |    | ['BMS File Upload', 'BMS File UploadMenuItem', 'MenuItem94']
+   |    |    | child_window(title="BMS File Upload", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Maker Remarks Row 1'    (L622, T146, R722, B168)
-   |    | ['Maker Remarks Row 1', 'DataItem15', 'Maker Remarks Row 1DataItem']
-   |    | child_window(title="Maker Remarks Row 1", control_type="DataItem")
+   |    | MenuItem - 'Tools'    (L709, T25, R760, B43)
+   |    | ['ToolsMenuItem', 'Tools', 'MenuItem95']
+   |    | child_window(title="Tools", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Set Parameter'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem96', 'Set ParameterMenuItem', 'Set Parameter']
+   |    |    | child_window(title="Set Parameter", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Role Master'    (L0, T0, R0, B0)
+   |    |    | ['Role MasterMenuItem', 'Role Master', 'MenuItem97']
+   |    |    | child_window(title="Role Master", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'User List'    (L0, T0, R0, B0)
+   |    |    | ['User List', 'User ListMenuItem', 'MenuItem98']
+   |    |    | child_window(title="User List", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Role-Menu Configuration'    (L0, T0, R0, B0)
+   |    |    | ['Role-Menu Configuration', 'Role-Menu ConfigurationMenuItem', 'MenuItem99']
+   |    |    | child_window(title="Role-Menu Configuration", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Position Shifting'    (L0, T0, R0, B0)
+   |    |    | ['Position ShiftingMenuItem', 'MenuItem100', 'Position Shifting']
+   |    |    | child_window(title="Position Shifting", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Edit Row 1'    (L722, T146, R822, B168)
-   |    | ['Edit Row 1', 'DataItem16', 'Edit Row 1DataItem']
-   |    | child_window(title="Edit Row 1", control_type="DataItem")
+   |    | MenuItem - 'Maker Checker Details'    (L760, T25, R919, B43)
+   |    | ['Maker Checker Details', 'Maker Checker DetailsMenuItem', 'MenuItem101']
+   |    | child_window(title="Maker Checker Details", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Settings'    (L919, T25, R990, B43)
+   |    | ['Settings', 'SettingsMenuItem', 'MenuItem102']
+   |    | child_window(title="Settings", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'OI Limit Setting'    (L0, T0, R0, B0)
+   |    |    | ['OI Limit Setting', 'OI Limit SettingMenuItem', 'MenuItem103']
+   |    |    | child_window(title="OI Limit Setting", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Disable Client Collateral Popup'    (L0, T0, R0, B0)
+   |    |    | ['Disable Client Collateral Popup', 'Disable Client Collateral PopupMenuItem', 'MenuItem104']
+   |    |    | child_window(title="Disable Client Collateral Popup", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Help'    (L990, T25, R1037, B43)
+   |    | ['HelpMenuItem', 'Help', 'MenuItem105']
+   |    | child_window(title="Help", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'About'    (L0, T0, R0, B0)
+   |    |    | ['About', 'AboutMenuItem', 'MenuItem106']
+   |    |    | child_window(title="About", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Update'    (L1037, T25, R1102, B43)
+   |    | ['Update', 'UpdateMenuItem', 'MenuItem107']
+   |    | child_window(title="Update", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Exit'    (L1102, T25, R1144, B43)
+   |    | ['Exit', 'ExitMenuItem', 'MenuItem108']
+   |    | child_window(title="Exit", control_type="MenuItem")
    |
-   | Custom - 'Row 2'    (L22, T168, R908, B190)
-   | ['Row 2Custom', 'Row 2', 'Custom4']
-   | child_window(title="Row 2", control_type="Custom")
-   |    |
-   |    | DataItem - 'Sr. No Row 2'    (L22, T168, R122, B190)
-   |    | ['Sr. No Row 2DataItem', 'Sr. No Row 2', 'DataItem17']
-   |    | child_window(title="Sr. No Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Start Time Row 2'    (L122, T168, R222, B190)
-   |    | ['DataItem18', 'Start Time Row 2DataItem', 'Start Time Row 2']
-   |    | child_window(title="Start Time Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'End Time Row 2'    (L222, T168, R322, B190)
-   |    | ['End Time Row 2DataItem', 'DataItem19', 'End Time Row 2']
-   |    | child_window(title="End Time Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Executable Time Row 2'    (L322, T168, R422, B190)
-   |    | ['Executable Time Row 2DataItem', 'DataItem20', 'Executable Time Row 2']
-   |    | child_window(title="Executable Time Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Flag Row 2'    (L422, T168, R522, B190)
-   |    | ['DataItem21', 'Flag Row 2DataItem', 'Flag Row 2']
-   |    | child_window(title="Flag Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Status Row 2'    (L522, T168, R622, B190)
-   |    | ['Status Row 2DataItem', 'DataItem22', 'Status Row 2']
-   |    | child_window(title="Status Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Maker Remarks Row 2'    (L622, T168, R722, B190)
-   |    | ['Maker Remarks Row 2', 'DataItem23', 'Maker Remarks Row 2DataItem']
-   |    | child_window(title="Maker Remarks Row 2", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 2'    (L722, T168, R822, B190)
-   |    | ['Edit Row 2DataItem', 'DataItem24', 'Edit Row 2']
-   |    | child_window(title="Edit Row 2", control_type="DataItem")
+   | Pane - ''    (L0, T45, R1366, B706)
+   | ['BMS OpmsEngine Got abandoned at PrimaryPane', 'Pane']
+   | child_window(auto_id="3081778", control_type="Pane")
    |
-   | Custom - 'Row 3'    (L22, T190, R908, B212)
-   | ['Row 3Custom', 'Custom5', 'Row 3']
-   | child_window(title="Row 3", control_type="Custom")
+   | TitleBar - ''    (L16, T-5, R1366, B23)
+   | ['TitleBar2']
    |    |
-   |    | DataItem - 'Sr. No Row 3'    (L22, T190, R122, B212)
-   |    | ['DataItem25', 'Sr. No Row 3DataItem', 'Sr. No Row 3']
-   |    | child_window(title="Sr. No Row 3", control_type="DataItem")
+   |    | Menu - 'System'    (L0, T0, R22, B22)
+   |    | ['Menu2', 'SystemMenu', 'System', 'System0', 'System1']
+   |    | child_window(title="System", auto_id="MenuBar", control_type="MenuBar")
+   |    |    |
+   |    |    | MenuItem - 'System'    (L0, T0, R22, B22)
+   |    |    | ['SystemMenuItem', 'MenuItem109', 'System2']
+   |    |    | child_window(title="System", control_type="MenuItem")
    |    |
-   |    | DataItem - 'Start Time Row 3'    (L122, T190, R222, B212)
-   |    | ['Start Time Row 3DataItem', 'Start Time Row 3', 'DataItem26']
-   |    | child_window(title="Start Time Row 3", control_type="DataItem")
+   |    | Button - 'Minimize'    (L1225, T8, R1272, B22)
+   |    | ['Minimize', 'MinimizeButton', 'Button3']
+   |    | child_window(title="Minimize", control_type="Button")
    |    |
-   |    | DataItem - 'End Time Row 3'    (L222, T190, R322, B212)
-   |    | ['DataItem27', 'End Time Row 3', 'End Time Row 3DataItem']
-   |    | child_window(title="End Time Row 3", control_type="DataItem")
+   |    | Button - 'Restore'    (L1272, T8, R1318, B22)
+   |    | ['RestoreButton', 'Button4', 'Restore']
+   |    | child_window(title="Restore", control_type="Button")
    |    |
-   |    | DataItem - 'Executable Time Row 3'    (L322, T190, R422, B212)
-   |    | ['Executable Time Row 3DataItem', 'DataItem28', 'Executable Time Row 3']
-   |    | child_window(title="Executable Time Row 3", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Flag Row 3'    (L422, T190, R522, B212)
-   |    | ['Flag Row 3', 'DataItem29', 'Flag Row 3DataItem']
-   |    | child_window(title="Flag Row 3", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Status Row 3'    (L522, T190, R622, B212)
-   |    | ['Status Row 3DataItem', 'DataItem30', 'Status Row 3']
-   |    | child_window(title="Status Row 3", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Maker Remarks Row 3'    (L622, T190, R722, B212)
-   |    | ['Maker Remarks Row 3DataItem', 'DataItem31', 'Maker Remarks Row 3']
-   |    | child_window(title="Maker Remarks Row 3", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 3'    (L722, T190, R822, B212)
-   |    | ['Edit Row 3DataItem', 'DataItem32', 'Edit Row 3']
-   |    | child_window(title="Edit Row 3", control_type="DataItem")
-   |
-   | Custom - 'Row 4'    (L22, T212, R908, B234)
-   | ['Row 4', 'Custom6', 'Row 4Custom']
-   | child_window(title="Row 4", control_type="Custom")
-   |    |
-   |    | DataItem - 'Sr. No Row 4'    (L22, T212, R122, B234)
-   |    | ['Sr. No Row 4', 'DataItem33', 'Sr. No Row 4DataItem']
-   |    | child_window(title="Sr. No Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Start Time Row 4'    (L122, T212, R222, B234)
-   |    | ['Start Time Row 4', 'DataItem34', 'Start Time Row 4DataItem']
-   |    | child_window(title="Start Time Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'End Time Row 4'    (L222, T212, R322, B234)
-   |    | ['End Time Row 4', 'DataItem35', 'End Time Row 4DataItem']
-   |    | child_window(title="End Time Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Executable Time Row 4'    (L322, T212, R422, B234)
-   |    | ['Executable Time Row 4', 'DataItem36', 'Executable Time Row 4DataItem']
-   |    | child_window(title="Executable Time Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Flag Row 4'    (L422, T212, R522, B234)
-   |    | ['Flag Row 4', 'DataItem37', 'Flag Row 4DataItem']
-   |    | child_window(title="Flag Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Status Row 4'    (L522, T212, R622, B234)
-   |    | ['Status Row 4DataItem', 'DataItem38', 'Status Row 4']
-   |    | child_window(title="Status Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Maker Remarks Row 4'    (L622, T212, R722, B234)
-   |    | ['Maker Remarks Row 4', 'DataItem39', 'Maker Remarks Row 4DataItem']
-   |    | child_window(title="Maker Remarks Row 4", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 4'    (L722, T212, R822, B234)
-   |    | ['Edit Row 4DataItem', 'DataItem40', 'Edit Row 4']
-   |    | child_window(title="Edit Row 4", control_type="DataItem")
-   |
-   | Custom - 'Row 5'    (L22, T234, R908, B256)
-   | ['Row 5Custom', 'Row 5', 'Custom7']
-   | child_window(title="Row 5", control_type="Custom")
-   |    |
-   |    | DataItem - 'Sr. No Row 5'    (L22, T234, R122, B256)
-   |    | ['Sr. No Row 5', 'Sr. No Row 5DataItem', 'DataItem41']
-   |    | child_window(title="Sr. No Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Start Time Row 5'    (L122, T234, R222, B256)
-   |    | ['Start Time Row 5DataItem', 'DataItem42', 'Start Time Row 5']
-   |    | child_window(title="Start Time Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'End Time Row 5'    (L222, T234, R322, B256)
-   |    | ['End Time Row 5', 'DataItem43', 'End Time Row 5DataItem']
-   |    | child_window(title="End Time Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Executable Time Row 5'    (L322, T234, R422, B256)
-   |    | ['DataItem44', 'Executable Time Row 5DataItem', 'Executable Time Row 5']
-   |    | child_window(title="Executable Time Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Flag Row 5'    (L422, T234, R522, B256)
-   |    | ['Flag Row 5DataItem', 'DataItem45', 'Flag Row 5']
-   |    | child_window(title="Flag Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Status Row 5'    (L522, T234, R622, B256)
-   |    | ['Status Row 5', 'DataItem46', 'Status Row 5DataItem']
-   |    | child_window(title="Status Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Maker Remarks Row 5'    (L622, T234, R722, B256)
-   |    | ['Maker Remarks Row 5', 'DataItem47', 'Maker Remarks Row 5DataItem']
-   |    | child_window(title="Maker Remarks Row 5", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 5'    (L722, T234, R822, B256)
-   |    | ['Edit Row 5DataItem', 'Edit Row 5', 'DataItem48']
-   |    | child_window(title="Edit Row 5", control_type="DataItem")
-   |
-   | Custom - 'Row 6'    (L22, T256, R908, B278)
-   | ['Row 6Custom', 'Custom8', 'Row 6']
-   | child_window(title="Row 6", control_type="Custom")
-   |    |
-   |    | DataItem - 'Sr. No Row 6'    (L22, T256, R122, B278)
-   |    | ['Sr. No Row 6', 'DataItem49', 'Sr. No Row 6DataItem']
-   |    | child_window(title="Sr. No Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Start Time Row 6'    (L122, T256, R222, B278)
-   |    | ['Start Time Row 6DataItem', 'Start Time Row 6', 'DataItem50']
-   |    | child_window(title="Start Time Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'End Time Row 6'    (L222, T256, R322, B278)
-   |    | ['DataItem51', 'End Time Row 6', 'End Time Row 6DataItem']
-   |    | child_window(title="End Time Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Executable Time Row 6'    (L322, T256, R422, B278)
-   |    | ['Executable Time Row 6DataItem', 'DataItem52', 'Executable Time Row 6']
-   |    | child_window(title="Executable Time Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Flag Row 6'    (L422, T256, R522, B278)
-   |    | ['Flag Row 6', 'DataItem53', 'Flag Row 6DataItem']
-   |    | child_window(title="Flag Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Status Row 6'    (L522, T256, R622, B278)
-   |    | ['Status Row 6DataItem', 'DataItem54', 'Status Row 6']
-   |    | child_window(title="Status Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Maker Remarks Row 6'    (L622, T256, R722, B278)
-   |    | ['Maker Remarks Row 6', 'DataItem55', 'Maker Remarks Row 6DataItem']
-   |    | child_window(title="Maker Remarks Row 6", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 6'    (L722, T256, R822, B278)
-   |    | ['Edit Row 6DataItem', 'DataItem56', 'Edit Row 6']
-   |    | child_window(title="Edit Row 6", control_type="DataItem")
-   |
-   | Custom - 'Row 7'    (L22, T278, R908, B300)
-   | ['Row 7', 'Custom9', 'Row 7Custom']
-   | child_window(title="Row 7", control_type="Custom")
-   |    |
-   |    | DataItem - 'Sr. No Row 7'    (L22, T278, R122, B300)
-   |    | ['DataItem57', 'Sr. No Row 7', 'Sr. No Row 7DataItem']
-   |    | child_window(title="Sr. No Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Start Time Row 7'    (L122, T278, R222, B300)
-   |    | ['Start Time Row 7', 'DataItem58', 'Start Time Row 7DataItem']
-   |    | child_window(title="Start Time Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'End Time Row 7'    (L222, T278, R322, B300)
-   |    | ['End Time Row 7', 'DataItem59', 'End Time Row 7DataItem']
-   |    | child_window(title="End Time Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Executable Time Row 7'    (L322, T278, R422, B300)
-   |    | ['Executable Time Row 7DataItem', 'DataItem60', 'Executable Time Row 7']
-   |    | child_window(title="Executable Time Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Flag Row 7'    (L422, T278, R522, B300)
-   |    | ['DataItem61', 'Flag Row 7', 'Flag Row 7DataItem']
-   |    | child_window(title="Flag Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Status Row 7'    (L522, T278, R622, B300)
-   |    | ['Status Row 7', 'DataItem62', 'Status Row 7DataItem']
-   |    | child_window(title="Status Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Maker Remarks Row 7'    (L622, T278, R722, B300)
-   |    | ['DataItem63', 'Maker Remarks Row 7DataItem', 'Maker Remarks Row 7']
-   |    | child_window(title="Maker Remarks Row 7", control_type="DataItem")
-   |    |
-   |    | DataItem - 'Edit Row 7'    (L722, T278, R822, B300)
-   |    | ['DataItem64', 'Edit Row 7DataItem', 'Edit Row 7']
-   |    | child_window(title="Edit Row 7", control_type="DataItem")
-2025-09-04 15:01:15,907 [ERROR] None
-2025-09-04 15:01:19,915 [WARNING] Attempt 1 failed for Exit: There is no active desktop required for moving mouse cursor!
+   |    | Button - 'Close'    (L1318, T8, R1374, B22)
+   |    | ['CloseButton2', 'Button5', 'Close2']
+   |    | child_window(title="Close", control_type="Button")
+2025-09-04 16:14:42,162 [WARNING] None
+2025-09-04 16:14:44,459 [INFO] [Popup2] Detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-04 16:14:44,459 [WARNING] [Popup2] Unexpected popup text, dumping control identifiers:
+Control Identifiers:
 
-2025-09-04 15:01:25,697 [INFO] Clicked Exit (attempt 2)
-2025-09-04 15:01:27,181 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-04 15:01:32,712 [ERROR] Failed to click popup button with AutomationId=6: timed out
-2025-09-04 15:01:32,712 [INFO] Automation script completed successfully.
+Dialog - 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'    (L-8, T-8, R1374, B736)
+['NCDEX RISK MANAGEMENT SYSTEM 6.3.0', 'Dialog', 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0Dialog', 'Dialog0', 'Dialog1']
+child_window(title="NCDEX RISK MANAGEMENT SYSTEM 6.3.0", auto_id="frmmain", control_type="Window")
+   |
+   | Dialog - 'Risk Management System'    (L522, T315, R859, B474)
+   | ['Risk Management System', 'Risk Management SystemDialog', 'Dialog2']
+   | child_window(title="Risk Management System", control_type="Window")
+   |    |
+   |    | Button - 'OK'    (L761, T434, R836, B457)
+   |    | ['Button', 'OK', 'OKButton', 'Button0', 'Button1']
+   |    | child_window(title="OK", auto_id="2", control_type="Button")
+   |    |
+   |    | Image - ''    (L551, T369, R583, B401)
+   |    | ['Image']
+   |    | child_window(auto_id="20", control_type="Image")
+   |    |
+   |    | Static - 'BMS OpmsEngine Got abandoned at Primary'    (L592, T379, R823, B394)
+   |    | ['Static', 'BMS OpmsEngine Got abandoned at Primary', 'BMS OpmsEngine Got abandoned at PrimaryStatic', 'Static0', 'Static1']
+   |    | child_window(title="BMS OpmsEngine Got abandoned at Primary", auto_id="65535", control_type="Text")
+   |    |
+   |    | TitleBar - ''    (L530, T318, R851, B346)
+   |    | ['TitleBar', 'TitleBar0', 'TitleBar1']
+   |    |    |
+   |    |    | Button - 'Close'    (L818, T316, R852, B346)
+   |    |    | ['CloseButton', 'Button2', 'Close', 'CloseButton0', 'CloseButton1', 'Close0', 'Close1']
+   |    |    | child_window(title="Close", control_type="Button")
+   |
+   | StatusBar - 'statusStrip1'    (L0, T706, R1366, B728)
+   | ['statusStrip1', 'statusStrip1StatusBar', 'StatusBar']
+   | child_window(title="statusStrip1", auto_id="sttsStrip_LoginUsr", control_type="StatusBar")
+   |    |
+   |    | Thumb - 'Grip'    (L3, T706, R8, B728)
+   |    | ['Thumb', 'Grip', 'GripThumb']
+   |    | child_window(title="Grip", control_type="Thumb")
+   |    |
+   |    | Static - 'QA1 [Last Login : 04-Sep-2025 04:13 PM]'    (L1, T709, R347, B726)
+   |    | ['Static2', 'QA1 [Last Login : 04-Sep-2025 04:13 PM]Static', 'QA1 [Last Login : 04-Sep-2025 04:13 PM]']
+   |    | child_window(title="QA1 [Last Login : 04-Sep-2025 04:13 PM]", control_type="Text")
+   |    |
+   |    | Static - '04-Sep-2025'    (L347, T709, R445, B726)
+   |    | ['Static3', '04-Sep-2025Static', '04-Sep-2025']
+   |    | child_window(title="04-Sep-2025", control_type="Text")
+   |    |
+   |    | Static - 'RMS Running     Trades Processed : 2     04:14:47 PM'    (L445, T709, R824, B726)
+   |    | ['Static4', 'RMS Running     Trades Processed : 2     04:14:42 PMStatic', 'RMS Running     Trades Processed : 2     04:14:42 PM']
+   |    | child_window(title="RMS Running     Trades Processed : 2     04:14:47 PM", control_type="Text")
+   |    |
+   |    | Static - '[0 Trades/Sec]  '    (L824, T709, R947, B726)
+   |    | ['Static5', '[0 Trades/Sec]  Static', '[0 Trades/Sec]  ']
+   |    | child_window(title="[0 Trades/Sec]  ", control_type="Text")
+   |    |
+   |    | Static - 'UAT'    (L947, T709, R1015, B726)
+   |    | ['Static6', 'UATStatic', 'UAT']
+   |    | child_window(title="UAT", control_type="Text")
+   |    |
+   |    | Static - 'Status - Mode  [A-N]'    (L1015, T709, R1153, B726)
+   |    | ['Static7', 'Status - Mode  [A-N]', 'Status - Mode  [A-N]Static']
+   |    | child_window(title="Status - Mode  [A-N]", control_type="Text")
+   |
+   | Menu - 'Main Menu'    (L0, T23, R1366, B45)
+   | ['Menu', 'Main Menu', 'Main MenuMenu', 'Menu0', 'Menu1']
+   | child_window(title="Main Menu", auto_id="mnu_Main", control_type="MenuBar")
+   |    |
+   |    | MenuItem - 'Risk Parameters'    (L7, T25, R128, B43)
+   |    | ['Risk Parameters', 'Risk ParametersMenuItem', 'MenuItem', 'MenuItem0', 'MenuItem1']
+   |    | child_window(title="Risk Parameters", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'System Specific'    (L0, T0, R0, B0)
+   |    |    | ['System SpecificMenuItem', 'System Specific', 'MenuItem2']
+   |    |    | child_window(title="System Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Symbol Specific'    (L0, T0, R0, B0)
+   |    |    | ['Symbol SpecificMenuItem', 'MenuItem3', 'Symbol Specific']
+   |    |    | child_window(title="Symbol Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Future Specific'    (L0, T0, R0, B0)
+   |    |    | ['Future Specific', 'Future SpecificMenuItem', 'MenuItem4']
+   |    |    | child_window(title="Future Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Contract Specific'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem5', 'Contract SpecificMenuItem', 'Contract Specific']
+   |    |    | child_window(title="Contract Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Option Specific'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem6', 'Option SpecificMenuItem', 'Option Specific']
+   |    |    | child_window(title="Option Specific", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Commodity Master'    (L0, T0, R0, B0)
+   |    |    | ['Commodity Master', 'MenuItem7', 'Commodity MasterMenuItem']
+   |    |    | child_window(title="Commodity Master", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Commodity Symbol Pair'    (L0, T0, R0, B0)
+   |    |    | ['Commodity Symbol PairMenuItem', 'Commodity Symbol Pair', 'MenuItem8']
+   |    |    | child_window(title="Commodity Symbol Pair", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Volatility Scan Range'    (L0, T0, R0, B0)
+   |    |    | ['Volatility Scan RangeMenuItem', 'Volatility Scan Range', 'MenuItem9']
+   |    |    | child_window(title="Volatility Scan Range", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Net Delta Calculation'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem10', 'Net Delta CalculationMenuItem', 'Net Delta Calculation']
+   |    |    | child_window(title="Net Delta Calculation", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'View Correlation Matrix'    (L0, T0, R0, B0)
+   |    |    | ['View Correlation MatrixMenuItem', 'View Correlation Matrix', 'MenuItem11']
+   |    |    | child_window(title="View Correlation Matrix", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Back End'    (L0, T0, R0, B0)
+   |    |    |    | ['Back EndMenuItem', 'MenuItem12', 'Back End']
+   |    |    |    | child_window(title="Back End", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Front End'    (L0, T0, R0, B0)
+   |    |    |    | ['Front EndMenuItem', 'Front End', 'MenuItem13']
+   |    |    |    | child_window(title="Front End", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'ELM % Report'    (L0, T0, R0, B0)
+   |    |    | ['ELM % Report', 'ELM % ReportMenuItem', 'MenuItem14']
+   |    |    | child_window(title="ELM % Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting Future Report'    (L0, T0, R0, B0)
+   |    |    |    | ['BackTesting Future ReportMenuItem', 'BackTesting Future Report', 'MenuItem15']
+   |    |    |    | child_window(title="BackTesting Future Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting Spot Report'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem16', 'BackTesting Spot Report', 'BackTesting Spot ReportMenuItem']
+   |    |    |    | child_window(title="BackTesting Spot Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting Spread Report'    (L0, T0, R0, B0)
+   |    |    |    | ['BackTesting Spread ReportMenuItem', 'BackTesting Spread Report', 'MenuItem17']
+   |    |    |    | child_window(title="BackTesting Spread Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'BackTesting High Low Future Report'    (L0, T0, R0, B0)
+   |    |    |    | ['BackTesting High Low Future Report', 'BackTesting High Low Future ReportMenuItem', 'MenuItem18']
+   |    |    |    | child_window(title="BackTesting High Low Future Report", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Intra Symbol Spreads'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem19', 'Intra Symbol SpreadsMenuItem', 'Intra Symbol Spreads']
+   |    |    | child_window(title="Intra Symbol Spreads", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Inter Commodity Spreads'    (L0, T0, R0, B0)
+   |    |    | ['Inter Commodity SpreadsMenuItem', 'MenuItem20', 'Inter Commodity Spreads']
+   |    |    | child_window(title="Inter Commodity Spreads", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Commodity OI Limits'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem21', 'Commodity OI LimitsMenuItem', 'Commodity OI Limits']
+   |    |    | child_window(title="Commodity OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures Commodity OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Futures Commodity OI LimitsMenuItem', 'Futures Commodity OI Limits', 'MenuItem22']
+   |    |    |    | child_window(title="Futures Commodity OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options Commodity OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Options Commodity OI LimitsMenuItem', 'Options Commodity OI Limits', 'MenuItem23']
+   |    |    |    | child_window(title="Options Commodity OI Limits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Underlying OI Limits'    (L0, T0, R0, B0)
+   |    |    | ['Underlying OI Limits', 'Underlying OI LimitsMenuItem', 'MenuItem24']
+   |    |    | child_window(title="Underlying OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures Underlying OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem25', 'Futures Underlying OI Limits', 'Futures Underlying OI LimitsMenuItem']
+   |    |    |    | child_window(title="Futures Underlying OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options Underlying OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem26', 'Options Underlying OI Limits', 'Options Underlying OI LimitsMenuItem']
+   |    |    |    | child_window(title="Options Underlying OI Limits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Contract OI Limits'    (L0, T0, R0, B0)
+   |    |    | ['Contract OI LimitsMenuItem', 'Contract OI Limits', 'MenuItem27']
+   |    |    | child_window(title="Contract OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures Contract OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Futures Contract OI LimitsMenuItem', 'MenuItem28', 'Futures Contract OI Limits']
+   |    |    |    | child_window(title="Futures Contract OI Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options Contract OI Limits'    (L0, T0, R0, B0)
+   |    |    |    | ['Options Contract OI Limits', 'Options Contract OI LimitsMenuItem', 'MenuItem29']
+   |    |    |    | child_window(title="Options Contract OI Limits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Collateral Limits'    (L0, T0, R0, B0)
+   |    |    | ['Collateral Limits', 'Collateral LimitsMenuItem', 'MenuItem30']
+   |    |    | child_window(title="Collateral Limits", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Collateral Parameters'    (L0, T0, R0, B0)
+   |    |    |    | ['Collateral ParametersMenuItem', 'Collateral Parameters', 'MenuItem31']
+   |    |    |    | child_window(title="Collateral Parameters", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'EASM'    (L0, T0, R0, B0)
+   |    |    | ['EASM', 'EASMMenuItem', 'MenuItem32']
+   |    |    | child_window(title="EASM", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Parameters'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM ParametersMenuItem', 'EASM Parameters', 'MenuItem33']
+   |    |    |    | child_window(title="EASM Parameters", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Calc Report'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM Calc ReportMenuItem', 'MenuItem34', 'EASM Calc Report']
+   |    |    |    | child_window(title="EASM Calc Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Trigger Report'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM Trigger ReportMenuItem', 'EASM Trigger Report', 'MenuItem35']
+   |    |    |    | child_window(title="EASM Trigger Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'EASM Margin% Report'    (L0, T0, R0, B0)
+   |    |    |    | ['EASM Margin% ReportMenuItem', 'EASM Margin% Report', 'MenuItem36']
+   |    |    |    | child_window(title="EASM Margin% Report", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Hedge OI LImits'    (L0, T0, R0, B0)
+   |    |    | ['Hedge OI LImitsMenuItem', 'Hedge OI LImits', 'MenuItem37']
+   |    |    | child_window(title="Hedge OI LImits", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'CM Collateral'    (L0, T0, R0, B0)
+   |    |    | ['CM Collateral', 'CM CollateralMenuItem', 'MenuItem38']
+   |    |    | child_window(title="CM Collateral", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'TM Collateral'    (L0, T0, R0, B0)
+   |    |    | ['TM Collateral', 'TM CollateralMenuItem', 'MenuItem39']
+   |    |    | child_window(title="TM Collateral", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Minimum Penalty'    (L0, T0, R0, B0)
+   |    |    | ['Minimum PenaltyMenuItem', 'MenuItem40', 'Minimum Penalty']
+   |    |    | child_window(title="Minimum Penalty", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Unidirectional Price Margin'    (L0, T0, R0, B0)
+   |    |    | ['Unidirectional Price MarginMenuItem', 'Unidirectional Price Margin', 'MenuItem41']
+   |    |    | child_window(title="Unidirectional Price Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Cash Margin'    (L0, T0, R0, B0)
+   |    |    | ['Cash MarginMenuItem', 'Cash Margin', 'MenuItem42', 'Cash MarginMenuItem0', 'Cash MarginMenuItem1', 'Cash Margin0', 'Cash Margin1']
+   |    |    | child_window(title="Cash Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Adhoc Margin'    (L0, T0, R0, B0)
+   |    |    | ['Adhoc Margin', 'Adhoc MarginMenuItem', 'MenuItem43']
+   |    |    | child_window(title="Adhoc Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Concentration Margin'    (L0, T0, R0, B0)
+   |    |    | ['Concentration Margin', 'Concentration MarginMenuItem', 'MenuItem44']
+   |    |    | child_window(title="Concentration Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Futures'    (L0, T0, R0, B0)
+   |    |    |    | ['Futures', 'MenuItem45', 'FuturesMenuItem']
+   |    |    |    | child_window(title="Futures", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Options'    (L0, T0, R0, B0)
+   |    |    |    | ['MenuItem46', 'Options', 'OptionsMenuItem']
+   |    |    |    | child_window(title="Options", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Margin Exemption For Hedgers'    (L0, T0, R0, B0)
+   |    |    | ['Margin Exemption For Hedgers', 'Margin Exemption For HedgersMenuItem', 'MenuItem47']
+   |    |    | child_window(title="Margin Exemption For Hedgers", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Advance Risk Parameters'    (L0, T0, R0, B0)
+   |    |    | ['Advance Risk ParametersMenuItem', 'MenuItem48', 'Advance Risk Parameters']
+   |    |    | child_window(title="Advance Risk Parameters", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Commodity Specific'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Commodity Specific', 'Advance Commodity SpecificMenuItem', 'MenuItem49']
+   |    |    |    | child_window(title="Advance Commodity Specific", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Future/Option Specific'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Future/Option SpecificMenuItem', 'Advance Future/Option Specific', 'MenuItem50']
+   |    |    |    | child_window(title="Advance Future/Option Specific", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Additional Margins'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Additional MarginsMenuItem', 'Advance Additional Margins', 'MenuItem51']
+   |    |    |    | child_window(title="Advance Additional Margins", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Advance Margin Exemption For Hedgers'    (L0, T0, R0, B0)
+   |    |    |    | ['Advance Margin Exemption For Hedgers', 'Advance Margin Exemption For HedgersMenuItem', 'MenuItem52']
+   |    |    |    | child_window(title="Advance Margin Exemption For Hedgers", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Online Monitoring'    (L128, T25, R257, B43)
+   |    | ['Online Monitoring', 'Online MonitoringMenuItem', 'MenuItem53']
+   |    | child_window(title="Online Monitoring", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Regain Match Book'    (L257, T25, R395, B43)
+   |    | ['Regain Match BookMenuItem', 'Regain Match Book', 'MenuItem54']
+   |    | child_window(title="Regain Match Book", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Closeout/ liquidation'    (L0, T0, R0, B0)
+   |    |    | ['Closeout/ liquidation', 'Closeout/ liquidationMenuItem', 'MenuItem55']
+   |    |    | child_window(title="Closeout/ liquidation", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'AUC/VOT/PAT'    (L0, T0, R0, B0)
+   |    |    | ['AUC/VOT/PATMenuItem', 'MenuItem56', 'AUC/VOT/PAT']
+   |    |    | child_window(title="AUC/VOT/PAT", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Report'    (L395, T25, R456, B43)
+   |    | ['ReportMenuItem', 'Report', 'MenuItem57']
+   |    | child_window(title="Report", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'OnLine Reports'    (L0, T0, R0, B0)
+   |    |    | ['OnLine ReportsMenuItem', 'OnLine Reports', 'MenuItem58']
+   |    |    | child_window(title="OnLine Reports", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'MarketWide OI'    (L0, T0, R0, B0)
+   |    |    |    | ['MarketWide OI', 'MarketWide OIMenuItem', 'MenuItem59']
+   |    |    |    | child_window(title="MarketWide OI", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Delivery Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Delivery Margin', 'Delivery MarginMenuItem', 'MenuItem60', 'Delivery Margin0', 'Delivery Margin1', 'Delivery MarginMenuItem0', 'Delivery MarginMenuItem1']
+   |    |    |    | child_window(title="Delivery Margin", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Delivery Margin'    (L0, T0, R0, B0)
+   |    |    |    |    | ['Delivery Margin', 'Delivery MarginMenuItem', 'MenuItem60', 'Delivery Margin0', 'Delivery Margin1', 'Delivery MarginMenuItem0', 'Delivery MarginMenuItem1']
+   |    |    |    |    | child_window(title="Delivery Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Cash Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Cash MarginMenuItem', 'Cash Margin', 'MenuItem42', 'Cash MarginMenuItem0', 'Cash MarginMenuItem1', 'Cash Margin0', 'Cash Margin1']
+   |    |    |    | child_window(title="Cash Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'GetCurrentOI'    (L0, T0, R0, B0)
+   |    |    |    | ['GetCurrentOI', 'GetCurrentOIMenuItem', 'MenuItem64']
+   |    |    |    | child_window(title="GetCurrentOI", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'OffLine Reports'    (L0, T0, R0, B0)
+   |    |    | ['OffLine ReportsMenuItem', 'OffLine Reports', 'MenuItem65']
+   |    |    | child_window(title="OffLine Reports", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Utilization Summary'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Utilization Summary', 'Margin Utilization SummaryMenuItem', 'MenuItem66']
+   |    |    |    | child_window(title="Margin Utilization Summary", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Market Wide OI'    (L0, T0, R0, B0)
+   |    |    |    | ['Market Wide OI', 'Market Wide OIMenuItem', 'MenuItem67']
+   |    |    |    | child_window(title="Market Wide OI", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Delivery Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Delivery Margin', 'Delivery MarginMenuItem', 'MenuItem60', 'Delivery Margin0', 'Delivery Margin1', 'Delivery MarginMenuItem0', 'Delivery MarginMenuItem1']
+   |    |    |    | child_window(title="Delivery Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Cash Margin'    (L0, T0, R0, B0)
+   |    |    |    | ['Cash MarginMenuItem', 'Cash Margin', 'MenuItem42', 'Cash MarginMenuItem0', 'Cash MarginMenuItem1', 'Cash Margin0', 'Cash Margin1']
+   |    |    |    | child_window(title="Cash Margin", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Financial Summary'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Financial SummaryMenuItem', 'MenuItem70', 'Margin Financial Summary']
+   |    |    |    | child_window(title="Margin Financial Summary", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Percentage Summary'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Percentage SummaryMenuItem', 'Margin Percentage Summary', 'MenuItem71']
+   |    |    |    | child_window(title="Margin Percentage Summary", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Penalty Report'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin Penalty ReportMenuItem', 'Margin Penalty Report', 'MenuItem72']
+   |    |    |    | child_window(title="Margin Penalty Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Margin Violation'    (L0, T0, R0, B0)
+   |    |    |    | ['Margin ViolationMenuItem', 'Margin Violation', 'MenuItem73']
+   |    |    |    | child_window(title="Margin Violation", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'OI Violation'    (L0, T0, R0, B0)
+   |    |    |    | ['OI ViolationMenuItem', 'MenuItem74', 'OI Violation']
+   |    |    |    | child_window(title="OI Violation", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Client Collateral'    (L456, T25, R575, B43)
+   |    | ['Client CollateralMenuItem', 'Client Collateral', 'MenuItem75']
+   |    | child_window(title="Client Collateral", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Collateral Upload/Valuate'    (L0, T0, R0, B0)
+   |    |    | ['Collateral Upload/Valuate', 'Collateral Upload/ValuateMenuItem', 'MenuItem76']
+   |    |    | child_window(title="Collateral Upload/Valuate", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'AMC Master Upload'    (L0, T0, R0, B0)
+   |    |    | ['AMC Master UploadMenuItem', 'MenuItem77', 'AMC Master Upload']
+   |    |    | child_window(title="AMC Master Upload", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Reports'    (L0, T0, R0, B0)
+   |    |    | ['Reports', 'MenuItem78', 'ReportsMenuItem']
+   |    |    | child_window(title="Reports", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Online'    (L0, T0, R0, B0)
+   |    |    |    | ['OnlineMenuItem', 'MenuItem79', 'Online']
+   |    |    |    | child_window(title="Online", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Client Collateral Valuation Report'    (L0, T0, R0, B0)
+   |    |    |    |    | ['Client Collateral Valuation Report', 'Client Collateral Valuation ReportMenuItem', 'MenuItem80', 'Client Collateral Valuation Report0', 'Client Collateral Valuation Report1', 'Client Collateral Valuation ReportMenuItem0', 'Client Collateral Valuation ReportMenuItem1']
+   |    |    |    |    | child_window(title="Client Collateral Valuation Report", control_type="MenuItem")
+   |    |    |    |
+   |    |    |    | MenuItem - 'Offline'    (L0, T0, R0, B0)
+   |    |    |    | ['Offline', 'MenuItem81', 'OfflineMenuItem']
+   |    |    |    | child_window(title="Offline", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Client Collateral Valuation Report'    (L0, T0, R0, B0)
+   |    |    |    |    | ['Client Collateral Valuation Report', 'Client Collateral Valuation ReportMenuItem', 'MenuItem80', 'Client Collateral Valuation Report0', 'Client Collateral Valuation Report1', 'Client Collateral Valuation ReportMenuItem0', 'Client Collateral Valuation ReportMenuItem1']
+   |    |    |    |    | child_window(title="Client Collateral Valuation Report", control_type="MenuItem")
+   |    |    |    |    |
+   |    |    |    |    | MenuItem - 'Internal Audit Report for RMD'    (L0, T0, R0, B0)
+   |    |    |    |    | ['MenuItem83', 'Internal Audit Report for RMDMenuItem', 'Internal Audit Report for RMD']
+   |    |    |    |    | child_window(title="Internal Audit Report for RMD", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'RMS Configuration'    (L575, T25, R709, B43)
+   |    | ['RMS ConfigurationMenuItem', 'RMS Configuration', 'MenuItem84']
+   |    | child_window(title="RMS Configuration", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Start RMS'    (L0, T0, R0, B0)
+   |    |    | ['Start RMS', 'Start RMSMenuItem', 'MenuItem85']
+   |    |    | child_window(title="Start RMS", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Timings For Volatility Calculation'    (L0, T0, R0, B0)
+   |    |    | ['Timings For Volatility Calculation', 'Timings For Volatility CalculationMenuItem', 'MenuItem86']
+   |    |    | child_window(title="Timings For Volatility Calculation", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Timings For Drop Delivery Margin'    (L0, T0, R0, B0)
+   |    |    | ['Timings For Drop Delivery Margin', 'Timings For Drop Delivery MarginMenuItem', 'MenuItem87']
+   |    |    | child_window(title="Timings For Drop Delivery Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Change Password'    (L0, T0, R0, B0)
+   |    |    | ['Change Password', 'MenuItem88', 'Change PasswordMenuItem']
+   |    |    | child_window(title="Change Password", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Generate GPSP/Process BK01'    (L0, T0, R0, B0)
+   |    |    | ['Generate GPSP/Process BK01MenuItem', 'Generate GPSP/Process BK01', 'MenuItem89']
+   |    |    | child_window(title="Generate GPSP/Process BK01", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Drop Delivery Margin'    (L0, T0, R0, B0)
+   |    |    | ['Drop Delivery MarginMenuItem', 'Drop Delivery Margin', 'MenuItem62', 'Drop Delivery MarginMenuItem0', 'Drop Delivery MarginMenuItem1', 'Drop Delivery Margin0', 'Drop Delivery Margin1']
+   |    |    | child_window(title="Drop Delivery Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Process CRMS/FUNDS File'    (L0, T0, R0, B0)
+   |    |    | ['Process CRMS/FUNDS File', 'MenuItem91', 'Process CRMS/FUNDS FileMenuItem']
+   |    |    | child_window(title="Process CRMS/FUNDS File", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Timings for Intraday PSN'    (L0, T0, R0, B0)
+   |    |    | ['Timings for Intraday PSN', 'Timings for Intraday PSNMenuItem', 'MenuItem92']
+   |    |    | child_window(title="Timings for Intraday PSN", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Peak Margin'    (L0, T0, R0, B0)
+   |    |    | ['Peak Margin', 'Peak MarginMenuItem', 'MenuItem93']
+   |    |    | child_window(title="Peak Margin", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'BMS File Upload'    (L0, T0, R0, B0)
+   |    |    | ['BMS File Upload', 'BMS File UploadMenuItem', 'MenuItem94']
+   |    |    | child_window(title="BMS File Upload", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Tools'    (L709, T25, R760, B43)
+   |    | ['ToolsMenuItem', 'Tools', 'MenuItem95']
+   |    | child_window(title="Tools", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Set Parameter'    (L0, T0, R0, B0)
+   |    |    | ['MenuItem96', 'Set ParameterMenuItem', 'Set Parameter']
+   |    |    | child_window(title="Set Parameter", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Role Master'    (L0, T0, R0, B0)
+   |    |    | ['Role MasterMenuItem', 'Role Master', 'MenuItem97']
+   |    |    | child_window(title="Role Master", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'User List'    (L0, T0, R0, B0)
+   |    |    | ['User List', 'User ListMenuItem', 'MenuItem98']
+   |    |    | child_window(title="User List", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Role-Menu Configuration'    (L0, T0, R0, B0)
+   |    |    | ['Role-Menu Configuration', 'Role-Menu ConfigurationMenuItem', 'MenuItem99']
+   |    |    | child_window(title="Role-Menu Configuration", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Position Shifting'    (L0, T0, R0, B0)
+   |    |    | ['Position ShiftingMenuItem', 'MenuItem100', 'Position Shifting']
+   |    |    | child_window(title="Position Shifting", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Maker Checker Details'    (L760, T25, R919, B43)
+   |    | ['Maker Checker Details', 'Maker Checker DetailsMenuItem', 'MenuItem101']
+   |    | child_window(title="Maker Checker Details", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Settings'    (L919, T25, R990, B43)
+   |    | ['Settings', 'SettingsMenuItem', 'MenuItem102']
+   |    | child_window(title="Settings", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'OI Limit Setting'    (L0, T0, R0, B0)
+   |    |    | ['OI Limit Setting', 'OI Limit SettingMenuItem', 'MenuItem103']
+   |    |    | child_window(title="OI Limit Setting", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'Disable Client Collateral Popup'    (L0, T0, R0, B0)
+   |    |    | ['Disable Client Collateral Popup', 'Disable Client Collateral PopupMenuItem', 'MenuItem104']
+   |    |    | child_window(title="Disable Client Collateral Popup", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Help'    (L990, T25, R1037, B43)
+   |    | ['HelpMenuItem', 'Help', 'MenuItem105']
+   |    | child_window(title="Help", control_type="MenuItem")
+   |    |    |
+   |    |    | MenuItem - 'About'    (L0, T0, R0, B0)
+   |    |    | ['About', 'AboutMenuItem', 'MenuItem106']
+   |    |    | child_window(title="About", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Update'    (L1037, T25, R1102, B43)
+   |    | ['Update', 'UpdateMenuItem', 'MenuItem107']
+   |    | child_window(title="Update", control_type="MenuItem")
+   |    |
+   |    | MenuItem - 'Exit'    (L1102, T25, R1144, B43)
+   |    | ['Exit', 'ExitMenuItem', 'MenuItem108']
+   |    | child_window(title="Exit", control_type="MenuItem")
+   |
+   | Pane - ''    (L0, T45, R1366, B706)
+   | ['BMS OpmsEngine Got abandoned at PrimaryPane', 'Pane']
+   | child_window(auto_id="3081778", control_type="Pane")
+   |
+   | TitleBar - ''    (L16, T-5, R1366, B23)
+   | ['TitleBar2']
+   |    |
+   |    | Menu - 'System'    (L0, T0, R22, B22)
+   |    | ['Menu2', 'SystemMenu', 'System', 'System0', 'System1']
+   |    | child_window(title="System", auto_id="MenuBar", control_type="MenuBar")
+   |    |    |
+   |    |    | MenuItem - 'System'    (L0, T0, R22, B22)
+   |    |    | ['SystemMenuItem', 'MenuItem109', 'System2']
+   |    |    | child_window(title="System", control_type="MenuItem")
+   |    |
+   |    | Button - 'Minimize'    (L1225, T8, R1272, B22)
+   |    | ['Minimize', 'MinimizeButton', 'Button3']
+   |    | child_window(title="Minimize", control_type="Button")
+   |    |
+   |    | Button - 'Restore'    (L1272, T8, R1318, B22)
+   |    | ['RestoreButton', 'Button4', 'Restore']
+   |    | child_window(title="Restore", control_type="Button")
+   |    |
+   |    | Button - 'Close'    (L1318, T8, R1374, B22)
+   |    | ['CloseButton2', 'Button5', 'Close2']
+   |    | child_window(title="Close", control_type="Button")
+2025-09-04 16:15:26,680 [WARNING] None
+2025-09-04 16:15:26,680 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-04 16:15:27,243 [ERROR] menu_select failed:
+2025-09-04 16:15:27,243 [INFO] Falling back to manual click...
+2025-09-04 16:15:30,360 [INFO] Clicked RMS Configuration (attempt 1)
+2025-09-04 16:15:36,642 [WARNING] Attempt 1 failed for Peak Margin: timed out
+2025-09-04 16:15:43,909 [WARNING] Attempt 2 failed for Peak Margin: timed out
+2025-09-04 16:15:51,253 [WARNING] Attempt 3 failed for Peak Margin: timed out
+2025-09-04 16:15:58,488 [WARNING] Attempt 4 failed for Peak Margin: timed out
+2025-09-04 16:16:05,785 [WARNING] Attempt 5 failed for Peak Margin: timed out
+2025-09-04 16:16:07,800 [ERROR] Automation failed: Failed to click Peak Margin after 5 attempts
+Traceback (most recent call last):
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 149, in click_rms_configuration_and_peak_margin
+    main_win.menu_select("RMS Configuration->Peak Margin")
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\controls\uiawrapper.py", line 715, in menu_select
+    self.verify_actionable()
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\base_wrapper.py", line 681, in verify_actionable
+    self.verify_enabled()
+  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\base_wrapper.py", line 692, in verify_enabled
+    raise ElementNotEnabled()
+pywinauto.base_wrapper.ElementNotEnabled
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 255, in main
+    click_rms_configuration_and_peak_margin(main_win)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 156, in click_rms_configuration_and_peak_margin
+    safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 68, in safe_click
+    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+pywinauto.timings.TimeoutError: Failed to click Peak Margin after 5 attempts
