@@ -1,38 +1,31 @@
 python test-case_pywinauto3.py
-2025-09-04 16:22:23,946 [INFO] Starting RMS Application...
-2025-09-04 16:22:27,821 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-04 16:22:29,946 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-04 16:22:32,901 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-04 16:22:35,932 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-04 16:22:37,980 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-04 16:22:38,620 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-04 16:22:38,620 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-04 16:22:40,245 [INFO] Clicked popup button with AutomationId=6
-2025-09-04 16:22:43,683 [INFO] Main RMS window is loaded.
-2025-09-04 16:22:58,696 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-04 16:23:01,930 [INFO] [Popup1] Detected: 'Risk Management System'
-2025-09-04 16:23:04,055 [INFO] [Popup1] Clicked OK (AutomationId=2)
-2025-09-04 16:23:06,071 [INFO] Waiting for 'Do you want to close RMS' popup...
-2025-09-04 16:23:08,932 [INFO] [Popup2] Detected: 'Risk Management System'
-2025-09-04 16:23:11,041 [INFO] [Popup2] Clicked NO (AutomationId=7)
-2025-09-04 16:23:11,041 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-04 16:23:12,525 [INFO] Successfully opened Peak Margin window.
-2025-09-04 16:23:12,525 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-04 16:23:15,292 [INFO] Peak Margin panel detected and ready.
-2025-09-04 16:23:19,231 [INFO] Clicked Add (attempt 1)
-2025-09-04 16:23:28,733 [INFO] Filling new row with Start=17:35:00, End=17:45:00, Exec=17:35:00
-2025-09-04 16:23:28,733 [ERROR] Failed to fill row data: 'UIAWrapper' object has no attribute 'child_window'
-2025-09-04 16:23:28,749 [ERROR] Automation failed: 'UIAWrapper' object has no attribute 'print_control_identifiers'
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 182, in handle_peak_margin
-    start_cell = last_row.child_window(title_re="Start Time.*", control_type="DataItem")
-AttributeError: 'UIAWrapper' object has no attribute 'child_window'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 244, in main
-    handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 204, in handle_peak_margin
-    logger.error(last_row.print_control_identifiers())
-AttributeError: 'UIAWrapper' object has no attribute 'print_control_identifiers'
+2025-09-04 16:27:34,005 [INFO] Starting RMS Application...
+2025-09-04 16:27:37,864 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-04 16:27:39,411 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-04 16:27:42,989 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-04 16:27:45,991 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-04 16:27:47,991 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-04 16:27:48,647 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-04 16:27:48,647 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-04 16:27:50,303 [INFO] Clicked popup button with AutomationId=6
+2025-09-04 16:27:54,616 [INFO] Main RMS window is loaded.
+2025-09-04 16:28:09,627 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-04 16:28:12,815 [INFO] [Popup1] Detected: 'Risk Management System'
+2025-09-04 16:28:14,955 [INFO] [Popup1] Clicked OK (AutomationId=2)
+2025-09-04 16:28:16,956 [INFO] Waiting for 'Do you want to close RMS' popup...
+2025-09-04 16:28:19,783 [INFO] [Popup2] Detected: 'Risk Management System'
+2025-09-04 16:28:21,862 [INFO] [Popup2] Clicked NO (AutomationId=7)
+2025-09-04 16:28:21,862 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-04 16:28:23,237 [INFO] Successfully opened Peak Margin window.
+2025-09-04 16:28:23,237 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-04 16:28:26,051 [INFO] Peak Margin panel detected and ready.
+2025-09-04 16:28:30,129 [INFO] Clicked Add (attempt 1)
+2025-09-04 16:28:39,912 [INFO] Detected 64 data cells in grid.
+2025-09-04 16:28:39,912 [INFO] Selected last row with 4 cells.
+2025-09-04 16:28:40,006 [INFO] Filling new row with Start=17:59:00, End=18:09:00, Exec=17:59:00
+2025-09-04 16:28:47,967 [INFO] Clicked Save (attempt 1)
+2025-09-04 16:28:49,983 [INFO] Row filled and saved successfully.
+2025-09-04 16:28:53,811 [INFO] Clicked Exit (attempt 1)
+2025-09-04 16:28:55,066 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-04 16:29:00,648 [ERROR] Failed to click popup button with AutomationId=6: timed out
+2025-09-04 16:29:00,648 [INFO] Automation script completed successfully.
