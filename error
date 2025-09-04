@@ -1,18 +1,39 @@
-Peak Margin panel detected. Clicking Add...
-2025-09-04 17:32:14,644 [INFO] Clicked Add (attempt 1)
-2025-09-04 17:32:24,332 [INFO] Detected 64 data cells in grid.
-2025-09-04 17:32:24,347 [INFO] Selected last row with 4 cells.
-2025-09-04 17:32:24,347 [INFO] Filling new row with Start=17:40:00, End=17:50:00 (Executable/Flag skipped)
-2025-09-04 17:32:24,472 [WARNING] Attempt 1 failed: name 'timings' is not defined
-2025-09-04 17:32:25,129 [WARNING] Attempt 2 failed: name 'timings' is not defined
-2025-09-04 17:32:25,754 [WARNING] Attempt 3 failed: name 'timings' is not defined
-2025-09-04 17:32:26,254 [ERROR] Row filling failed: Failed to set and verify value '17:40:00' after 3 attempts
-2025-09-04 17:32:26,254 [ERROR] Automation failed: Failed to set and verify value '17:40:00' after 3 attempts
+python test-case_pywinauto4.py
+2025-09-04 17:54:15,573 [INFO] Starting RMS Application...
+2025-09-04 17:54:19,448 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-04 17:54:21,042 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-04 17:54:24,682 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-04 17:54:27,667 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-04 17:54:29,715 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-04 17:54:30,371 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-04 17:54:30,371 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-04 17:54:31,996 [INFO] Clicked popup button with AutomationId=6
+2025-09-04 17:54:35,684 [INFO] Main RMS window is loaded.
+2025-09-04 17:54:50,686 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-04 17:55:11,297 [WARNING] No post-login popups appeared within timeout.
+2025-09-04 17:55:11,297 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-04 17:55:12,672 [INFO] Successfully opened Peak Margin window.
+2025-09-04 17:55:12,688 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-04 17:55:15,500 [INFO] Peak Margin panel detected. Clicking Add...
+2025-09-04 17:55:19,298 [INFO] Clicked Add (attempt 1)
+2025-09-04 17:55:28,923 [INFO] Detected 64 data cells in grid.
+2025-09-04 17:55:28,923 [INFO] Selected last row with 4 cells.
+2025-09-04 17:55:28,955 [INFO] Row dump after Add:
+[{'index': 0, 'name': 'Flag Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 1, 'name': 'Status Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 2, 'name': 'Maker Remarks Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}, {'index': 3, 'name': 'Edit Row 7', 'control_type': 'DataItem', 'class_name': '', 'automation_id': '', 'is_enabled': True, 'is_visible': True}]
+2025-09-04 17:55:28,955 [INFO] Filling new row with Start=17:33:00, End=17:43:00 (Executable/Flag skipped)
+2025-09-04 17:55:29,095 [INFO] Clicked cell, waiting for edit control (attempt 1)
+2025-09-04 17:55:32,097 [WARNING] Attempt 1 failed: timed out
+2025-09-04 17:55:32,737 [INFO] Clicked cell, waiting for edit control (attempt 2)
+2025-09-04 17:55:35,753 [WARNING] Attempt 2 failed: timed out
+2025-09-04 17:55:36,378 [INFO] Clicked cell, waiting for edit control (attempt 3)
+2025-09-04 17:55:39,394 [WARNING] Attempt 3 failed: timed out
+2025-09-04 17:55:39,909 [ERROR] Row filling failed: Failed to set and verify value '17:33:00' after 3 attempts
+2025-09-04 17:55:39,909 [ERROR] Automation failed: Failed to set and verify value '17:33:00' after 3 attempts
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 235, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 248, in main
     handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 198, in handle_peak_margin
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 211, in handle_peak_margin
     set_cell_value(last_row_cells[0], start_time)  # Start Time
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 195, in set_cell_value
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto4.py", line 208, in set_cell_value
     raise TimeoutError(f"Failed to set and verify value '{value}' after {max_attempts} attempts")
-pywinauto.timings.TimeoutError: Failed to set and verify value '17:40:00' after 3 attempts
+pywinauto.timings.TimeoutError: Failed to set and verify value '17:33:00' after 3 attempts
