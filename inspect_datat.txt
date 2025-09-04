@@ -1,12 +1,19 @@
-Name:	"Row 7"
-BoundingRectangle:	{l:22 t:278 r:908 b:300}
+Name:	"BMS OpmsEngine Got abandoned at Primary"
+ControlType:	UIA_TextControlTypeId (0xC364)
+LocalizedControlType:	"text"
+BoundingRectangle:	{l:243 t:377 r:474 b:392}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	false
 HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	524
-ProviderDescription:	"[pid:524,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	1912
+RuntimeId:	[2A.1202D4]
+AutomationId:	"65535"
+FrameworkId:	"Win32"
+ClassName:	"Static"
+NativeWindowHandle:	0x1202D4
+ProviderDescription:	"[pid:11560,providerId:0x1202D4 Main:Nested [pid:1912,providerId:0x1202D4 Annotation(parent link):Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main:Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
@@ -15,10 +22,10 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Row 7"
-LegacyIAccessible.Role:	row (0x1C)
-LegacyIAccessible.State:	selectable (0x200000)
-LegacyIAccessible.Value:	"8;(null);(null);(null);N;NORMAL;(null);True"
+LegacyIAccessible.Name:	"BMS OpmsEngine Got abandoned at Primary"
+LegacyIAccessible.Role:	text (0x29)
+LegacyIAccessible.State:	read only (0x40)
+LegacyIAccessible.Value:	""
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -54,22 +61,88 @@ IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
-FirstChild:	"Sr. No Row 7" item
-LastChild:	"Edit Row 7" item
-Next:	[null]
-Previous:	"Row 6" 
+FirstChild:	[null]
+LastChild:	[null]
+Next:	(null) title bar
+Previous:	"" image
 Other Props:	Object has no additional properties
-Children:	"Sr. No Row 7" item
-	"Start Time Row 7" item
-	"End Time Row 7" item
-	"Executable Time Row 7" item
-	"Flag Row 7" item
-	"Status Row 7" item
-	"Maker Remarks Row 7" item
-	"Edit Row 7" item
-Ancestors:	"DataGridView" table
-	"Peak Margin" window
-	"" pane
+Children:	Container has no children
+Ancestors:	"Risk Management System" dialog
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+
+===============
+Name:	"Do you want to close the RMS ?"
+ControlType:	UIA_TextControlTypeId (0xC364)
+LocalizedControlType:	"text"
+BoundingRectangle:	{l:179 t:368 r:344 b:383}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	false
+HasKeyboardFocus:	false
+AccessKey:	""
+ProcessId:	1912
+RuntimeId:	[2A.A0460]
+AutomationId:	"65535"
+FrameworkId:	"Win32"
+ClassName:	"Static"
+NativeWindowHandle:	0xA0460
+ProviderDescription:	"[pid:11560,providerId:0xA0460 Main:Nested [pid:1912,providerId:0xA0460 Annotation(parent link):Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main:Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Do you want to close the RMS ?"
+LegacyIAccessible.Role:	text (0x29)
+LegacyIAccessible.State:	read only (0x40)
+LegacyIAccessible.Value:	""
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	false
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	(null) title bar
+Previous:	"No" button
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Risk Management System" dialog
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
