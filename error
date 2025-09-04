@@ -1,13 +1,7 @@
-2025-09-04 14:00:06,566 [INFO] Successfully opened Peak Margin window.
-2025-09-04 14:00:06,566 [INFO] Waiting for Peak Margin window...
-2025-09-04 14:00:26,868 [ERROR] Automation failed: timed out
+Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-04 14:04:41,546 [INFO] Successfully opened Peak Margin window.
+2025-09-04 14:04:41,546 [ERROR] Automation failed: handle_peak_margin() missing 1 required positional argument: 'main_win'
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 164, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 167, in main
     handle_peak_margin(app)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto3.py", line 106, in handle_peak_margin
-    peak_margin_win.wait("visible", timeout=20)
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\application.py", line 529, in wait
-    wait_until(timeout, retry_interval,
-  File "C:\Users\Test3\AppData\Roaming\Python\Python310\site-packages\pywinauto\timings.py", line 375, in wait_until
-    raise err
-pywinauto.timings.TimeoutError: timed out
+TypeError: handle_peak_margin() missing 1 required positional argument: 'main_win'
