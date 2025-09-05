@@ -1,5 +1,7 @@
+import re
+
 def handle_peak_margin(app, main_win):
-    """Add a row in Peak Margin table with Start > max End Time, save and return start_time."""
+    """Add row in Peak Margin table ensuring start > last end, wait for row to fully load."""
     logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
     main_win.menu_select("RMS Configuration->Peak Margin")
     logger.info("Successfully opened Peak Margin window.")
@@ -13,73 +15,73 @@ def handle_peak_margin(app, main_win):
 
     all_cells_before = grid.descendants(control_type="DataItem")
     old_count = len(all_cells_before)
-    logger.info(f"Cell count before Add = {old_count}")
+    logger.info(f"Existing cell count before Add = {old_count}")
 
     safe_click(peak_margin_win, title="Add", control_type="Button")
-    logger.info("Clicked Add, waiting for new cells to appear...")
+    logger.info("Clicked Add, waiting for new row...")
 
+    # --- Wait until cell count grows (row is created) ---
     for attempt in range(10):
         all_cells_after = grid.descendants(control_type="DataItem")
         if len(all_cells_after) > old_count:
-            logger.info(f"Cell count increased to {len(all_cells_after)} after Add.")
             break
         time.sleep(1)
     else:
         raise RuntimeError("Timed out waiting for new row to appear")
 
-    logger.info("=== Dump of Cells AFTER Add ===")
-    for idx, c in enumerate(all_cells_after):
-        logger.info(f"Cell {idx:03d}: '{c.window_text().strip()}'")
-    logger.info("=== End Dump ===")
-
-    # --- Find last 'Edit' cell (assume belongs to new row) ---
+    logger.info(f"New cell count = {len(all_cells_after)} (was {old_count})")
     edit_cells = [c for c in all_cells_after if "Edit" in c.window_text()]
     if not edit_cells:
-        raise RuntimeError("No Edit cells found, cannot locate new row")
+        raise RuntimeError("No Edit cells found after Add")
 
     last_edit_cell = edit_cells[-1]
-    logger.info(f"Detected new row starting at Edit cell: '{last_edit_cell.window_text()}'")
-
-    # Find index of this cell in all_cells_after
     last_edit_index = all_cells_after.index(last_edit_cell)
+    logger.info(f"New row Edit cell index = {last_edit_index}")
 
-    # Next cells should be Start Time & End Time cells (assumption based on layout)
-    try:
-        start_cell = all_cells_after[last_edit_index + 1]
-        end_cell = all_cells_after[last_edit_index + 2]
-    except IndexError:
-        raise RuntimeError("Could not locate Start/End cells relative to last Edit cell")
+    # --- Wait until at least 3 cells exist after Edit (Start/End) ---
+    for wait_attempt in range(10):
+        all_cells_after = grid.descendants(control_type="DataItem")
+        if last_edit_index + 2 < len(all_cells_after):  # we have at least two more cells after Edit
+            break
+        logger.debug(f"Waiting for Start/End cells to appear... (attempt {wait_attempt+1})")
+        time.sleep(1)
+    else:
+        raise RuntimeError("Start/End cells did not load after Add")
 
-    # --- Determine max end time from all cells ---
+    start_cell = all_cells_after[last_edit_index + 1]
+    end_cell = all_cells_after[last_edit_index + 2]
+
+    logger.info(f"Start cell current text = '{start_cell.window_text().strip()}'")
+    logger.info(f"End cell current text = '{end_cell.window_text().strip()}'")
+
+    # --- Find max end time in table ---
     last_end_time = None
     for c in all_cells_after:
         txt = c.window_text().strip()
-        try:
-            if re.match(r"^\d{2}:\d{2}:\d{2}$", txt):  # time format
+        if re.match(r"^\d{2}:\d{2}:\d{2}$", txt):
+            try:
                 dt = datetime.strptime(txt, "%H:%M:%S")
                 if not last_end_time or dt > last_end_time:
                     last_end_time = dt
-        except Exception:
-            pass
+            except ValueError:
+                pass
 
     if last_end_time:
-        new_start_dt = last_end_time + timedelta(minutes=random.randint(1, 3))
-        logger.info(f"Last End Time = {last_end_time} → New Start Time = {new_start_dt}")
+        new_start_dt = last_end_time + timedelta(minutes=1)
+        logger.info(f"Last End Time = {last_end_time.strftime('%H:%M:%S')} → New Start Time = {new_start_dt.strftime('%H:%M:%S')}")
     else:
-        new_start_dt = datetime.strptime("17:00:00", "%H:%M:%S") + timedelta(minutes=random.randint(0, 59))
+        new_start_dt = datetime.strptime("17:00:00", "%H:%M:%S")
 
     new_end_dt = new_start_dt + timedelta(minutes=10)
     start_time = new_start_dt.strftime("%H:%M:%S")
     end_time = new_end_dt.strftime("%H:%M:%S")
 
-    logger.info(f"Filling NEW row: Start={start_time}, End={end_time}")
+    logger.info(f"Filling row → Start={start_time}, End={end_time}")
 
-    # Fill values
     set_cell_value(start_cell, start_time)
     set_cell_value(end_cell, end_time)
 
     safe_click(peak_margin_win, title="Save", control_type="Button")
-    logger.info("Clicked Save, waiting for popup...")
     handle_data_sent_popup(app)
-    logger.info("Row filled, saved, and popup confirmed successfully.")
+    logger.info("Row saved & popup confirmed.")
     return start_time
