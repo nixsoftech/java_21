@@ -7,66 +7,97 @@ def handle_peak_margin(app, main_win):
     safe_click(peak_margin_win, title="Add", control_type="Button")
     time.sleep(1)
 
-    # Capture all tables/list views
+    # --- Capture all tables/lists ---
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
         raise RuntimeError("No tables/list views found in Peak Margin window after clicking Add")
 
     logger.info(f"Found {len(tables)} table/list controls inside Peak Margin window")
-
-    # Pick first table/list for editing
     grid = tables[0]
+
     all_data_items = grid.descendants(control_type="DataItem")
     if not all_data_items:
         raise RuntimeError("No data cells found in selected table/list after clicking Add")
 
-    columns_per_row = 8  # SrNo, Start, End, Exec, Flag, Status, Remarks, Edit
+    logger.info(f"Detected {len(all_data_items)} data cells in table/list[0].")
+    columns_per_row = 8
     rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
     last_row_cells = rows[-1]
+    logger.info(f"Selected last row with {len(last_row_cells)} cells.")
 
     now = datetime.now()
     start_time = (datetime.combine(now.date(), datetime.min.time()) +
                   timedelta(hours=17, minutes=random.randint(0, 59))).strftime("%H:%M:%S")
     end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
 
-    logger.info(f"Filling new row with Start={start_time}, End={end_time} (Executable/Flag skipped)")
+    logger.info(f"Filling new row with Start={start_time}, End={end_time}")
 
-    # ---------------- Robust set_cell_value ----------------
+    def wait_for_edit_control(timeout=3):
+        timings.wait_until(
+            timeout,
+            0.2,
+            lambda: any("WindowsForms10.EDIT" in e.class_name for e in find_elements())
+        )
+        elements = [e for e in find_elements() if "WindowsForms10.EDIT" in e.class_name]
+        return elements[0] if elements else None
+
     def set_cell_value(cell, value, max_attempts=3):
-        """Set value in a grid cell using F2 + send_keys (no Edit control needed)."""
         for attempt in range(1, max_attempts + 1):
             try:
-                cell.click_input(double=False)
+                cell.click_input(double=True)
                 logger.info(f"Clicked cell, attempt {attempt} to set value '{value}'")
+                edit_elem = wait_for_edit_control(timeout=3)
+                if edit_elem:
+                    edit = app.window(handle=edit_elem.handle)
+                    edit.set_focus()
+                    time.sleep(0.1)
+                    edit.type_keys("^a{BACKSPACE}", set_foreground=True)
+                    time.sleep(0.1)
+                    edit.type_keys(value, with_spaces=True, set_foreground=True)
+                    time.sleep(0.2)
 
-                # Activate edit mode
-                cell.type_keys("{F2}")
-                time.sleep(0.3)
-
-                # Clear existing content and type new value
-                send_keys("^a{BACKSPACE}", pause=0.05)
-                send_keys(value, pause=0.05)
-                send_keys("{ENTER}", pause=0.05)
-                time.sleep(0.3)
-
-                logger.info(f"Successfully set value '{value}' in cell on attempt {attempt}")
-                return
-
+                    typed_value = edit.window_text().strip()
+                    if typed_value == value:
+                        logger.info(f"Successfully set cell value '{value}' on attempt {attempt}")
+                        send_keys("{TAB}")
+                        time.sleep(0.3)
+                        return
+                    else:
+                        logger.warning(f"Attempt {attempt}: typed '{value}' but read back '{typed_value}', retrying...")
+                else:
+                    logger.warning("No Edit control detected, typing directly into cell.")
+                    cell.type_keys(value, with_spaces=True, set_foreground=True)
+                    send_keys("{TAB}")
+                    time.sleep(0.3)
+                    return
             except Exception as e:
-                logger.warning(f"Attempt {attempt} failed to set value '{value}': {e}")
+                logger.warning(f"Attempt {attempt} failed: {e}")
                 time.sleep(0.5)
 
-        raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
+        raise TimeoutError(f"Failed to set and verify value '{value}' after {max_attempts} attempts")
 
-    # ---------------- Fill Start and End times ----------------
+    # Fill Start/End Time cells
+    set_cell_value(last_row_cells[1], start_time)  # Start Time
+    set_cell_value(last_row_cells[2], end_time)    # End Time
+
+    # --- Save and handle popup ---
+    safe_click(peak_margin_win, title="Save", control_type="Button")
+    logger.info("Clicked Save, waiting for confirmation popup...")
+
     try:
-        set_cell_value(last_row_cells[1], start_time)  # Start Time
-        set_cell_value(last_row_cells[2], end_time)    # End Time
+        popup = app.window(best_match="Risk Management System")
+        popup.wait("visible", timeout=10)
+
+        try:
+            popup_text = popup.child_window(auto_id="65535", control_type="Text").window_text()
+            logger.info(f"Popup message: {popup_text}")
+        except Exception:
+            logger.warning("Popup text control not found, proceeding with OK click.")
+
+        safe_click(popup, auto_id="2", control_type="Button")
+        logger.info("Clicked OK on confirmation popup.")
     except Exception as e:
-        logger.error(f"Row filling failed: {e}")
+        logger.error(f"Failed to handle confirmation popup: {e}")
         raise
 
-    # Save the new row
-    safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(2)
-    logger.info("Row filled (Start & End) and saved successfully.")
+    logger.info("Row filled and confirmed successfully.")
