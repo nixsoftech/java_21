@@ -1,5 +1,7 @@
 import time
 import logging
+import random
+from datetime import datetime, timedelta
 from pywinauto import Application
 from pywinauto.keyboard import send_keys
 from pywinauto.findwindows import ElementNotFoundError
@@ -114,6 +116,16 @@ def set_cell_value(cell, value, max_attempts=3):
     raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
 
 
+def generate_random_time_after_17():
+    """Generate random start time >= 17:00:00, end time = start + 10 mins."""
+    base = datetime.strptime("17:00:00", "%H:%M:%S")
+    rand_minutes = random.randint(0, 59)
+    rand_seconds = random.randint(0, 59)
+    start_dt = base + timedelta(minutes=rand_minutes, seconds=rand_seconds)
+    end_dt = start_dt + timedelta(minutes=10)
+    return start_dt.strftime("%H:%M:%S"), end_dt.strftime("%H:%M:%S")
+
+
 # -------------------- Main Handlers --------------------
 def handle_peak_margin(app, main_win):
     """Add a row in Peak Margin table, save it, return start_time used."""
@@ -139,12 +151,22 @@ def handle_peak_margin(app, main_win):
     logger.info(f"Detected {len(all_cells)} data cells in table/list[0].")
     columns_per_row = 8
     rows = [all_cells[i:i + columns_per_row] for i in range(0, len(all_cells), columns_per_row)]
-    last_row_cells = rows[-1]
+
+    # Dump table for debugging
+    logger.info("=== Peak Margin Table Dump (Before Fill) ===")
+    for idx, row in enumerate(rows):
+        row_texts = [c.window_text().strip() for c in row]
+        logger.info(f"Row {idx:02d} ({len(row)} cells): {row_texts}")
+    logger.info("=== End of Dump ===")
+
+    valid_rows = [r for r in rows if len(r) >= 3]
+    if not valid_rows:
+        raise RuntimeError("No valid rows with >=3 cells found")
+
+    last_row_cells = valid_rows[-1]
     logger.info(f"Selected last row with {len(last_row_cells)} cells.")
 
-    # Generate start & end times dynamically
-    start_time = time.strftime("%H:%M:%S")
-    end_time = time.strftime("%H:%M:%S", time.localtime(time.time() + 600))
+    start_time, end_time = generate_random_time_after_17()
     logger.info(f"Filling new row with Start={start_time}, End={end_time}")
 
     set_cell_value(last_row_cells[1], start_time)
@@ -153,7 +175,6 @@ def handle_peak_margin(app, main_win):
     safe_click(peak_margin_win, title="Save", control_type="Button")
     time.sleep(2)
 
-    # Handle "Data is sent to checker" popup
     handle_popup(app, expected_substring="Data is sent to checker", auto_id_to_click="2", timeout=10)
 
     logger.info("Row filled, saved, and popup confirmed successfully.")
@@ -222,8 +243,10 @@ def run_with_user(user_id, password, search_for=None):
 if __name__ == "__main__":
     try:
         start_time = run_with_user("QA1", "change@1212")
-        safe_click(Application(backend="uia").connect(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*").window(), title="Exit", control_type="MenuItem")
-        handle_popup(Application(backend="uia").connect(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*"), auto_id_to_click="6", timeout=10)
+        safe_click(Application(backend="uia").connect(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*").window(),
+                   title="Exit", control_type="MenuItem")
+        handle_popup(Application(backend="uia").connect(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*"),
+                     auto_id_to_click="6", timeout=10)
 
         # Second run with rash1, searching for row we added
         run_with_user("rash1", "change@1212", search_for=start_time)
