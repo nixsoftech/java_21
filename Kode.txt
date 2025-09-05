@@ -1,5 +1,5 @@
-def handle_popup(app, expected_substring=None, auto_id_to_click="2", timeout=10):
-    """Handle popup window by AutomationId (OK button)."""
+def handle_data_sent_popup(app, expected_substring="Data is sent to checker", auto_id_to_click="2", timeout=10):
+    """Handle 'Data is sent to checker' popup reliably with extra logging & retry."""
     start = time.time()
     while time.time() - start < timeout:
         try:
@@ -9,18 +9,25 @@ def handle_popup(app, expected_substring=None, auto_id_to_click="2", timeout=10)
                 popup_texts = popup.descendants(control_type="Text")
                 for t in popup_texts:
                     txt = t.window_text().strip()
-                    if not expected_substring or expected_substring.lower() in txt.lower():
+                    if txt and expected_substring.lower() in txt.lower():
                         logger.info(f"Popup detected: '{txt}'")
+
+                        # Log all buttons for debugging
+                        buttons = popup.descendants(control_type="Button")
+                        logger.debug(f"Popup buttons found: {[ (b.window_text(), b.element_info.automation_id) for b in buttons ]}")
+
                         try:
                             ok_btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                            ok_btn.wait("enabled", timeout=3)
                             ok_btn.click_input()
                             logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
                             return True
                         except Exception as e:
-                            logger.error(f"Failed to click popup button: {e}")
+                            logger.error(f"Failed to click OK in popup: {e}")
                             return False
         except ElementNotFoundError:
             pass
-        time.sleep(1)
-    logger.warning("No popup appeared within timeout.")
+        time.sleep(0.5)
+
+    logger.warning(f"No '{expected_substring}' popup appeared within {timeout}s.")
     return False
