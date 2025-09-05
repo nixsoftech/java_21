@@ -1,37 +1,25 @@
 python test-case_pywinauto6.py
-2025-09-05 15:55:05 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-05 15:55:07 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-05 15:55:12 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-05 15:55:15 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-05 15:55:18 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-05 15:55:19 [INFO] Popup detected: 'Do you want to login to test/mock environment ?'
-2025-09-05 15:55:21 [INFO] Clicked popup button with AutomationId=6
-2025-09-05 15:55:26 [INFO] Main RMS window is loaded for QA1.
-2025-09-05 15:55:36 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-05 15:55:37 [INFO] Successfully opened Peak Margin window.
-2025-09-05 15:55:47 [INFO] Existing row count before Add = 9
-2025-09-05 15:55:52 [INFO] Clicked Add (attempt 1)
-2025-09-05 15:55:52 [INFO] Clicked Add, waiting for new row to appear...
-2025-09-05 15:55:53 [INFO] New row appeared after 1 check(s) → total rows = 11
-2025-09-05 15:55:53 [INFO] === Peak Margin Table Dump AFTER Add ===
-2025-09-05 15:55:53 [INFO] Row 00 (8 cells): ['Sr. No Row 0', 'Start Time Row 0', 'End Time Row 0', 'Executable Time Row 0', 'Flag Row 0', 'Status Row 0', 'Maker Remarks Row 0', 'Checker Remarks Row 0']
-2025-09-05 15:55:53 [INFO] Row 01 (8 cells): ['Edit Row 0', 'Sr. No Row 1', 'Start Time Row 1', 'End Time Row 1', 'Executable Time Row 1', 'Flag Row 1', 'Status Row 1', 'Maker Remarks Row 1']
-2025-09-05 15:55:53 [INFO] Row 02 (8 cells): ['Checker Remarks Row 1', 'Edit Row 1', 'Sr. No Row 2', 'Start Time Row 2', 'End Time Row 2', 'Executable Time Row 2', 'Flag Row 2', 'Status Row 2']
-2025-09-05 15:55:54 [INFO] Row 03 (8 cells): ['Maker Remarks Row 2', 'Checker Remarks Row 2', 'Edit Row 2', 'Sr. No Row 3', 'Start Time Row 3', 'End Time Row 3', 'Executable Time Row 3', 'Flag Row 3']
-2025-09-05 15:55:54 [INFO] Row 04 (8 cells): ['Status Row 3', 'Maker Remarks Row 3', 'Checker Remarks Row 3', 'Edit Row 3', 'Sr. No Row 4', 'Start Time Row 4', 'End Time Row 4', 'Executable Time Row 4']
-2025-09-05 15:55:54 [INFO] Row 05 (8 cells): ['Flag Row 4', 'Status Row 4', 'Maker Remarks Row 4', 'Checker Remarks Row 4', 'Edit Row 4', 'Sr. No Row 5', 'Start Time Row 5', 'End Time Row 5']
-2025-09-05 15:55:54 [INFO] Row 06 (8 cells): ['Executable Time Row 5', 'Flag Row 5', 'Status Row 5', 'Maker Remarks Row 5', 'Checker Remarks Row 5', 'Edit Row 5', 'Sr. No Row 6', 'Start Time Row 6']
-2025-09-05 15:55:54 [INFO] Row 07 (8 cells): ['End Time Row 6', 'Executable Time Row 6', 'Flag Row 6', 'Status Row 6', 'Maker Remarks Row 6', 'Checker Remarks Row 6', 'Edit Row 6', 'Sr. No Row 7']
-2025-09-05 15:55:54 [INFO] Row 08 (8 cells): ['Start Time Row 7', 'End Time Row 7', 'Executable Time Row 7', 'Flag Row 7', 'Status Row 7', 'Maker Remarks Row 7', 'Checker Remarks Row 7', 'Edit Row 7']
-2025-09-05 15:55:54 [INFO] Row 09 (8 cells): ['Sr. No Row 8', 'Start Time Row 8', 'End Time Row 8', 'Executable Time Row 8', 'Flag Row 8', 'Status Row 8', 'Maker Remarks Row 8', 'Checker Remarks Row 8']
-2025-09-05 15:55:54 [INFO] Row 10 (1 cells): ['Edit Row 8']
-2025-09-05 15:55:54 [INFO] === End of Dump ===
-2025-09-05 15:55:54 [ERROR] Automation failed: Could not find an empty row to fill after Add
+2025-09-05 16:04:15 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-05 16:04:17 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-05 16:04:21 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-05 16:04:25 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-05 16:04:27 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-05 16:04:28 [INFO] Popup detected: 'Do you want to login to test/mock environment ?'
+2025-09-05 16:04:31 [INFO] Clicked popup button with AutomationId=6
+2025-09-05 16:04:35 [INFO] Main RMS window is loaded for QA1.
+2025-09-05 16:04:45 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-05 16:04:46 [INFO] Successfully opened Peak Margin window.
+2025-09-05 16:04:55 [INFO] Existing cell count before Add = 72
+2025-09-05 16:05:00 [INFO] Clicked Add (attempt 1)
+2025-09-05 16:05:00 [INFO] Clicked Add, waiting for new row...
+2025-09-05 16:05:01 [INFO] New cell count = 81 (was 72)
+2025-09-05 16:05:02 [INFO] New row Edit cell index = 80
+2025-09-05 16:05:17 [ERROR] Automation failed: Start/End cells did not load after Add
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 251, in <module>
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 255, in <module>
     start_time = run_with_user("QA1", "change@1212")
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 246, in run_with_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 250, in run_with_user
     return handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 199, in handle_peak_margin
-    raise RuntimeError("Could not find an empty row to fill after Add")
-RuntimeError: Could not find an empty row to fill after Add
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 187, in handle_peak_margin
+    raise RuntimeError("Start/End cells did not load after Add")
+RuntimeError: Start/End cells did not load after Add
