@@ -1,30 +1,26 @@
 def handle_popup(app, expected_substring=None, auto_id_to_click="2", timeout=10):
-    """
-    Handle popup window reliably by AutomationId (OK button).
-    Works even if popup is a child window, not top-level.
-    """
+    """Handle popup window by AutomationId (OK button)."""
     start = time.time()
     while time.time() - start < timeout:
         try:
-            popup_candidates = app.windows(title_re=".*Risk Management System.*")
-            for popup in popup_candidates:
-                try:
-                    popup.wait("visible", timeout=1)
-                    texts = popup.descendants(control_type="Text")
-                    for t in texts:
-                        txt = t.window_text().strip()
-                        if txt and (not expected_substring or expected_substring.lower() in txt.lower()):
-                            logger.info(f"Popup detected: '{txt}' in window '{popup.window_text()}'")
+            popup = app.window(title_re=".*Risk Management System.*")
+            if popup.exists():
+                popup.wait("visible", timeout=3)
+                popup_texts = popup.descendants(control_type="Text")
+                for t in popup_texts:
+                    txt = t.window_text().strip()
+                    if not expected_substring or expected_substring.lower() in txt.lower():
+                        logger.info(f"Popup detected: '{txt}'")
+                        try:
                             ok_btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
-                            ok_btn.wait("enabled", timeout=2)
                             ok_btn.click_input()
-                            logger.info(f"Clicked OK (AutomationId={auto_id_to_click})")
+                            logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
                             return True
-                except Exception:
-                    continue
+                        except Exception as e:
+                            logger.error(f"Failed to click popup button: {e}")
+                            return False
         except ElementNotFoundError:
             pass
-        time.sleep(0.5)
-
-    logger.warning(f"No popup with text '{expected_substring}' found within {timeout}s.")
+        time.sleep(1)
+    logger.warning("No popup appeared within timeout.")
     return False
