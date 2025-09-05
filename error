@@ -1,28 +1,60 @@
 python test-case_pywinauto8.py
-2025-09-05 17:35:34,803 [INFO] Starting RMS for user: QA1
-2025-09-05 17:35:39,038 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-05 17:35:40,632 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-05 17:35:44,273 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-05 17:35:47,243 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-05 17:35:49,322 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-05 17:35:49,978 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-05 17:35:49,978 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-05 17:35:51,635 [INFO] Clicked popup button with AutomationId=6
-2025-09-05 17:36:22,179 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-05 17:36:43,043 [WARNING] No post-login popups appeared within timeout.
-2025-09-05 17:36:43,043 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-05 17:36:44,387 [INFO] Successfully opened Peak Margin window.
-2025-09-05 17:36:44,387 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-05 17:36:47,215 [INFO] Peak Margin panel detected. Clicking Add...
-2025-09-05 17:36:51,092 [INFO] Clicked Add (attempt 1)
-2025-09-05 17:36:56,889 [INFO] Selected last row with 8 cells.
-2025-09-05 17:36:56,889 [INFO] Filling new row with Start=17:48:00, End=17:58:00
-2025-09-05 17:36:56,889 [ERROR] Automation failed: name 'set_cell_value' is not defined
+2025-09-05 17:40:57,109 [INFO] Starting RMS for user: QA1
+2025-09-05 17:41:01,078 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-05 17:41:02,656 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-05 17:41:06,219 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-05 17:41:09,236 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-05 17:41:11,284 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-05 17:41:11,940 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-05 17:41:11,940 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-05 17:41:13,596 [INFO] Clicked popup button with AutomationId=6
+2025-09-05 17:41:33,632 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-05 17:41:54,445 [WARNING] No post-login popups appeared within timeout.
+2025-09-05 17:41:54,445 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-05 17:41:55,757 [INFO] Successfully opened Peak Margin window.
+2025-09-05 17:41:55,773 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-05 17:41:58,570 [INFO] Peak Margin panel detected. Clicking Add...
+2025-09-05 17:42:02,507 [INFO] Clicked Add (attempt 1)
+2025-09-05 17:42:08,257 [INFO] Selected last row with 8 cells.
+2025-09-05 17:42:08,273 [INFO] Filling new row with Start=17:13:00, End=17:23:00
+2025-09-05 17:42:15,705 [INFO] Clicked Save (attempt 1)
+2025-09-05 17:42:21,726 [INFO] Clicked 2 (attempt 1)
+2025-09-05 17:42:25,632 [INFO] Clicked Exit (attempt 1)
+2025-09-05 17:42:27,023 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-05 17:42:29,945 [INFO] Clicked popup button with AutomationId=6
+2025-09-05 17:42:29,945 [INFO] Workflow completed for user: QA1
+2025-09-05 17:42:29,945 [INFO] Closing existing RMS FE.exe process before relaunch...
+2025-09-05 17:42:30,054 [INFO] Starting RMS for user: rash1
+2025-09-05 17:42:33,414 [INFO] Typed 'rash1' into txt_UserId (attempt 1)
+2025-09-05 17:42:35,039 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-05 17:42:38,101 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-05 17:42:41,117 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-05 17:42:43,164 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-05 17:42:43,852 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-05 17:42:43,852 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-05 17:42:45,461 [INFO] Clicked popup button with AutomationId=6
+2025-09-05 17:43:03,461 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-05 17:43:24,233 [WARNING] No post-login popups appeared within timeout.
+2025-09-05 17:43:24,233 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-05 17:43:25,561 [INFO] Successfully opened Peak Margin window.
+2025-09-05 17:43:25,561 [INFO] Looking for Peak Margin panel for rash1 to reject start_time=17:13:00...
+2025-09-05 17:43:32,469 [INFO] Found 8 rows, scanning for start_time...
+2025-09-05 17:43:32,500 [INFO] Target start_time not found yet; retrying...
+2025-09-05 17:43:37,281 [INFO] Found 8 rows, scanning for start_time...
+2025-09-05 17:43:37,312 [INFO] Target start_time not found yet; retrying...
+2025-09-05 17:43:42,078 [INFO] Found 8 rows, scanning for start_time...
+2025-09-05 17:43:42,109 [INFO] Target start_time not found yet; retrying...
+2025-09-05 17:43:47,016 [INFO] Found 8 rows, scanning for start_time...
+2025-09-05 17:43:47,031 [INFO] Target start_time not found yet; retrying...
+2025-09-05 17:43:51,828 [INFO] Found 8 rows, scanning for start_time...
+2025-09-05 17:43:51,859 [INFO] Target start_time not found yet; retrying...
+2025-09-05 17:43:52,860 [ERROR] No row found with Start Time = 17:13:00 within 20s
+2025-09-05 17:43:52,860 [ERROR] Automation failed: No row found with Start Time = 17:13:00 within 20s
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 344, in main
-    start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 325, in run_workflow_for_user
-    start_time = handle_peak_margin_add(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 166, in handle_peak_margin_add
-    set_cell_value(last_row_cells[1], start_time)
-NameError: name 'set_cell_value' is not defined
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 365, in main
+    run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 348, in run_workflow_for_user
+    handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 292, in handle_peak_margin_reject_for_rash1
+    raise RuntimeError(msg)
+RuntimeError: No row found with Start Time = 17:13:00 within 20s
