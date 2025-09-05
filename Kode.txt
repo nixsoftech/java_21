@@ -1,3 +1,184 @@
+import time
+import os
+import random
+import logging
+import psutil
+from datetime import datetime, timedelta
+from pywinauto.application import Application
+from pywinauto.keyboard import send_keys
+from pywinauto.timings import TimeoutError
+from pywinauto import timings
+from pywinauto.findwindows import find_elements
+
+# ---------------- Logging Setup ----------------
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+log_dir = os.path.join(os.getcwd(), "logs")
+os.makedirs(log_dir, exist_ok=True)
+
+timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# ---------------- Helper Functions ----------------
+def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
+            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
+
+
+def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).select(value)
+            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
+
+
+def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, title=title, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).click_input()
+            time.sleep(0.5)
+            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+
+
+def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
+    try:
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=timeout)
+        popup_text = popup.window_text().strip()
+        logger.info(f"Popup detected: '{popup_text}'")
+
+        if expected_substring and expected_substring.lower() not in popup_text.lower():
+            logger.warning(f"Popup text mismatch. Expected '{expected_substring}' but got '{popup_text}'")
+
+        if auto_id_to_click:
+            try:
+                btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                btn.wait("enabled", timeout=5).click_input()
+                logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
+            except Exception as e:
+                logger.error(f"Failed to click popup button with AutomationId={auto_id_to_click}: {e}")
+        return True
+
+    except TimeoutError:
+        logger.info(f"No popup appeared within {timeout}s.")
+        return False
+
+
+def handle_post_login_popups(app, main_win, timeout=20):
+    try:
+        logger.info("Waiting for 'BMS OpmsEngine Got abandoned' popup...")
+        popup1 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup1.wait("visible", timeout=timeout)
+        safe_click(popup1, auto_id="2", control_type="Button")
+        logger.info("[Popup1] Clicked OK")
+
+        time.sleep(2)
+        logger.info("Waiting for 'Do you want to close RMS' popup...")
+        popup2 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup2.wait("visible", timeout=timeout)
+        safe_click(popup2, auto_id="7", control_type="Button")
+        logger.info("[Popup2] Clicked NO")
+
+    except TimeoutError:
+        logger.warning("No post-login popups appeared within timeout.")
+
+
+def click_rms_configuration_and_peak_margin(main_win):
+    try:
+        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin window.")
+    except Exception:
+        logger.warning("menu_select failed, using fallback clicks...")
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(1)
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+
+
+# ------------------- Peak Margin for QA1 (Add row) -------------------
+
+def handle_peak_margin_add(app, main_win):
+    logger.info("Looking for Peak Margin panel inside main window...")
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
+
+    logger.info("Peak Margin panel detected. Clicking Add...")
+    safe_click(peak_margin_win, title="Add", control_type="Button")
+    time.sleep(2)  # ✅ give enough time for row to appear
+
+    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+    if not tables:
+        raise RuntimeError("No tables/list views found in Peak Margin window after clicking Add")
+
+    grid = tables[0]
+
+    # Keep trying until we get a full row (8 cells)
+    for attempt in range(5):
+        all_data_items = grid.descendants(control_type="DataItem")
+        if len(all_data_items) >= 8:  # ✅ wait until full row is available
+            break
+        logger.warning(f"Attempt {attempt+1}: Only {len(all_data_items)} cells found, retrying...")
+        time.sleep(1)
+
+    if len(all_data_items) < 8:
+        raise RuntimeError(f"Still not enough cells after Add: found {len(all_data_items)}")
+
+    columns_per_row = 8
+    rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+    last_row_cells = rows[-1]
+    logger.info(f"Selected last row with {len(last_row_cells)} cells.")
+
+    now = datetime.now()
+    start_time = (datetime.combine(now.date(), datetime.min.time()) +
+                  timedelta(hours=17, minutes=random.randint(0, 59))).strftime("%H:%M:%S")
+    end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
+    logger.info(f"Filling new row with Start={start_time}, End={end_time}")
+
+    set_cell_value(last_row_cells[1], start_time)
+    set_cell_value(last_row_cells[2], end_time)
+
+    safe_click(peak_margin_win, title="Save", control_type="Button")
+    time.sleep(2)
+
+    try:
+        popup = app.window(best_match="Risk Management System")
+        popup.wait("visible", timeout=10)
+        safe_click(popup, auto_id="2", control_type="Button")
+    except Exception as e:
+        logger.error(f"Failed to handle confirmation popup: {e}")
+        raise
+
+    return start_time
+
 def set_cell_value(cell, value, max_attempts=3):
     """Safely sets a value in a grid cell with retries."""
     from pywinauto.keyboard import send_keys
@@ -15,3 +196,178 @@ def set_cell_value(cell, value, max_attempts=3):
             logger.warning(f"Attempt {attempt} failed to set value '{value}': {e}")
             time.sleep(0.5)
     raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
+
+# ------------------- Peak Margin for rash1 (Find & Reject) -------------------
+def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
+    """Find row with target_start_time, click Edit checkbox, set Status to REJECT, Save."""
+    logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={target_start_time}...")
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
+
+    end_time = time.time() + max_wait_seconds
+    found = False
+    last_exception = None
+
+    while time.time() < end_time:
+        try:
+            tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+            if not tables:
+                logger.warning("No table/list found in Peak Margin (retrying)...")
+                time.sleep(poll_interval)
+                continue
+            grid = tables[0]
+            all_data_items = grid.descendants(control_type="DataItem")
+            if not all_data_items:
+                logger.warning("No data items in grid (retrying)...")
+                time.sleep(poll_interval)
+                continue
+
+            columns_per_row = 9  # matches your cell dump
+            rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+            logger.info(f"Found {len(rows)} rows, scanning for start_time...")
+
+            for r_idx, row in enumerate(rows):
+                try:
+                    start_cell_text = row[1].window_text().strip()
+                    logger.debug(f"Row {r_idx} Start cell text: '{start_cell_text}'")
+                    if target_start_time == start_cell_text or target_start_time in start_cell_text:
+                        logger.info(f"Matched row {r_idx} with Start Time '{start_cell_text}'")
+                        # Click Edit checkbox (last column)
+                        try:
+                            row[8].click_input()
+                            logger.info("Clicked Edit checkbox.")
+                        except Exception as e:
+                            logger.warning(f"Failed to click Edit checkbox directly: {e}; trying a focused click.")
+                            row[8].set_focus()
+                            row[8].click_input()
+
+                        time.sleep(0.5)
+
+                        # Open status dropdown and select REJECT
+                        status_cell = row[5]
+                        # Try keyboard approach to open dropdown and choose REJECT
+                        try:
+                            status_cell.click_input()
+                            time.sleep(0.2)
+                            status_cell.type_keys("{F2}")
+                        except Exception:
+                            status_cell.click_input()
+
+                        time.sleep(0.3)
+                        # We assume pressing DOWN moves to the desired option (as discussed earlier).
+                        # If REJECT is the second option, one DOWN may select it; adjust if needed.
+                        send_keys("{DOWN}", pause=0.05)
+                        send_keys("{ENTER}", pause=0.05)
+                        logger.info("Selected REJECT in status dropdown (keyboard navigation).")
+
+                        # Save and handle popup
+                        safe_click(peak_margin_win, title="Save", control_type="Button")
+                        time.sleep(1.5)
+                        try:
+                            popup = app.window(best_match="Risk Management System")
+                            popup.wait("visible", timeout=8)
+                            safe_click(popup, auto_id="2", control_type="Button")
+                            logger.info("Clicked OK on confirmation popup after saving reject.")
+                        except Exception:
+                            logger.warning("No confirmation popup after save or failed to handle it.")
+
+                        found = True
+                        return  # done
+                except Exception as e:
+                    last_exception = e
+                    logger.debug(f"Row {r_idx} processing failed: {e}")
+            # if not found, wait and retry
+            logger.info("Target start_time not found yet; retrying...")
+            time.sleep(poll_interval)
+        except Exception as e:
+            last_exception = e
+            logger.warning(f"Exception while scanning grid: {e}; retrying...")
+            time.sleep(poll_interval)
+
+    # If we exit loop without finding row
+    msg = f"No row found with Start Time = {target_start_time} within {max_wait_seconds}s"
+    logger.error(msg)
+    if last_exception:
+        logger.debug(f"Last exception: {last_exception}")
+    raise RuntimeError(msg)
+
+
+# ------------------- Login (unchanged) -------------------
+def login_user(app, username, password, environment="UAT"):
+    dlg = app.window(title_re=".*Risk Management System - Login")
+    dlg.wait("visible", timeout=30)
+
+    safe_type(dlg, "txt_UserId", "Edit", username)
+    safe_type(dlg, "txt_Password", "Edit", password)
+    safe_select(dlg, "cmb_Envionrnment", "ComboBox", environment)
+    safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
+    safe_click(dlg, auto_id="btn_Submit", control_type="Button")
+
+    handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
+
+    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+    main_win.wait("visible", timeout=40)
+    time.sleep(15)
+    handle_post_login_popups(app, main_win)
+    return main_win
+
+
+def close_rms_if_running():
+    """Ensure RMS is closed before relaunching"""
+    for proc in psutil.process_iter(['name']):
+        try:
+            if proc.info['name'] and "RMS FE.exe" in proc.info['name']:
+                logger.info("Closing existing RMS FE.exe process before relaunch...")
+                proc.terminate()
+                try:
+                    proc.wait(timeout=10)
+                except psutil.TimeoutExpired:
+                    proc.kill()
+        except Exception:
+            # ignore any process access errors
+            pass
+
+
+# ------------------- Runner -------------------
+def run_workflow_for_user(username, password, is_rash1=False, start_time_value=None):
+    close_rms_if_running()
+    logger.info(f"Starting RMS for user: {username}")
+    app = Application(backend="uia").start(
+        r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+    )
+    main_win = login_user(app, username, password)
+    click_rms_configuration_and_peak_margin(main_win)
+
+    if not is_rash1:
+        # QA1: add row and return start_time
+        start_time = handle_peak_margin_add(app, main_win)
+    else:
+        # rash1: find and reject; use provided start_time_value
+        if not start_time_value:
+            raise ValueError("start_time_value is required for rash1 run")
+        handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
+        start_time = None
+
+    # Exit app
+    safe_click(main_win, title="Exit", control_type="MenuItem")
+    handle_popup(app, auto_id_to_click="6", timeout=10)
+    logger.info(f"Workflow completed for user: {username}")
+    return start_time
+
+
+# ------------------- Main -------------------
+def main():
+    try:
+        # 1) QA1 run - capture start_time in variable
+        start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False)
+
+        # 2) rash1 run - use in-memory start_time_value, do NOT click Add
+        run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
+
+        logger.info("Automation script completed successfully for both users.")
+    except Exception as e:
+        logger.exception(f"Automation failed: {e}")
+
+
+if __name__ == "__main__":
+    main()
