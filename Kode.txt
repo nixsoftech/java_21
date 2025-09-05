@@ -1,33 +1,21 @@
-def handle_data_sent_popup(app, expected_substring="Data is sent to checker", auto_id_to_click="2", timeout=10):
-    """Handle 'Data is sent to checker' popup reliably with extra logging & retry."""
-    start = time.time()
-    while time.time() - start < timeout:
+safe_click(peak_margin_win, title="Save", control_type="Button")
+    time.sleep(2)
+    logger.info("Clicked Save, waiting for confirmation popup...")
+
+    try:
+        popup = app.window(best_match="Risk Management System")
+        popup.wait("visible", timeout=10)
+
         try:
-            popup = app.window(title_re=".*Risk Management System.*")
-            if popup.exists():
-                popup.wait("visible", timeout=3)
-                popup_texts = popup.descendants(control_type="Text")
-                for t in popup_texts:
-                    txt = t.window_text().strip()
-                    if txt and expected_substring.lower() in txt.lower():
-                        logger.info(f"Popup detected: '{txt}'")
+            popup_text = popup.child_window(auto_id="65535", control_type="Text").window_text()
+            logger.info(f"Popup message: {popup_text}")
+        except Exception:
+            logger.warning("Popup text control not found, proceeding with OK click.")
 
-                        # Log all buttons for debugging
-                        buttons = popup.descendants(control_type="Button")
-                        logger.debug(f"Popup buttons found: {[ (b.window_text(), b.element_info.automation_id) for b in buttons ]}")
+        safe_click(popup, auto_id="2", control_type="Button")
+        logger.info("Clicked OK on confirmation popup.")
+    except Exception as e:
+        logger.error(f"Failed to handle confirmation popup: {e}")
+        raise
 
-                        try:
-                            ok_btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
-                            ok_btn.wait("enabled", timeout=3)
-                            ok_btn.click_input()
-                            logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
-                            return True
-                        except Exception as e:
-                            logger.error(f"Failed to click OK in popup: {e}")
-                            return False
-        except ElementNotFoundError:
-            pass
-        time.sleep(0.5)
-
-    logger.warning(f"No '{expected_substring}' popup appeared within {timeout}s.")
-    return False
+    logger.info("Row filled, saved, and popup confirmed successfully.")
