@@ -1,28 +1,28 @@
 python test-case_pywinauto8.py
-2025-09-05 17:29:02,035 [INFO] Starting RMS for user: QA1
-2025-09-05 17:29:06,175 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-05 17:29:07,771 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-05 17:29:11,396 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-05 17:29:14,399 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-05 17:29:16,477 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-05 17:29:17,117 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-05 17:29:17,117 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-05 17:29:18,774 [INFO] Clicked popup button with AutomationId=6
-2025-09-05 17:29:46,955 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-05 17:30:07,772 [WARNING] No post-login popups appeared within timeout.
-2025-09-05 17:30:07,772 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-05 17:30:09,085 [INFO] Successfully opened Peak Margin window.
-2025-09-05 17:30:09,085 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-05 17:30:11,991 [INFO] Peak Margin panel detected. Clicking Add...
-2025-09-05 17:30:15,977 [INFO] Clicked Add (attempt 1)
-2025-09-05 17:30:20,649 [INFO] Selected last row with 1 cells.
-2025-09-05 17:30:20,665 [INFO] Filling new row with Start=17:56:00, End=18:06:00
-2025-09-05 17:30:20,665 [ERROR] Automation failed: list index out of range
+2025-09-05 17:35:34,803 [INFO] Starting RMS for user: QA1
+2025-09-05 17:35:39,038 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-05 17:35:40,632 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-05 17:35:44,273 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-05 17:35:47,243 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-05 17:35:49,322 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-05 17:35:49,978 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-05 17:35:49,978 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-05 17:35:51,635 [INFO] Clicked popup button with AutomationId=6
+2025-09-05 17:36:22,179 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-05 17:36:43,043 [WARNING] No post-login popups appeared within timeout.
+2025-09-05 17:36:43,043 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-05 17:36:44,387 [INFO] Successfully opened Peak Margin window.
+2025-09-05 17:36:44,387 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-05 17:36:47,215 [INFO] Peak Margin panel detected. Clicking Add...
+2025-09-05 17:36:51,092 [INFO] Clicked Add (attempt 1)
+2025-09-05 17:36:56,889 [INFO] Selected last row with 8 cells.
+2025-09-05 17:36:56,889 [INFO] Filling new row with Start=17:48:00, End=17:58:00
+2025-09-05 17:36:56,889 [ERROR] Automation failed: name 'set_cell_value' is not defined
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 364, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 344, in main
     start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 345, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 325, in run_workflow_for_user
     start_time = handle_peak_margin_add(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 177, in handle_peak_margin_add
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 166, in handle_peak_margin_add
     set_cell_value(last_row_cells[1], start_time)
-IndexError: list index out of range
+NameError: name 'set_cell_value' is not defined
