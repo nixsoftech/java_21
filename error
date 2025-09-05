@@ -1,24 +1,46 @@
 Dumping 8 rows from Peak Margin grid:
-2025-09-05 18:13:37,184 [INFO] Row 0: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,184 [INFO] Row 1: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,200 [INFO] Row 2: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,200 [INFO] Row 3: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,200 [INFO] Row 4: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,200 [INFO] Row 5: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,200 [INFO] Row 6: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:37,200 [INFO] Row 7: ["<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>", "<Error:'function' object has no attribute 'get'>"]
-2025-09-05 18:13:41,013 [INFO] Found 8 rows, scanning for start_time...
-2025-09-05 18:13:45,810 [INFO] Found 8 rows, scanning for start_time...
-2025-09-05 18:13:50,765 [INFO] Found 8 rows, scanning for start_time...
-2025-09-05 18:13:55,594 [INFO] Found 8 rows, scanning for start_time...
-2025-09-05 18:14:00,407 [INFO] Found 8 rows, scanning for start_time...
-2025-09-05 18:14:01,407 [ERROR] No row found with Start Time = 17:06:00 within 20s
-2025-09-05 18:14:01,407 [ERROR] Automation failed: No row found with Start Time = 17:06:00 within 20s
+2025-09-05 18:22:00,545 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:00,670 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:00,779 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:00,904 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:01,060 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:13:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:01,263 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:01,373 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:40:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:01,498 [INFO] Row 7: ['8', '17:58:00', '18:08:00', '18:03:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-05 18:22:06,255 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-05 18:22:06,380 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:06,505 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:06,614 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:06,739 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:06,864 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:13:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:06,989 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:07,099 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:40:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:07,224 [INFO] Row 7: ['8', '17:58:00', '18:08:00', '18:03:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,038 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-05 18:22:12,163 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,288 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,397 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,522 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,647 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:13:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,756 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:12,881 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:40:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:13,006 [INFO] Row 7: ['8', '17:58:00', '18:08:00', '18:03:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-05 18:22:17,959 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-05 18:22:18,085 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,209 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,319 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,444 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,553 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:13:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,678 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,803 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:40:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-05 18:22:18,913 [INFO] Row 7: ['8', '17:58:00', '18:08:00', '18:03:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-05 18:22:19,928 [ERROR] No row found with Start Time = 17:58:00 within 20s
+2025-09-05 18:22:19,928 [ERROR] Automation failed: No row found with Start Time = 17:58:00 within 20s
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 350, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 345, in main
     run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 338, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 333, in run_workflow_for_user
     handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 291, in handle_peak_margin_reject_for_rash1
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 284, in handle_peak_margin_reject_for_rash1
     raise RuntimeError(msg)
-RuntimeError: No row found with Start Time = 17:06:00 within 20s
+RuntimeError: No row found with Start Time = 17:58:00 within 20s
