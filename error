@@ -1,110 +1,28 @@
-python test-case_pywinauto6.py
-2025-09-05 16:15:17 [INFO] Starting RMS for user 'QA1'
-2025-09-05 16:15:22 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
-2025-09-05 16:15:24 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-05 16:15:28 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-05 16:15:32 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-05 16:15:34 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-05 16:15:35 [INFO] Popup detected: 'Do you want to login to test/mock environment ?'
-2025-09-05 16:15:38 [INFO] Clicked popup button with AutomationId=6
-2025-09-05 16:15:51 [INFO] Main RMS window loaded for QA1
-2025-09-05 16:15:54 [INFO] Opening Peak Margin...
-2025-09-05 16:15:56 [INFO] Menu select succeeded.
-2025-09-05 16:15:59 [INFO] Peak Margin window visible.
-2025-09-05 16:16:02 [INFO] Cell count before Add = 72
-2025-09-05 16:16:08 [INFO] Clicked Add (attempt 1)
-2025-09-05 16:16:08 [INFO] Clicked Add, waiting for new row to appear...
-2025-09-05 16:16:08 [INFO] New cell count = 81 after 1 checks
-2025-09-05 16:16:09 [INFO] === Flat cell dump AFTER Add (index: text) ===
-2025-09-05 16:16:09 [INFO] Cell 000: 'Sr. No Row 0'
-2025-09-05 16:16:09 [INFO] Cell 001: 'Start Time Row 0'
-2025-09-05 16:16:09 [INFO] Cell 002: 'End Time Row 0'
-2025-09-05 16:16:09 [INFO] Cell 003: 'Executable Time Row 0'
-2025-09-05 16:16:09 [INFO] Cell 004: 'Flag Row 0'
-2025-09-05 16:16:09 [INFO] Cell 005: 'Status Row 0'
-2025-09-05 16:16:09 [INFO] Cell 006: 'Maker Remarks Row 0'
-2025-09-05 16:16:09 [INFO] Cell 007: 'Checker Remarks Row 0'
-2025-09-05 16:16:09 [INFO] Cell 008: 'Edit Row 0'
-2025-09-05 16:16:09 [INFO] Cell 009: 'Sr. No Row 1'
-2025-09-05 16:16:09 [INFO] Cell 010: 'Start Time Row 1'
-2025-09-05 16:16:09 [INFO] Cell 011: 'End Time Row 1'
-2025-09-05 16:16:09 [INFO] Cell 012: 'Executable Time Row 1'
-2025-09-05 16:16:09 [INFO] Cell 013: 'Flag Row 1'
-2025-09-05 16:16:09 [INFO] Cell 014: 'Status Row 1'
-2025-09-05 16:16:09 [INFO] Cell 015: 'Maker Remarks Row 1'
-2025-09-05 16:16:09 [INFO] Cell 016: 'Checker Remarks Row 1'
-2025-09-05 16:16:09 [INFO] Cell 017: 'Edit Row 1'
-2025-09-05 16:16:09 [INFO] Cell 018: 'Sr. No Row 2'
-2025-09-05 16:16:09 [INFO] Cell 019: 'Start Time Row 2'
-2025-09-05 16:16:09 [INFO] Cell 020: 'End Time Row 2'
-2025-09-05 16:16:09 [INFO] Cell 021: 'Executable Time Row 2'
-2025-09-05 16:16:09 [INFO] Cell 022: 'Flag Row 2'
-2025-09-05 16:16:09 [INFO] Cell 023: 'Status Row 2'
-2025-09-05 16:16:09 [INFO] Cell 024: 'Maker Remarks Row 2'
-2025-09-05 16:16:09 [INFO] Cell 025: 'Checker Remarks Row 2'
-2025-09-05 16:16:09 [INFO] Cell 026: 'Edit Row 2'
-2025-09-05 16:16:09 [INFO] Cell 027: 'Sr. No Row 3'
-2025-09-05 16:16:09 [INFO] Cell 028: 'Start Time Row 3'
-2025-09-05 16:16:09 [INFO] Cell 029: 'End Time Row 3'
-2025-09-05 16:16:09 [INFO] Cell 030: 'Executable Time Row 3'
-2025-09-05 16:16:09 [INFO] Cell 031: 'Flag Row 3'
-2025-09-05 16:16:09 [INFO] Cell 032: 'Status Row 3'
-2025-09-05 16:16:09 [INFO] Cell 033: 'Maker Remarks Row 3'
-2025-09-05 16:16:09 [INFO] Cell 034: 'Checker Remarks Row 3'
-2025-09-05 16:16:09 [INFO] Cell 035: 'Edit Row 3'
-2025-09-05 16:16:09 [INFO] Cell 036: 'Sr. No Row 4'
-2025-09-05 16:16:09 [INFO] Cell 037: 'Start Time Row 4'
-2025-09-05 16:16:09 [INFO] Cell 038: 'End Time Row 4'
-2025-09-05 16:16:09 [INFO] Cell 039: 'Executable Time Row 4'
-2025-09-05 16:16:09 [INFO] Cell 040: 'Flag Row 4'
-2025-09-05 16:16:09 [INFO] Cell 041: 'Status Row 4'
-2025-09-05 16:16:09 [INFO] Cell 042: 'Maker Remarks Row 4'
-2025-09-05 16:16:09 [INFO] Cell 043: 'Checker Remarks Row 4'
-2025-09-05 16:16:09 [INFO] Cell 044: 'Edit Row 4'
-2025-09-05 16:16:09 [INFO] Cell 045: 'Sr. No Row 5'
-2025-09-05 16:16:09 [INFO] Cell 046: 'Start Time Row 5'
-2025-09-05 16:16:09 [INFO] Cell 047: 'End Time Row 5'
-2025-09-05 16:16:09 [INFO] Cell 048: 'Executable Time Row 5'
-2025-09-05 16:16:09 [INFO] Cell 049: 'Flag Row 5'
-2025-09-05 16:16:09 [INFO] Cell 050: 'Status Row 5'
-2025-09-05 16:16:09 [INFO] Cell 051: 'Maker Remarks Row 5'
-2025-09-05 16:16:09 [INFO] Cell 052: 'Checker Remarks Row 5'
-2025-09-05 16:16:09 [INFO] Cell 053: 'Edit Row 5'
-2025-09-05 16:16:09 [INFO] Cell 054: 'Sr. No Row 6'
-2025-09-05 16:16:09 [INFO] Cell 055: 'Start Time Row 6'
-2025-09-05 16:16:09 [INFO] Cell 056: 'End Time Row 6'
-2025-09-05 16:16:09 [INFO] Cell 057: 'Executable Time Row 6'
-2025-09-05 16:16:09 [INFO] Cell 058: 'Flag Row 6'
-2025-09-05 16:16:09 [INFO] Cell 059: 'Status Row 6'
-2025-09-05 16:16:09 [INFO] Cell 060: 'Maker Remarks Row 6'
-2025-09-05 16:16:09 [INFO] Cell 061: 'Checker Remarks Row 6'
-2025-09-05 16:16:09 [INFO] Cell 062: 'Edit Row 6'
-2025-09-05 16:16:09 [INFO] Cell 063: 'Sr. No Row 7'
-2025-09-05 16:16:09 [INFO] Cell 064: 'Start Time Row 7'
-2025-09-05 16:16:09 [INFO] Cell 065: 'End Time Row 7'
-2025-09-05 16:16:09 [INFO] Cell 066: 'Executable Time Row 7'
-2025-09-05 16:16:09 [INFO] Cell 067: 'Flag Row 7'
-2025-09-05 16:16:09 [INFO] Cell 068: 'Status Row 7'
-2025-09-05 16:16:09 [INFO] Cell 069: 'Maker Remarks Row 7'
-2025-09-05 16:16:09 [INFO] Cell 070: 'Checker Remarks Row 7'
-2025-09-05 16:16:09 [INFO] Cell 071: 'Edit Row 7'
-2025-09-05 16:16:09 [INFO] Cell 072: 'Sr. No Row 8'
-2025-09-05 16:16:09 [INFO] Cell 073: 'Start Time Row 8'
-2025-09-05 16:16:09 [INFO] Cell 074: 'End Time Row 8'
-2025-09-05 16:16:09 [INFO] Cell 075: 'Executable Time Row 8'
-2025-09-05 16:16:09 [INFO] Cell 076: 'Flag Row 8'
-2025-09-05 16:16:09 [INFO] Cell 077: 'Status Row 8'
-2025-09-05 16:16:09 [INFO] Cell 078: 'Maker Remarks Row 8'
-2025-09-05 16:16:09 [INFO] Cell 079: 'Checker Remarks Row 8'
-2025-09-05 16:16:09 [INFO] Cell 080: 'Edit Row 8'
-2025-09-05 16:16:09 [INFO] === End cell dump ===
-2025-09-05 16:16:10 [INFO] Found last Edit cell at flat index 80 with text 'Edit Row 8'
-2025-09-05 16:16:20 [ERROR] Automation failed: Start/End cells did not load after Add
+python test-case_pywinauto8.py
+2025-09-05 17:29:02,035 [INFO] Starting RMS for user: QA1
+2025-09-05 17:29:06,175 [INFO] Typed 'QA1' into txt_UserId (attempt 1)
+2025-09-05 17:29:07,771 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
+2025-09-05 17:29:11,396 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
+2025-09-05 17:29:14,399 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
+2025-09-05 17:29:16,477 [INFO] Clicked btn_Submit (attempt 1)
+2025-09-05 17:29:17,117 [INFO] Popup detected: 'Risk Management System - Login'
+2025-09-05 17:29:17,117 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
+2025-09-05 17:29:18,774 [INFO] Clicked popup button with AutomationId=6
+2025-09-05 17:29:46,955 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-05 17:30:07,772 [WARNING] No post-login popups appeared within timeout.
+2025-09-05 17:30:07,772 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-05 17:30:09,085 [INFO] Successfully opened Peak Margin window.
+2025-09-05 17:30:09,085 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-05 17:30:11,991 [INFO] Peak Margin panel detected. Clicking Add...
+2025-09-05 17:30:15,977 [INFO] Clicked Add (attempt 1)
+2025-09-05 17:30:20,649 [INFO] Selected last row with 1 cells.
+2025-09-05 17:30:20,665 [INFO] Filling new row with Start=17:56:00, End=18:06:00
+2025-09-05 17:30:20,665 [ERROR] Automation failed: list index out of range
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 400, in <module>
-    start_time = run_with_user("QA1", "change@1212", search_for=None)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 383, in run_with_user
-    result = handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 295, in handle_peak_margin
-    raise RuntimeError("Start/End cells did not load after Add")
-RuntimeError: Start/End cells did not load after Add
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 364, in main
+    start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 345, in run_workflow_for_user
+    start_time = handle_peak_margin_add(app, main_win)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto8.py", line 177, in handle_peak_margin_add
+    set_cell_value(last_row_cells[1], start_time)
+IndexError: list index out of range
