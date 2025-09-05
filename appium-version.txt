@@ -1,23 +1,29 @@
-C:\Users\Test3>pip show selenium
-Name: selenium
-Version: 4.30.0
-Summary: Official Python bindings for Selenium WebDriver
-Home-page: https://www.selenium.dev
-Author:
-Author-email:
-License: Apache 2.0
-Location: c:\users\test3\appdata\roaming\python\python310\site-packages
-Requires: urllib3, certifi, websocket-client, typing_extensions, trio, trio-websocket
-Required-by: Appium-Python-Client
+def dump_peak_margin_grid(peak_margin_win):
+    """
+    Logs all rows and values from the Peak Margin grid.
+    Returns a list of tuples: (row_cells, row_values)
+    """
+    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+    if not tables:
+        logger.warning("No tables/list views found in Peak Margin window for dumping")
+        return []
 
-C:\Users\Test3>pip show Appium-Python-client
-Name: Appium-Python-Client
-Version: 5.1.1
-Summary: Python client for Appium
-Home-page: http://appium.io/
-Author: Isaac Murchie
-Author-email: isaac@saucelabs.com
-License: Apache 2.0
-Location: c:\users\test3\appdata\roaming\python\python310\site-packages
-Requires: selenium
-Required-by:
+    grid = tables[0]
+    all_data_items = grid.descendants(control_type="DataItem")
+    columns_per_row = 9  # adjust as per your grid
+    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+
+    rows = []
+    logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid:")
+    for r_idx, row_cells in enumerate(rows_cells):
+        row_values = []
+        for cell in row_cells:
+            try:
+                val = getattr(cell.legacy_properties, 'get', lambda k, d='': cell.window_text())('Value', '')
+            except Exception:
+                val = cell.window_text()
+            row_values.append(val)
+        logger.info(f"Row {r_idx}: {row_values}")
+        rows.append((row_cells, row_values))
+
+    return rows
