@@ -117,9 +117,38 @@ def click_rms_configuration_and_peak_margin(main_win):
         time.sleep(1)
         safe_click(main_win, title="Peak Margin", control_type="MenuItem")
 
+# ------------------- Grid Dump for Debugging -------------------
+def dump_peak_margin_grid(main_win):
+    """Logs all rows and cell values in Peak Margin grid for debugging."""
+    try:
+        peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+        peak_margin_win.wait("visible", timeout=10)
+        tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+        if not tables:
+            logger.error("No tables/lists found in Peak Margin for dump.")
+            return
+        grid = tables[0]
+        all_data_items = grid.descendants(control_type="DataItem")
+        if not all_data_items:
+            logger.warning("No data items in grid for dump.")
+            return
+        columns_per_row = 9  # adjust if different
+        rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+        logger.info(f"Dumping {len(rows)} rows from Peak Margin grid:")
+        for r_idx, row in enumerate(rows):
+            row_values = []
+            for c_idx, cell in enumerate(row):
+                try:
+                    val = cell.legacy_properties.get("Value", "") if hasattr(cell, "legacy_properties") else cell.window_text()
+                except Exception as e:
+                    val = f"<Error:{e}>"
+                row_values.append(val)
+            logger.info(f"Row {r_idx}: {row_values}")
+    except Exception as e:
+        logger.error(f"Failed to dump Peak Margin grid: {e}")
+
 # ------------------- Peak Margin Add (QA1) -------------------
 def set_cell_value(cell, value, max_attempts=3):
-    """Safely sets a value in a grid cell with retries."""
     for attempt in range(1, max_attempts + 1):
         try:
             cell.click_input(double=False)
@@ -193,8 +222,10 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
 
+    # ----------------- Dump grid for debugging -----------------
+    dump_peak_margin_grid(main_win)
+
     end_time = time.time() + max_wait_seconds
-    found = False
     last_exception = None
 
     while time.time() < end_time:
@@ -209,28 +240,24 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 time.sleep(poll_interval)
                 continue
 
-            columns_per_row = 9  # matches the grid structure
+            columns_per_row = 9
             rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
             logger.info(f"Found {len(rows)} rows, scanning for start_time...")
 
             for r_idx, row in enumerate(rows):
                 try:
                     start_cell_text = row[1].legacy_properties.get('Value', '').strip()
-                    logger.debug(f"Row {r_idx} Start cell value: '{start_cell_text}'")
                     if start_cell_text == target_start_time:
                         logger.info(f"Matched row {r_idx} with Start Time '{start_cell_text}'")
-
                         # Click Edit checkbox (last column)
                         try:
                             row[8].click_input()
-                            logger.info("Clicked Edit checkbox.")
                         except Exception:
                             row[8].set_focus()
                             row[8].click_input()
 
                         time.sleep(0.5)
 
-                        # Open status dropdown and select REJECT
                         status_cell = row[5]
                         try:
                             status_cell.click_input()
@@ -238,23 +265,16 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                             status_cell.type_keys("{F2}")
                         except Exception:
                             status_cell.click_input()
-
                         time.sleep(0.3)
                         send_keys("{DOWN}{ENTER}", pause=0.05)
-                        logger.info("Selected REJECT in status dropdown.")
-
-                        # Save and handle popup
                         safe_click(peak_margin_win, title="Save", control_type="Button")
                         time.sleep(1.5)
                         try:
                             popup = app.window(best_match="Risk Management System")
                             popup.wait("visible", timeout=8)
                             safe_click(popup, auto_id="2", control_type="Button")
-                            logger.info("Clicked OK on confirmation popup.")
                         except Exception:
                             logger.warning("No confirmation popup after save.")
-
-                        found = True
                         return
                 except Exception as e:
                     last_exception = e
@@ -274,13 +294,11 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 def login_user(app, username, password, environment="UAT"):
     dlg = app.window(title_re=".*Risk Management System - Login")
     dlg.wait("visible", timeout=30)
-
     safe_type(dlg, "txt_UserId", "Edit", username)
     safe_type(dlg, "txt_Password", "Edit", password)
     safe_select(dlg, "cmb_Envionrnment", "ComboBox", environment)
     safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
     safe_click(dlg, auto_id="btn_Submit", control_type="Button")
-
     handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
 
     main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
