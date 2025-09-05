@@ -79,10 +79,13 @@ def qa1_add_row(app, main_win):
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
 
+    # ✅ Only QA1 clicks "Add"
     safe_click(peak_margin_win, title="Add", control_type="Button")
     time.sleep(1)
 
     tables = peak_margin_win.descendants(control_type="Table")
+    if not tables:
+        raise RuntimeError("No tables found in Peak Margin window.")
     grid = tables[0]
     cells = grid.descendants(control_type="DataItem")
     columns_per_row = 9
@@ -109,7 +112,7 @@ def qa1_add_row(app, main_win):
     safe_click(peak_margin_win, title="Save", control_type="Button")
     time.sleep(2)
 
-    return start_time_value
+    return start_time_value  # return value in memory (no file)
 
 # ------------------- rash1 Logic -------------------
 def rash1_reject_row(app, main_win, start_time_value):
@@ -133,7 +136,7 @@ def rash1_reject_row(app, main_win, start_time_value):
             status_cell = row[5]
             status_cell.click_input(double=True)
             time.sleep(0.5)
-            send_keys("{DOWN}")  # REJECT option
+            send_keys("{DOWN}")  # Move to REJECT option
             send_keys("{ENTER}")
             logger.info("Selected REJECT from dropdown.")
 
@@ -166,5 +169,5 @@ def login_and_run(user_id, start_time_value=None):
         rash1_reject_row(app, main_win, start_time_value)
 
 if __name__ == "__main__":
-    start_time_value = login_and_run("QA1")
-    login_and_run("rash1", start_time_value)
+    start_time_value = login_and_run("QA1")   # ✅ Adds row
+    login_and_run("rash1", start_time_value)  # ✅ Finds and rejects row
