@@ -1,15 +1,13 @@
 Successfully opened Peak Margin window.
-2025-09-05 14:12:06 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-05 14:12:15 [INFO] Clicked Add (attempt 1)
-2025-09-05 14:12:24 [INFO] Detected 81 data cells in table/list[0].
-2025-09-05 14:12:24 [INFO] Selected last row with 1 cells.
-2025-09-05 14:12:24 [INFO] Filling new row with Start=14:12:24, End=14:22:24
-2025-09-05 14:12:24 [ERROR] Automation failed: list index out of range
+2025-09-05 15:11:53 [INFO] Clicked Add (attempt 1)
+2025-09-05 15:12:02 [INFO] Detected 81 data cells in table/list[0].
+2025-09-05 15:12:03 [INFO] Filling new row with Start=17:41:00, End=17:51:00
+2025-09-05 15:12:03 [ERROR] Automation failed: list index out of range
 Traceback (most recent call last):
   File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 224, in <module>
     start_time = run_with_user("QA1", "change@1212")
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 215, in run_with_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 219, in run_with_user
     return handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 150, in handle_peak_margin
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 185, in handle_peak_margin
     set_cell_value(last_row_cells[1], start_time)
 IndexError: list index out of range
