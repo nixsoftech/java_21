@@ -1,258 +1,254 @@
 import time
-import logging
+import os
 import random
+import logging
 from datetime import datetime, timedelta
 from pywinauto import Application
 from pywinauto.keyboard import send_keys
 from pywinauto.findwindows import ElementNotFoundError
 
-# -------------------- Setup --------------------
+# ---------------- Logging Setup ----------------
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+log_dir = os.path.join(os.getcwd(), "logs")
+os.makedirs(log_dir, exist_ok=True)
+
+timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger("RMS_Automation")
 
 # -------------------- Helpers --------------------
-def safe_click(win, title=None, auto_id=None, control_type="Button", timeout=10):
+def safe_click(win, title=None, auto_id=None, control_type="Button", retries=8, delay=1):
     """Click a control by title or automation id (retries until enabled)."""
-    for attempt in range(timeout):
+    for attempt in range(1, retries + 1):
         try:
-            if title:
+            if title is not None:
                 ctrl = win.child_window(title=title, control_type=control_type)
-            elif auto_id:
+            elif auto_id is not None:
                 ctrl = win.child_window(auto_id=auto_id, control_type=control_type)
             else:
                 raise ValueError("Either title or auto_id must be provided")
             ctrl.wait("enabled", timeout=2)
             ctrl.click_input()
-            logger.info(f"Clicked {title or auto_id} (attempt {attempt+1})")
+            time.sleep(0.3)
+            logger.info(f"Clicked {title or auto_id} (attempt {attempt})")
             return True
         except Exception as e:
-            logger.debug(f"Waiting for control '{title or auto_id}': {e}")
-            time.sleep(1)
-    raise TimeoutError(f"Failed to click control '{title or auto_id}' after {timeout}s")
+            logger.debug(f"Waiting for control '{title or auto_id}' (attempt {attempt}): {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to click control '{title or auto_id}' after {retries} attempts")
 
-
-def safe_type(win, auto_id, control_type, value, max_attempts=3):
+def safe_type(win, auto_id, control_type, value, max_attempts=4):
     """Type text into an Edit control safely."""
-    for attempt in range(max_attempts):
+    for attempt in range(1, max_attempts + 1):
         try:
             ctrl = win.child_window(auto_id=auto_id, control_type=control_type)
             ctrl.wait("visible", timeout=5)
             ctrl.set_edit_text(value)
-            logger.info(f"Typed '{value}' into {auto_id} (attempt {attempt+1})")
+            logger.info(f"Typed '{value}' into {auto_id} (attempt {attempt})")
             return True
         except Exception as e:
-            logger.warning(f"Failed to type into {auto_id} on attempt {attempt+1}: {e}")
+            logger.warning(f"Failed to type into {auto_id} on attempt {attempt}: {e}")
             time.sleep(1)
     raise TimeoutError(f"Failed to type into {auto_id}")
 
-
-def safe_select(win, auto_id, control_type, item_text, max_attempts=3):
+def safe_select(win, auto_id, control_type, item_text, max_attempts=4):
     """Select an item from a ComboBox safely."""
-    for attempt in range(max_attempts):
+    for attempt in range(1, max_attempts + 1):
         try:
             combo = win.child_window(auto_id=auto_id, control_type=control_type)
             combo.wait("enabled", timeout=5)
             combo.select(item_text)
-            logger.info(f"Selected '{item_text}' in {auto_id} (attempt {attempt+1})")
+            logger.info(f"Selected '{item_text}' in {auto_id} (attempt {attempt})")
             return True
         except Exception as e:
-            logger.warning(f"Failed to select '{item_text}' on attempt {attempt+1}: {e}")
+            logger.warning(f"Failed to select '{item_text}' on attempt {attempt}: {e}")
             time.sleep(1)
     raise TimeoutError(f"Failed to select '{item_text}' from {auto_id}")
 
-
-def handle_popup(app, expected_substring=None, auto_id_to_click="2", timeout=10):
-    """
-    Generic popup handler by text match & button click.
-    Keeps your working style but waits for button enablement.
-    """
+def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
+    """Generic popup handler by substring match and click a button by AutomationId."""
     start = time.time()
     while time.time() - start < timeout:
         try:
-            popup = app.window(title_re=".*Risk Management System.*")
+            popup = app.window(title_re=".*")
             if popup.exists():
                 popup.wait("visible", timeout=3)
-                popup_texts = popup.descendants(control_type="Text")
-                for t in popup_texts:
-                    txt = t.window_text().strip()
-                    if not expected_substring or expected_substring.lower() in txt.lower():
-                        logger.info(f"Popup detected: '{txt}'")
-                        try:
-                            ok_btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
-                            ok_btn.wait("enabled", timeout=3)
-                            ok_btn.click_input()
-                            logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
-                            return True
-                        except Exception as e:
-                            logger.error(f"Failed to click popup button: {e}")
-                            return False
+                popup_text = popup.window_text().strip()
+                logger.info(f"Popup detected (window_text): '{popup_text}'")
+                # If expected_substring is provided, ensure it appears in some text child
+                if expected_substring:
+                    texts = [t.window_text().strip() for t in popup.descendants(control_type="Text")]
+                    if not any(expected_substring.lower() in (txt or "").lower() for txt in texts):
+                        logger.debug(f"Popup found but expected substring '{expected_substring}' not present yet.")
+                    else:
+                        logger.info(f"Popup contains expected substring '{expected_substring}'")
+                if auto_id_to_click:
+                    try:
+                        btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                        btn.wait("enabled", timeout=3)
+                        btn.click_input()
+                        logger.info(f"Clicked popup button AutomationId={auto_id_to_click}")
+                        return True
+                    except Exception as e:
+                        logger.error(f"Failed to click popup button AutomationId={auto_id_to_click}: {e}")
+                        return False
+                return True
         except ElementNotFoundError:
             pass
-        time.sleep(1)
-    logger.warning("No popup appeared within timeout.")
+        except Exception as e:
+            logger.debug(f"handle_popup scanning: {e}")
+        time.sleep(0.5)
+    logger.warning(f"No popup appeared within {timeout}s (expected='{expected_substring}').")
     return False
 
-
 def handle_data_sent_popup(app):
-    """Special handler (your working snippet) for 'Data is sent to checker' popup."""
+    """Specific handler for 'Data is sent to checker' confirmation popup using your automation ids."""
     try:
         popup = app.window(best_match="Risk Management System")
         popup.wait("visible", timeout=10)
-
         try:
             popup_text = popup.child_window(auto_id="65535", control_type="Text").window_text()
-            logger.info(f"Popup message: {popup_text}")
+            logger.info(f"Confirmation popup text: '{popup_text}'")
         except Exception:
-            logger.warning("Popup text control not found, proceeding with OK click.")
-
+            logger.warning("Popup text control (auto_id=65535) not found; will still try to click OK.")
         safe_click(popup, auto_id="2", control_type="Button")
         logger.info("Clicked OK on confirmation popup.")
         return True
     except Exception as e:
-        logger.error(f"Failed to handle confirmation popup: {e}")
+        logger.error(f"Failed to handle 'Data is sent to checker' popup: {e}")
         return False
 
-
 def set_cell_value(cell, value, max_attempts=3):
-    """Set value in a grid cell using F2 + send_keys (no separate Edit control required)."""
+    """Set value in a grid cell using F2 + send_keys (the old working method)."""
     for attempt in range(1, max_attempts + 1):
         try:
+            # click cell, press F2 to enter edit mode, then type and confirm
             cell.click_input(double=False)
-            logger.info(f"Clicked cell (attempt {attempt}): current='{cell.window_text().strip()}'")
-
-            # Activate edit mode
+            logger.info(f"Clicked cell (attempt {attempt}) - current text: '{cell.window_text().strip()}'")
             cell.type_keys("{F2}")
-            time.sleep(0.2)
-
-            # Clear and type
-            send_keys("^a{BACKSPACE}", pause=0.05)
-            send_keys(value, pause=0.05)
-            send_keys("{ENTER}", pause=0.05)
             time.sleep(0.25)
-
-            logger.info(f"Set cell value to '{value}' (attempt {attempt})")
+            send_keys("^a{BACKSPACE}", pause=0.04)
+            send_keys(value, pause=0.04)
+            send_keys("{ENTER}", pause=0.04)
+            time.sleep(0.25)
+            logger.info(f"Successfully set cell to '{value}' (attempt {attempt})")
             return True
         except Exception as e:
-            logger.warning(f"Attempt {attempt} failed to set value '{value}': {e}")
+            logger.warning(f"Attempt {attempt} to set cell to '{value}' failed: {e}")
             time.sleep(0.5)
     raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
 
-
 def is_valid_time_format(text):
-    """Check if string is HH:MM:SS."""
+    """Return True if text matches HH:MM:SS."""
     try:
         datetime.strptime(text, "%H:%M:%S")
         return True
     except Exception:
         return False
 
-
 def extract_and_log_times(cells):
-    """
-    Extract all HH:MM:SS values from a flat list of cells, log them,
-    and return the latest (max) time as a datetime.time-like (datetime object).
-    """
+    """Extract all HH:MM:SS strings from the flat cell list, log them sorted, return latest datetime or None."""
     times = []
     for c in cells:
-        txt = c.window_text().strip()
+        try:
+            txt = c.window_text().strip()
+        except Exception:
+            txt = ""
         if is_valid_time_format(txt):
             try:
-                t = datetime.strptime(txt, "%H:%M:%S")
-                times.append(t)
+                times.append(datetime.strptime(txt, "%H:%M:%S"))
             except Exception:
-                continue
-
+                pass
     if not times:
-        logger.warning("No valid HH:MM:SS times found in table cells.")
+        logger.info("No existing HH:MM:SS times found in table.")
         return None
-
-    times = sorted(times)
-    logger.info("=== Existing HH:MM:SS times found in table (sorted) ===")
+    times.sort()
+    logger.info("=== Existing times in table (sorted) ===")
     for idx, t in enumerate(times):
-        logger.info(f"Time {idx+1:02d}: {t.time()}")
-    last_end = times[-1]
-    logger.info(f"Latest time detected (used as last_end) = {last_end.time()}")
-    return last_end
-
+        logger.info(f"  {idx+1:02d}: {t.strftime('%H:%M:%S')}")
+    logger.info(f"Latest detected time = {times[-1].strftime('%H:%M:%S')}")
+    return times[-1]
 
 def compute_new_times(last_end):
-    """
-    Compute Start and End strings for the new row.
-    Ensures Start > last_end (if exists) otherwise start at >=17:00:00.
-    End = Start + 10 minutes.
-    Returns (start_str, end_str).
-    """
-    now = datetime.now().replace(microsecond=0)
-    base_start = now.replace(hour=17, minute=0, second=0)
-
+    """Return (start_str, end_str) ensuring start > last_end and start >= 17:00:00 fallback."""
+    today = datetime.now().replace(microsecond=0)
+    base = today.replace(hour=17, minute=0, second=0)
     if last_end:
-        # Bring last_end to today's date for comparison
-        last_end_today = now.replace(hour=last_end.hour, minute=last_end.minute, second=last_end.second)
-        # If last_end is later than 17:00 today, start after it
-        if last_end_today >= base_start:
-            base_start = last_end_today + timedelta(minutes=1)
-    # else base_start remains today at 17:00
-
-    end_dt = base_start + timedelta(minutes=10)
-    start_str = base_start.strftime("%H:%M:%S")
+        last_end_today = today.replace(hour=last_end.hour, minute=last_end.minute, second=last_end.second)
+        if last_end_today >= base:
+            start_dt = last_end_today + timedelta(minutes=1)
+        else:
+            start_dt = base
+    else:
+        # No previous end found -> pick random minute past 17:00 (as earlier behaviour)
+        start_dt = base + timedelta(minutes=random.randint(0, 59))
+    end_dt = start_dt + timedelta(minutes=10)
+    start_str = start_dt.strftime("%H:%M:%S")
     end_str = end_dt.strftime("%H:%M:%S")
-    logger.info(f"Computed new times -> Start: {start_str}, End: {end_str}")
+    logger.info(f"Computed Start: {start_str}, End: {end_str}")
     return start_str, end_str
 
-# -------------------- Peak Margin Handler --------------------
+def click_rms_configuration_and_peak_margin(main_win):
+    """Open Peak Margin using menu_select with fallback clicks (keeps your old logic)."""
+    try:
+        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin via menu_select.")
+    except Exception as e:
+        logger.warning(f"menu_select failed ({e}), using fallback clicks...")
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(0.6)
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+        time.sleep(0.6)
+
+# -------------------- Peak Margin Handler (merged old approach) --------------------
 def handle_peak_margin(app, main_win):
     """
-    Add a new Peak Margin row and fill Start/End times so Start > last End.
+    Add a new Peak Margin row and fill Start/End times using the old working edit approach.
     Returns the Start time string used.
     """
-    logger.info("Opening Peak Margin...")
-    try:
-        main_win.menu_select("RMS Configuration->Peak Margin")
-        logger.info("Menu select succeeded.")
-    except Exception:
-        logger.warning("menu_select failed, attempting to open via menu clicks...")
-        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-        time.sleep(0.5)
-        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-
+    logger.info("Looking for Peak Margin panel inside main window...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=15)
-    logger.info("Peak Margin window visible.")
+    logger.info("Peak Margin panel detected. Clicking Add...")
 
-    # find the primary grid/list
+    safe_click(peak_margin_win, title="Add", control_type="Button")
+    time.sleep(1)
+
+    # --- Find grid / table ---
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
-        raise RuntimeError("No table/list controls found in Peak Margin window")
+        raise RuntimeError("No table/list views found in Peak Margin window after clicking Add")
     grid = tables[0]
 
-    # snapshot cells BEFORE Add
-    cells_before = grid.descendants(control_type="DataItem")
-    before_count = len(cells_before)
-    logger.info(f"Cell count before Add = {before_count}")
+    # Snapshot and wait for new row (increase in flat cell count)
+    all_before = grid.descendants(control_type="DataItem")
+    before_count = len(all_before)
+    logger.info(f"Detected {before_count} data cells before Add (snapshot).")
 
-    # click Add
-    safe_click(peak_margin_win, title="Add", control_type="Button")
-    logger.info("Clicked Add, waiting for new row to appear...")
-
-    # wait until new cell count increases
-    max_wait = 15
-    for i in range(max_wait):
-        cells_after = grid.descendants(control_type="DataItem")
-        if len(cells_after) > before_count:
-            logger.info(f"New cell count = {len(cells_after)} after {i+1} checks")
+    # Wait for new cells to appear after Add
+    max_checks = 15
+    for i in range(max_checks):
+        all_after = grid.descendants(control_type="DataItem")
+        if len(all_after) > before_count:
+            logger.info(f"Detected new cell count = {len(all_after)} after {i+1} checks")
             break
         time.sleep(1)
     else:
-        raise RuntimeError("Timed out waiting for new row to appear after Add")
+        raise RuntimeError("No new row detected after Add (timeout).")
 
-    # full dump (flat cells) - helpful for debugging
-    cells_after = grid.descendants(control_type="DataItem")
+    # Dump flat cells for debugging (helps to trace index -> label)
     logger.info("=== Flat cell dump AFTER Add (index: text) ===")
-    for idx, c in enumerate(cells_after):
+    for idx, c in enumerate(all_after):
         try:
             txt = c.window_text().strip()
         except Exception:
@@ -260,77 +256,54 @@ def handle_peak_margin(app, main_win):
         logger.info(f"Cell {idx:03d}: '{txt}'")
     logger.info("=== End cell dump ===")
 
-    # find last Edit cell (new row marker) if present
-    edit_cells = [c for c in cells_after if "Edit" in (c.window_text() or "")]
-    last_edit_cell = edit_cells[-1] if edit_cells else None
-    if last_edit_cell:
-        last_edit_index = cells_after.index(last_edit_cell)
-        logger.info(f"Found last Edit cell at flat index {last_edit_index} with text '{last_edit_cell.window_text().strip()}'")
-    else:
-        # fallback: assume last 8 cells form a row (best-effort)
-        last_edit_index = len(cells_after) - 8
-        if last_edit_index < 0:
-            last_edit_index = 0
-        logger.info("No explicit Edit cell found; using heuristic last 8 cells as the new row start index %d", last_edit_index)
+    # Group into rows using the old fixed column count (your original working approach)
+    columns_per_row = 8
+    rows = [all_after[i:i + columns_per_row] for i in range(0, len(all_after), columns_per_row)]
+    last_row_cells = rows[-1]
+    logger.info(f"Selected last row index {len(rows)-1} with {len(last_row_cells)} cells.")
 
-    # Wait until Start/End cells materialize after the Edit index
-    start_cell = end_cell = None
-    wait_start = time.time()
-    while time.time() - wait_start < 10:
-        cells_current = grid.descendants(control_type="DataItem")
-        # ensure we have at least two cells after the edit cell index
-        if last_edit_index + 2 < len(cells_current):
-            # pick the two cells immediately after the edit cell (heuristic)
-            start_candidate = cells_current[last_edit_index + 1]
-            end_candidate = cells_current[last_edit_index + 2]
-            logger.debug(f"Start candidate text: '{start_candidate.window_text().strip()}'")
-            logger.debug(f"End candidate text:   '{end_candidate.window_text().strip()}'")
-            # Accept candidates even if text shows placeholders; presence is enough
-            start_cell = start_candidate
-            end_cell = end_candidate
-            break
-        time.sleep(0.5)
+    # If last row seems too small (rare), fallback to last 8 flat cells
+    if len(last_row_cells) < 3:
+        logger.warning("Last row has fewer than 3 cells; falling back to last 8 flat cells.")
+        last_row_cells = all_after[-8:]
 
-    if not start_cell or not end_cell:
-        raise RuntimeError("Start/End cells did not load after Add")
-
-    logger.info(f"Will fill Start cell index {last_edit_index+1} and End cell index {last_edit_index+2}")
-    logger.info(f"Start cell current text: '{start_cell.window_text().strip()}'")
-    logger.info(f"End cell current text:   '{end_cell.window_text().strip()}'")
-
-    # compute last_end by scanning all found cells (flat)
-    last_end = extract_and_log_times(cells_after)
+    # Compute start/end times using existing table times
+    last_end = extract_and_log_times(all_after)
     start_str, end_str = compute_new_times(last_end)
 
-    # fill values
-    set_cell_value(start_cell, start_str)
-    set_cell_value(end_cell, end_str)
+    # Fill Start & End using old F2 method
+    try:
+        logger.info(f"Filling new row Start='{start_str}' End='{end_str}'")
+        set_cell_value(last_row_cells[1], start_str)  # Start Time column (old assumption)
+        set_cell_value(last_row_cells[2], end_str)    # End Time column (old assumption)
+    except Exception as e:
+        logger.error(f"Row filling failed: {e}")
+        raise
 
-    # save and handle confirmation popup
+    # Save & handle confirmation popup
     safe_click(peak_margin_win, title="Save", control_type="Button")
     time.sleep(1)
     logger.info("Clicked Save, waiting for confirmation popup (Data is sent to checker)...")
     if not handle_data_sent_popup(app):
-        # fallback to generic handler (less specific)
+        # fallback generic
         handle_popup(app, expected_substring="Data is sent to checker", auto_id_to_click="2", timeout=8)
 
-    logger.info("Row filled, saved, and popup confirmed successfully.")
+    logger.info("Row filled, saved, and confirmation popup handled successfully.")
     return start_str
-
 
 # -------------------- Search Handler --------------------
 def search_peak_margin_row(app, main_win, target_start_time):
     """Search Peak Margin table for a cell that exactly matches target_start_time."""
     logger.info(f"Searching for Start Time = {target_start_time} in Peak Margin")
-    # ensure Peak Margin is open
     try:
         main_win.menu_select("RMS Configuration->Peak Margin")
     except Exception:
         safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
         time.sleep(0.5)
         safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
+    peak_margin_win.wait("visible", timeout=15)
 
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
@@ -339,7 +312,10 @@ def search_peak_margin_row(app, main_win, target_start_time):
     all_cells = grid.descendants(control_type="DataItem")
     logger.info(f"Scanning {len(all_cells)} flat cells for exact match '{target_start_time}'")
     for idx, c in enumerate(all_cells):
-        txt = c.window_text().strip()
+        try:
+            txt = c.window_text().strip()
+        except Exception:
+            txt = ""
         if txt == target_start_time:
             logger.info(f"Found matching Start Time at cell index {idx} with text '{txt}'")
             try:
@@ -351,10 +327,9 @@ def search_peak_margin_row(app, main_win, target_start_time):
     logger.warning(f"No cell matched Start Time '{target_start_time}'")
     return False
 
-
 # -------------------- Runner --------------------
 def run_with_user(user_id, password, search_for=None):
-    """Start app, login, perform Peak Margin add (or search), then exit."""
+    """Start app, login, open Peak Margin, either add or search, then exit."""
     logger.info(f"Starting RMS for user '{user_id}'")
     app = Application(backend="uia").start(r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe")
     dlg = app.window(title_re=".*Risk Management System - Login")
@@ -367,22 +342,25 @@ def run_with_user(user_id, password, search_for=None):
     safe_click(dlg, auto_id="btn_Submit", control_type="Button")
 
     # handle login confirmation popup
-    handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
+    handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=12)
 
     main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
     main_win.wait("visible", timeout=40)
     logger.info(f"Main RMS window loaded for {user_id}")
 
+    # small settle time
     time.sleep(3)
+
+    # open Peak Margin via menu (keeps fallback)
+    click_rms_configuration_and_peak_margin(main_win)
 
     result = None
     if search_for:
-        # just search and return boolean result
-        search_peak_margin_row(app, main_win, search_for)
+        result = search_peak_margin_row(app, main_win, search_for)
     else:
         result = handle_peak_margin(app, main_win)
 
-    # Exit application
+    # Attempt clean exit
     try:
         safe_click(main_win, title="Exit", control_type="MenuItem")
         # handle exit confirmation if any
@@ -392,17 +370,20 @@ def run_with_user(user_id, password, search_for=None):
 
     return result
 
-
 # -------------------- Main --------------------
 if __name__ == "__main__":
     try:
-        # First run with QA1: add row and get start_time
+        # 1) First run with QA1: add row and get start_time
         start_time = run_with_user("QA1", "change@1212", search_for=None)
-        logger.info(f"Inserted Start Time = {start_time} by QA1")
+        logger.info(f"Inserted Start Time by QA1 = {start_time}")
 
-        # Second run with rash1: search for that start_time
-        run_with_user("rash1", "change@1212", search_for=start_time)
+        # Small pause between runs
+        time.sleep(2)
 
-        logger.info("Script completed.")
+        # 2) Second run with rash1: search for that start_time
+        found = run_with_user("rash1", "change@1212", search_for=start_time)
+        logger.info(f"Search by rash1 for '{start_time}' returned: {found}")
+
+        logger.info("Script completed successfully.")
     except Exception as exc:
         logger.exception(f"Automation failed: {exc}")
