@@ -1,71 +1,30 @@
-def handle_peak_margin(app, main_win):
-    """Add a row in Peak Margin table, save it, return start_time used."""
-    logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
-    main_win.menu_select("RMS Configuration->Peak Margin")
-    logger.info("Successfully opened Peak Margin window.")
-    time.sleep(3)
+def handle_popup(app, expected_substring=None, auto_id_to_click="2", timeout=10):
+    """
+    Handle popup window reliably by AutomationId (OK button).
+    Works even if popup is a child window, not top-level.
+    """
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            popup_candidates = app.windows(title_re=".*Risk Management System.*")
+            for popup in popup_candidates:
+                try:
+                    popup.wait("visible", timeout=1)
+                    texts = popup.descendants(control_type="Text")
+                    for t in texts:
+                        txt = t.window_text().strip()
+                        if txt and (not expected_substring or expected_substring.lower() in txt.lower()):
+                            logger.info(f"Popup detected: '{txt}' in window '{popup.window_text()}'")
+                            ok_btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                            ok_btn.wait("enabled", timeout=2)
+                            ok_btn.click_input()
+                            logger.info(f"Clicked OK (AutomationId={auto_id_to_click})")
+                            return True
+                except Exception:
+                    continue
+        except ElementNotFoundError:
+            pass
+        time.sleep(0.5)
 
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
-
-    logger.info("Looking for Peak Margin panel inside main window...")
-    time.sleep(3)
-    safe_click(peak_margin_win, title="Add", control_type="Button")
-    time.sleep(5)
-
-    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
-    if not tables:
-        raise RuntimeError("No table/list controls found in Peak Margin window")
-    grid = tables[0]
-
-    all_cells = grid.descendants(control_type="DataItem")
-    logger.info(f"Detected {len(all_cells)} data cells in table/list[0].")
-    columns_per_row = 8
-    rows = [all_cells[i:i + columns_per_row] for i in range(0, len(all_cells), columns_per_row)]
-
-    # Dump table for debugging
-    logger.info("=== Peak Margin Table Dump (Before Fill) ===")
-    last_end_time = None
-    for idx, row in enumerate(rows):
-        row_texts = [c.window_text().strip() for c in row]
-        logger.info(f"Row {idx:02d} ({len(row)} cells): {row_texts}")
-        if len(row_texts) >= 3 and row_texts[1] and row_texts[2]:
-            try:
-                end_dt = datetime.strptime(row_texts[2], "%H:%M:%S")
-                if not last_end_time or end_dt > last_end_time:
-                    last_end_time = end_dt
-            except ValueError:
-                pass
-    logger.info("=== End of Dump ===")
-
-    valid_rows = [r for r in rows if len(r) >= 3]
-    if not valid_rows:
-        raise RuntimeError("No valid rows with >=3 cells found")
-
-    last_row_cells = valid_rows[-1]
-    logger.info(f"Selected last row with {len(last_row_cells)} cells.")
-
-    # -------------------- Dynamic Time Selection --------------------
-    if last_end_time:
-        new_start_dt = last_end_time + timedelta(minutes=1)
-        logger.info(f"Last End Time = {last_end_time.strftime('%H:%M:%S')} → New Start Time = {new_start_dt.strftime('%H:%M:%S')}")
-    else:
-        # fallback: pick after 17:00
-        new_start_dt = datetime.strptime("17:00:00", "%H:%M:%S") + timedelta(minutes=random.randint(0, 59))
-
-    new_end_dt = new_start_dt + timedelta(minutes=10)
-
-    start_time = new_start_dt.strftime("%H:%M:%S")
-    end_time = new_end_dt.strftime("%H:%M:%S")
-    logger.info(f"Filling new row with Start={start_time}, End={end_time}")
-
-    set_cell_value(last_row_cells[1], start_time)
-    set_cell_value(last_row_cells[2], end_time)
-
-    safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(2)
-
-    handle_popup(app, expected_substring="Data is sent to checker", auto_id_to_click="2", timeout=10)
-
-    logger.info("Row filled, saved, and popup confirmed successfully.")
-    return start_time
+    logger.warning(f"No popup with text '{expected_substring}' found within {timeout}s.")
+    return False
