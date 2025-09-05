@@ -1,5 +1,5 @@
 def handle_peak_margin(app, main_win):
-    """Add a row in Peak Margin table with Start > last End Time, save and return start_time."""
+    """Add a row in Peak Margin table with Start > max End Time, save and return start_time."""
     logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
     main_win.menu_select("RMS Configuration->Peak Margin")
     logger.info("Successfully opened Peak Margin window.")
@@ -8,70 +8,74 @@ def handle_peak_margin(app, main_win):
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
 
-    safe_click(peak_margin_win, title="Add", control_type="Button")
-    time.sleep(3)
-
-    # --- Re-fetch and parse table ---
+    # --- Count rows BEFORE clicking Add ---
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
         raise RuntimeError("No table/list controls found in Peak Margin window")
     grid = tables[0]
-
-    all_cells = grid.descendants(control_type="DataItem")
-    logger.info(f"Detected {len(all_cells)} data cells in table/list[0].")
+    all_cells_before = grid.descendants(control_type="DataItem")
     columns_per_row = 8
-    rows = [all_cells[i:i + columns_per_row] for i in range(0, len(all_cells), columns_per_row)]
+    rows_before = [all_cells_before[i:i + columns_per_row] for i in range(0, len(all_cells_before), columns_per_row)]
+    old_row_count = len(rows_before)
+    logger.info(f"Existing row count before Add = {old_row_count}")
 
-    # --- Dump for debugging ---
+    # --- Click Add ---
+    safe_click(peak_margin_win, title="Add", control_type="Button")
+    logger.info("Clicked Add, waiting for new row to appear...")
+    time.sleep(1)
+
+    # --- Wait until row count increases ---
+    for attempt in range(10):
+        all_cells_after = grid.descendants(control_type="DataItem")
+        rows_after = [all_cells_after[i:i + columns_per_row] for i in range(0, len(all_cells_after), columns_per_row)]
+        if len(rows_after) > old_row_count:
+            logger.info(f"New row appeared after {attempt+1} check(s) → total rows = {len(rows_after)}")
+            break
+        time.sleep(1)
+    else:
+        raise RuntimeError("Timed out waiting for new row after clicking Add")
+
+    # --- Dump rows and detect last end time ---
     logger.info("=== Peak Margin Table Dump AFTER Add ===")
     last_end_time = None
-    for idx, row in enumerate(rows):
+    empty_row = None
+    for idx, row in enumerate(rows_after):
         row_texts = [c.window_text().strip() for c in row]
         logger.info(f"Row {idx:02d} ({len(row)} cells): {row_texts}")
+        # Track last end time
         if len(row_texts) >= 3 and row_texts[2]:
             try:
                 end_dt = datetime.strptime(row_texts[2], "%H:%M:%S")
                 if not last_end_time or end_dt > last_end_time:
                     last_end_time = end_dt
             except ValueError:
-                logger.debug(f"Skipping invalid End Time in row {idx}: {row_texts[2]}")
+                pass
+        # Detect first empty row (for filling)
+        if len(row_texts) >= 3 and not row_texts[1] and not row_texts[2]:
+            empty_row = row
     logger.info("=== End of Dump ===")
 
-    # --- Pick the row to fill (must have at least 3 cells) ---
-    valid_rows = [r for r in rows if len(r) >= 3]
-    if not valid_rows:
-        raise RuntimeError("No valid rows with >=3 cells found after Add click")
-    last_row_cells = valid_rows[-1]
+    if not empty_row:
+        raise RuntimeError("Could not find an empty row to fill after Add")
 
-    # --- Calculate new time based on last_end_time ---
     if last_end_time:
         new_start_dt = last_end_time + timedelta(minutes=1)
-        logger.info(f"Last End Time = {last_end_time.strftime('%H:%M:%S')} → New Start Time = {new_start_dt.strftime('%H:%M:%S')}")
+        logger.info(f"Latest End Time = {last_end_time.strftime('%H:%M:%S')} → New Start Time = {new_start_dt.strftime('%H:%M:%S')}")
     else:
-        # If no previous rows have valid end times, start after 17:00:00
         new_start_dt = datetime.strptime("17:00:00", "%H:%M:%S") + timedelta(minutes=random.randint(0, 59))
 
     new_end_dt = new_start_dt + timedelta(minutes=10)
     start_time = new_start_dt.strftime("%H:%M:%S")
     end_time = new_end_dt.strftime("%H:%M:%S")
-    logger.info(f"Filling new row with Start={start_time}, End={end_time}")
+    logger.info(f"Filling EMPTY row with Start={start_time}, End={end_time}")
 
-    if len(last_row_cells) < 3:
-        raise RuntimeError(f"Selected row has only {len(last_row_cells)} cells, cannot fill Start/End")
+    # --- Fill row cells ---
+    set_cell_value(empty_row[1], start_time)
+    set_cell_value(empty_row[2], end_time)
 
-    # --- Fill the new row ---
-    logger.info(">>> Filling Start Time cell <<<")
-    set_cell_value(last_row_cells[1], start_time)
-    logger.info(">>> Filling End Time cell <<<")
-    set_cell_value(last_row_cells[2], end_time)
-
-    logger.info(">>> Clicking Save <<<")
     safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(2)
+    logger.info("Clicked Save, waiting for popup...")
 
-    # --- Handle popup confirmation ---
-    logger.info("Waiting for 'Data is sent to checker' popup...")
     handle_data_sent_popup(app)
-
     logger.info("Row filled, saved, and popup confirmed successfully.")
     return start_time
