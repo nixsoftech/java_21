@@ -1,24 +1,15 @@
- Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-05 13:48:37,937 [INFO] Successfully opened Peak Margin window.
-2025-09-05 13:48:37,937 [INFO] Looking for Peak Margin panel inside main window...
-2025-09-05 13:48:40,781 [INFO] Peak Margin panel detected. Clicking Add...
-2025-09-05 13:48:44,781 [INFO] Clicked Add (attempt 1)
-2025-09-05 13:48:49,032 [INFO] Found 1 table/list controls inside Peak Margin window
-2025-09-05 13:48:49,423 [INFO] Detected 64 data cells in table/list[0].
-2025-09-05 13:48:49,423 [INFO] Selected last row with 8 cells.
-2025-09-05 13:48:49,439 [INFO] Filling new row with Start=17:22:00, End=17:32:00
-2025-09-05 13:48:49,626 [INFO] Clicked cell, attempt 1 to set value '17:22:00'
-2025-09-05 13:48:52,626 [WARNING] Attempt 1 failed: timed out
-2025-09-05 13:48:53,251 [INFO] Clicked cell, attempt 2 to set value '17:22:00'
-2025-09-05 13:48:56,251 [WARNING] Attempt 2 failed: timed out
-2025-09-05 13:48:56,876 [INFO] Clicked cell, attempt 3 to set value '17:22:00'
-2025-09-05 13:48:59,878 [WARNING] Attempt 3 failed: timed out
-2025-09-05 13:49:00,378 [ERROR] Automation failed: Failed to set and verify value '17:22:00' after 3 attempts
+Successfully opened Peak Margin window.
+2025-09-05 14:12:06 [INFO] Looking for Peak Margin panel inside main window...
+2025-09-05 14:12:15 [INFO] Clicked Add (attempt 1)
+2025-09-05 14:12:24 [INFO] Detected 81 data cells in table/list[0].
+2025-09-05 14:12:24 [INFO] Selected last row with 1 cells.
+2025-09-05 14:12:24 [INFO] Filling new row with Start=14:12:24, End=14:22:24
+2025-09-05 14:12:24 [ERROR] Automation failed: list index out of range
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto5.py", line 257, in main
-    handle_peak_margin(app, main_win)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto5.py", line 205, in handle_peak_margin
-    set_cell_value(last_row_cells[1], start_time)  # Start Time
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto5.py", line 202, in set_cell_value
-    raise TimeoutError(f"Failed to set and verify value '{value}' after {max_attempts} attempts")
-pywinauto.timings.TimeoutError: Failed to set and verify value '17:22:00' after 3 attempts
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 224, in <module>
+    start_time = run_with_user("QA1", "change@1212")
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 215, in run_with_user
+    return handle_peak_margin(app, main_win)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto6.py", line 150, in handle_peak_margin
+    set_cell_value(last_row_cells[1], start_time)
+IndexError: list index out of range
