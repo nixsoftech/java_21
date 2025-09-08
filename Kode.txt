@@ -1,53 +1,52 @@
-from pywinauto.keyboard import send_keys
-import time
-import logging
-
-def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=25, poll_interval=1):
-    logger.info(f"Looking for Peak Margin panel to reject Start Time={target_start_time}...")
-    
+def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=30, poll_interval=1):
+    """
+    Reject a Peak Margin row for rash1 user:
+    1️⃣ Locate row by Start Time = target_start_time and Status = PENDING
+    2️⃣ Click checkbox
+    3️⃣ Click Status cell, Alt+Down, type REJECT
+    4️⃣ Save
+    """
+    logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
-    
+
     end_time = time.time() + max_wait_seconds
     last_exception = None
 
     while time.time() < end_time:
         try:
-            # Dump rows
             rows = dump_peak_margin_grid(peak_margin_win)
             for r_idx, (row_cells, row_values) in enumerate(rows):
                 if len(row_values) < 6:
                     continue
                 start_time_val = row_values[1]
                 status_val = row_values[5]
-                
                 if start_time_val == target_start_time and status_val.upper() == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
-                    
-                    # 1️⃣ Click the checkbox (already working)
+
+                    # 1️⃣ Click the checkbox
                     row_cells[-1].click_input()
                     time.sleep(0.3)
-                    
-                    # 2️⃣ Click on the PENDING cell to focus the combo box
-                    status_cell = row_cells[5]
+
+                    # 2️⃣ Click Status cell to focus combo box
+                    status_cell = row_cells[5]  # Status column
                     status_cell.click_input()
                     time.sleep(0.3)
-                    
-                    # 3️⃣ Send Alt+Down to open the dropdown
-                    send_keys("%{DOWN}")  # Alt+Down
+
+                    # 3️⃣ Send Alt+Down to open dropdown
+                    send_keys("%{DOWN}")
                     time.sleep(0.3)
-                    
-                    # 4️⃣ Send arrow down / REJECT selection
-                    # Try typing "REJECT" and Enter (works for WinForms combo box)
+
+                    # 4️⃣ Type REJECT + Enter
                     send_keys("REJECT{ENTER}")
-                    logger.info("Changed Status to REJECT.")
-                    time.sleep(0.5)
-                    
+                    logger.info(f"Changed Status to REJECT for Start Time={start_time_val}")
+                    time.sleep(0.3)
+
                     # 5️⃣ Click Save
                     safe_click(peak_margin_win, title="Save", control_type="Button")
                     time.sleep(1)
-                    
-                    # 6️⃣ Handle confirmation popup if any
+
+                    # 6️⃣ Handle confirmation popup
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
@@ -55,13 +54,12 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                         logger.info("Clicked OK on confirmation popup.")
                     except Exception:
                         logger.warning("No confirmation popup after save.")
-                    
-                    return
+                    return  # Row handled, exit function
             time.sleep(poll_interval)
         except Exception as e:
             last_exception = e
             time.sleep(poll_interval)
-    
+
     msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
     logger.error(msg)
     if last_exception:
