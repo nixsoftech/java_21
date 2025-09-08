@@ -28,18 +28,23 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     status_cell.click_input()
                     time.sleep(0.5)
 
+                    # --- NEW: Explicitly find list item "REJECT" ---
                     try:
                         combo = peak_margin_win.child_window(control_type="ComboBox", title="Editing Control")
                         combo.wait("enabled", timeout=5)
-                        combo.select("REJECT")
-                        logger.info("Selected 'REJECT' from status dropdown.")
-                    except Exception:
-                        logger.warning("Could not directly select from combo, trying keyboard navigation...")
+                        combo.expand()
+                        time.sleep(0.5)
+
+                        reject_item = combo.child_window(title="REJECT", control_type="ListItem")
+                        reject_item.wait("enabled", timeout=3)
+                        reject_item.click_input()
+                        logger.info("Selected 'REJECT' from combo box by direct click.")
+                    except Exception as e:
+                        logger.error(f"Failed to select REJECT directly: {e}")
+                        # fallback to keyboard as last resort
                         from pywinauto.keyboard import send_keys
-                        send_keys("{F2}")
-                        time.sleep(0.3)
-                        send_keys("{DOWN}{DOWN}{ENTER}")
-                        logger.info("Selected REJECT via keyboard fallback.")
+                        send_keys("{DOWN}{ENTER}")
+                        logger.info("Fallback: used keyboard to select REJECT.")
 
                     # 3. Save changes
                     safe_click(peak_margin_win, title="Save", control_type="Button")
@@ -50,8 +55,6 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=10)
-                        popup_text = popup.window_text()
-                        logger.info(f"Popup text: {popup_text}")
                         safe_click(popup, auto_id="2", control_type="Button")
                         logger.info("Clicked OK on 'Data Reject successfully' popup.")
                     except Exception as e:
