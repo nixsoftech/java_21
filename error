@@ -1,24 +1,11 @@
-Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-08 14:46:30,684 [INFO] Successfully opened Peak Margin window.
-2025-09-08 14:46:30,684 [INFO] Looking for Peak Margin panel for rash1 to reject start_time=17:33:00...
-2025-09-08 14:46:36,716 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-08 14:46:36,841 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:36,951 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,060 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,185 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,295 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,404 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,513 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,623 [INFO] Row 7: ['8', '17:33:00', '17:43:00', '17:38:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-08 14:46:37,623 [INFO] ✅ Matched row 7 with Start Time=17:33:00, Status=PENDING
-2025-09-08 14:46:45,749 [ERROR] Failed to directly double-click REJECT: timed out
-2025-09-08 14:46:45,749 [INFO] Fallback: using DOWN + ENTER to select REJECT
-2025-09-08 14:46:50,076 [INFO] Clicked Save (attempt 1)
-2025-09-08 14:46:50,076 [INFO] Clicked Save after selecting REJECT.
-2025-09-08 14:46:54,705 [INFO] Clicked 2 (attempt 1)
-2025-09-08 14:46:54,705 [INFO] Clicked OK on 'Data Reject successfully' popup.
-2025-09-08 14:46:58,221 [INFO] Clicked Exit (attempt 1)
-2025-09-08 14:46:59,096 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-08 14:47:01,707 [INFO] Clicked popup button with AutomationId=6
-2025-09-08 14:47:01,707 [INFO] Workflow completed for user: rash1
-2025-09-08 14:47:01,707 [INFO] Automation script completed successfully for both users.
+Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-08 14:57:37,163 [WARNING] No post-login popups appeared within timeout.
+2025-09-08 14:57:37,163 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-08 14:57:38,381 [INFO] Successfully opened Peak Margin window.
+2025-09-08 14:57:38,381 [INFO] Looking for Peak Margin panel for rash1 to reject start_time=17:39:00...
+2025-09-08 14:57:39,821 [ERROR] ❌ No row found with Start Time=17:39:00
+2025-09-08 14:57:43,212 [INFO] Clicked Exit (attempt 1)
+2025-09-08 14:57:44,227 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-08 14:57:46,761 [INFO] Clicked popup button with AutomationId=6
+2025-09-08 14:57:46,761 [INFO] Workflow completed for user: rash1
+2025-09-08 14:57:46,761 [INFO] Automation script completed successfully for both users.
