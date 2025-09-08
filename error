@@ -1,12 +1,58 @@
- Clicked popup button with AutomationId=6
-2025-09-08 15:54:51,067 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-08 15:55:11,199 [WARNING] No post-login popups appeared within timeout.
-2025-09-08 15:55:11,199 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-08 15:55:12,433 [INFO] Successfully opened Peak Margin window.
-2025-09-08 15:55:12,433 [ERROR] Automation failed: handle_peak_margin_reject_for_rash1() takes 2 positional arguments but 3 were given
+Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-08 16:51:46,792 [INFO] Successfully opened Peak Margin window.
+2025-09-08 16:51:46,792 [INFO] Looking for Peak Margin row to reject Start Time=17:55:00...
+2025-09-08 16:51:52,870 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)']
+2025-09-08 16:51:52,979 [INFO] Row 1: ['False', '2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)']
+2025-09-08 16:51:53,073 [INFO] Row 2: ['(null)', 'False', '3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL']
+2025-09-08 16:51:53,182 [INFO] Row 3: ['(null)', '(null)', 'False', '4', '15:00:00', '15:00:00', '15:00:00', 'N']
+2025-09-08 16:51:53,276 [INFO] Row 4: ['NORMAL', '(null)', '(null)', 'False', '5', '16:01:00', '16:15:00', '16:02:00']
+2025-09-08 16:51:53,385 [INFO] Row 5: ['Y', 'NORMAL', '(null)', '(null)', 'False', '6', '16:20:00', '16:20:00']
+2025-09-08 16:51:53,495 [INFO] Row 6: ['16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '7', '16:40:00']
+2025-09-08 16:51:53,588 [INFO] Row 7: ['16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '8']
+2025-09-08 16:51:53,698 [INFO] Row 8: ['17:55:00', '18:05:00', '18:00:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 16:51:58,323 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)']
+2025-09-08 16:51:58,432 [INFO] Row 1: ['False', '2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)']
+2025-09-08 16:51:58,526 [INFO] Row 2: ['(null)', 'False', '3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL']
+2025-09-08 16:51:58,635 [INFO] Row 3: ['(null)', '(null)', 'False', '4', '15:00:00', '15:00:00', '15:00:00', 'N']
+2025-09-08 16:51:58,745 [INFO] Row 4: ['NORMAL', '(null)', '(null)', 'False', '5', '16:01:00', '16:15:00', '16:02:00']
+2025-09-08 16:51:58,854 [INFO] Row 5: ['Y', 'NORMAL', '(null)', '(null)', 'False', '6', '16:20:00', '16:20:00']
+2025-09-08 16:51:58,963 [INFO] Row 6: ['16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '7', '16:40:00']
+2025-09-08 16:51:59,057 [INFO] Row 7: ['16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '8']
+2025-09-08 16:51:59,229 [INFO] Row 8: ['17:55:00', '18:05:00', '18:00:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 16:52:03,762 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)']
+2025-09-08 16:52:03,871 [INFO] Row 1: ['False', '2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)']
+2025-09-08 16:52:03,980 [INFO] Row 2: ['(null)', 'False', '3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL']
+2025-09-08 16:52:04,074 [INFO] Row 3: ['(null)', '(null)', 'False', '4', '15:00:00', '15:00:00', '15:00:00', 'N']
+2025-09-08 16:52:04,246 [INFO] Row 4: ['NORMAL', '(null)', '(null)', 'False', '5', '16:01:00', '16:15:00', '16:02:00']
+2025-09-08 16:52:04,371 [INFO] Row 5: ['Y', 'NORMAL', '(null)', '(null)', 'False', '6', '16:20:00', '16:20:00']
+2025-09-08 16:52:04,465 [INFO] Row 6: ['16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '7', '16:40:00']
+2025-09-08 16:52:04,574 [INFO] Row 7: ['16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '8']
+2025-09-08 16:52:04,683 [INFO] Row 8: ['17:55:00', '18:05:00', '18:00:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 16:52:09,372 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)']
+2025-09-08 16:52:09,482 [INFO] Row 1: ['False', '2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)']
+2025-09-08 16:52:09,575 [INFO] Row 2: ['(null)', 'False', '3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL']
+2025-09-08 16:52:09,685 [INFO] Row 3: ['(null)', '(null)', 'False', '4', '15:00:00', '15:00:00', '15:00:00', 'N']
+2025-09-08 16:52:09,778 [INFO] Row 4: ['NORMAL', '(null)', '(null)', 'False', '5', '16:01:00', '16:15:00', '16:02:00']
+2025-09-08 16:52:09,888 [INFO] Row 5: ['Y', 'NORMAL', '(null)', '(null)', 'False', '6', '16:20:00', '16:20:00']
+2025-09-08 16:52:09,997 [INFO] Row 6: ['16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '7', '16:40:00']
+2025-09-08 16:52:10,091 [INFO] Row 7: ['16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '8']
+2025-09-08 16:52:10,200 [INFO] Row 8: ['17:55:00', '18:05:00', '18:00:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 16:52:14,884 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)']
+2025-09-08 16:52:14,978 [INFO] Row 1: ['False', '2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)']
+2025-09-08 16:52:15,087 [INFO] Row 2: ['(null)', 'False', '3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL']
+2025-09-08 16:52:15,196 [INFO] Row 3: ['(null)', '(null)', 'False', '4', '15:00:00', '15:00:00', '15:00:00', 'N']
+2025-09-08 16:52:15,290 [INFO] Row 4: ['NORMAL', '(null)', '(null)', 'False', '5', '16:01:00', '16:15:00', '16:02:00']
+2025-09-08 16:52:15,400 [INFO] Row 5: ['Y', 'NORMAL', '(null)', '(null)', 'False', '6', '16:20:00', '16:20:00']
+2025-09-08 16:52:15,493 [INFO] Row 6: ['16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '7', '16:40:00']
+2025-09-08 16:52:15,603 [INFO] Row 7: ['16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False', '8']
+2025-09-08 16:52:15,712 [INFO] Row 8: ['17:55:00', '18:05:00', '18:00:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 16:52:16,721 [ERROR] No row found with Start Time=17:55:00 & Status=PENDING within 25s
+2025-09-08 16:52:16,721 [ERROR] Automation failed: No row found with Start Time=17:55:00 & Status=PENDING within 25s
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 345, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 376, in main
     run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 333, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 364, in run_workflow_for_user
     handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-TypeError: handle_peak_margin_reject_for_rash1() takes 2 positional arguments but 3 were given
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 315, in handle_peak_margin_reject_for_rash1
+    raise RuntimeError(msg)
+RuntimeError: No row found with Start Time=17:55:00 & Status=PENDING within 25s
