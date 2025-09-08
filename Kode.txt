@@ -1,5 +1,41 @@
+# ------------------- Dump Peak Margin Grid -------------------
+def dump_peak_margin_grid(peak_margin_win):
+    """Dump the Peak Margin grid into list of rows with cell objects and their values."""
+    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+    if not tables:
+        logger.warning("No tables/list views found in Peak Margin window for dumping")
+        return []
+
+    grid = tables[0]
+    all_data_items = grid.descendants(control_type="DataItem")
+    # dynamically detect columns per row if possible
+    columns_per_row = 9 if len(all_data_items) >= 9 else len(all_data_items)
+    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+
+    rows = []
+    for r_idx, row_cells in enumerate(rows_cells):
+        row_values = []
+        for cell in row_cells:
+            val = ""
+            try:
+                val = cell.legacy_properties().get("Value", "")
+            except Exception:
+                try:
+                    val = cell.get_value()
+                except Exception:
+                    try:
+                        val = cell.window_text()
+                    except Exception:
+                        val = ""
+            row_values.append(val.strip() if val else "")
+        logger.info(f"Row {r_idx}: {row_values}")
+        rows.append((row_cells, row_values))
+    return rows
+
+# ------------------- Peak Margin Reject for rash1 -------------------
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
-    logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={target_start_time}...")
+    """Reject the row with matching start time and PENDING status."""
+    logger.info(f"Looking for Peak Margin panel to reject Start Time={target_start_time}")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
 
@@ -12,42 +48,43 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
             for r_idx, (row_cells, row_values) in enumerate(rows):
                 if len(row_values) < 6:
                     continue
-                start_time_val = row_values[1]
-                status_val = row_values[5]
 
-                if start_time_val == target_start_time and status_val.upper() == "PENDING":
+                start_time_val = row_values[1].strip()
+                status_val = row_values[5].strip().upper()
+
+                if start_time_val == target_start_time and status_val == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
 
-                    # Click edit checkbox (last cell)
+                    # Click the last cell to enable editing panel if needed
                     row_cells[-1].click_input()
-                    logger.info("✅ Clicked edit checkbox")
-                    time.sleep(0.5)
+                    time.sleep(0.3)
 
-                    # Click status cell to activate combo box
+                    # Change status to REJECT
                     status_cell = row_cells[5]
                     status_cell.click_input()
-                    time.sleep(0.5)
-
-                    # Activate combo and type REJECT
-                    send_keys("{F2}")
                     time.sleep(0.3)
+                    send_keys("{F2}")
+                    time.sleep(0.2)
                     send_keys("REJECT{ENTER}")
-                    logger.info("✅ Changed Status to REJECT")
+                    logger.info("Changed Status to REJECT")
 
-                    # Click Save
+                    # Save
                     safe_click(peak_margin_win, title="Save", control_type="Button")
                     time.sleep(1.5)
 
-                    # Handle confirmation popup
+                    # Confirm popup if exists
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
                         safe_click(popup, auto_id="2", control_type="Button")
-                        logger.info("✅ Clicked OK on confirmation popup")
+                        logger.info("Clicked OK on confirmation popup.")
                     except Exception:
                         logger.warning("No confirmation popup after save.")
-                    return
+
+                    return  # Exit after successful reject
+
             time.sleep(poll_interval)
+
         except Exception as e:
             last_exception = e
             time.sleep(poll_interval)
