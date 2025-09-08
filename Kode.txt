@@ -10,80 +10,71 @@ def handle_peak_margin_reject_for_rash1(app, peak_margin_win, stored_start_time)
 
     logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={stored_start_time}...")
 
-    # Step 1: Dump grid and find matching row
-    grid = peak_margin_win.child_window(control_type="Table")
-    rows = grid.children(control_type="DataItem")
+    # Step 1: Use dump_peak_margin_grid to get all rows
+    all_rows = dump_peak_margin_grid(peak_margin_win)
+    logger.info(f"Dumping {len(all_rows)} rows from Peak Margin grid:")
 
-    matched_row = None
-    for idx, row in enumerate(rows):
-        cells = row.children()
-        # We expect Start Time in second column (adjust index if needed)
-        start_time_value = None
-        status_value = None
-        if len(cells) > 2:
-            try:
-                start_time_value = cells[1].legacy_properties().get("Value")
-                status_value = cells[5].legacy_properties().get("Value")
-            except Exception:
-                pass
-
-        logger.debug(f"Row {idx}: start_time={start_time_value}, status={status_value}")
-        if start_time_value == stored_start_time:
-            matched_row = row
-            logger.info(f"✅ Matched row {idx} with Start Time={start_time_value}, Status={status_value}")
+    matched_index = None
+    for idx, row in enumerate(all_rows):
+        logger.info(f"Row {idx}: {row}")
+        if len(row) >= 6 and row[1] == stored_start_time and row[5].upper() == "PENDING":
+            matched_index = idx
+            logger.info(f"✅ Matched row {idx} with Start Time={row[1]}, Status={row[5]}")
             break
 
-    if not matched_row:
+    if matched_index is None:
         logger.error(f"❌ No row found with Start Time={stored_start_time}")
         return
 
-    cells = matched_row.children()
-    if len(cells) < 6:
-        logger.error("Row does not have enough cells to process.")
+    # Step 2: Get actual UI row element
+    grid = peak_margin_win.child_window(control_type="Table")
+    rows = grid.children(control_type="DataItem")
+    if matched_index >= len(rows):
+        logger.error(f"Matched index {matched_index} is out of UI row range.")
         return
 
-    # Step 2: Select checkbox (assume checkbox is in first column or last column)
+    matched_row = rows[matched_index]
+    cells = matched_row.children()
+
+    # Step 3: Select edit checkbox
     try:
         checkbox = cells[-1]
         checkbox.click_input()
-        logger.info("Clicked edit checkbox for matched row.")
+        time.sleep(0.2)
+        logger.info("✅ Clicked edit checkbox for matched row.")
     except Exception as e:
-        logger.warning(f"Could not click checkbox directly: {e}")
+        logger.error(f"Failed to click checkbox: {e}")
+        return
 
-    # Step 3: Focus status cell and enter edit mode
-    status_cell = cells[5]
-    status_cell.click_input()
-    time.sleep(0.2)
-
-    # Enter edit mode (F2 or double-click)
+    # Step 4: Focus status cell and enter edit mode
     try:
-        status_cell.double_click_input()
-    except Exception:
-        send_keys("{F2}")
-    time.sleep(0.3)
+        status_cell = cells[5]
+        status_cell.click_input()
+        time.sleep(0.3)
+        status_cell.double_click_input()  # Ensure we are in edit mode
+        time.sleep(0.3)
+        send_keys("%{DOWN}")  # Expand dropdown
+        time.sleep(0.5)
+    except Exception as e:
+        logger.error(f"Failed to activate status cell: {e}")
+        return
 
-    # Step 4: Expand dropdown (Alt+Down is reliable)
-    send_keys("%{DOWN}")
-    time.sleep(0.5)
-
-    # Step 5: Select "REJECT" from dropdown
+    # Step 5: Select "REJECT"
     try:
         editing_combo = peak_margin_win.child_window(control_type="ComboBox", title="Editing Control")
         editing_combo.wait("visible", timeout=3)
-
         reject_item = editing_combo.child_window(title="REJECT", control_type="ListItem")
         reject_item.wait("visible", timeout=3)
         reject_item.double_click_input()
-        logger.info("✅ Visually selected 'REJECT' from dropdown.")
+        logger.info("✅ Selected REJECT from dropdown.")
     except TimeoutError:
-        logger.warning("Failed to select REJECT directly: timed out. Fallback using DOWN+ENTER.")
+        logger.warning("Failed to select REJECT directly: timed out. Fallback using keyboard navigation.")
         send_keys("{DOWN}{ENTER}")
 
-    # Step 6: Commit change and move focus out
-    send_keys("{TAB}")
+    send_keys("{TAB}")  # Commit change
     time.sleep(0.3)
 
-    # Step 7: Click Save
+    # Step 6: Click Save
     try:
         save_btn = peak_margin_win.child_window(title="Save", control_type="Button")
         save_btn.click_input()
