@@ -5,38 +5,39 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 
     end_time = time.time() + max_wait_seconds
     last_exception = None
+    row_handled = False
 
-    while time.time() < end_time:
+    while time.time() < end_time and not row_handled:
         try:
             rows = dump_peak_margin_grid(peak_margin_win)
             for r_idx, (row_cells, row_values) in enumerate(rows):
                 if len(row_values) < 6:
                     continue
+
                 start_time_val = row_values[1]
                 status_val = row_values[5]
 
                 if start_time_val == target_start_time and status_val.upper() == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
 
-                    # 1️⃣ Click checkbox (last cell)
+                    # 1️⃣ Click checkbox (last column)
                     row_cells[-1].click_input()
-                    time.sleep(0.3)
+                    time.sleep(0.5)  # allow focus stabilization
 
-                    # 2️⃣ Click Status cell to open dropdown
+                    # 2️⃣ Click Status cell to focus it
                     status_cell = row_cells[5]
                     status_cell.click_input()
                     time.sleep(0.3)
 
-                    # 3️⃣ Access dropdown list by automation_id=3803262
-                    dropdown = peak_margin_win.child_window(auto_id="3803262", control_type="ComboBox")
-                    dropdown.wait("visible", timeout=3)
+                    # 3️⃣ Open dropdown via Alt+Down
+                    send_keys("%{DOWN}")
+                    time.sleep(0.3)
 
-                    # 4️⃣ Select REJECT
-                    reject_item = dropdown.child_window(title="REJECT", control_type="ListItem")
-                    reject_item.click_input()
-                    logger.info("Selected REJECT from Status dropdown")
+                    # 4️⃣ Type REJECT and press Enter
+                    send_keys("REJECT{ENTER}")
+                    logger.info("Changed Status to REJECT")
 
-                    # 5️⃣ Save changes
+                    # 5️⃣ Save
                     safe_click(peak_margin_win, title="Save", control_type="Button")
                     time.sleep(1.5)
 
@@ -49,14 +50,19 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     except Exception:
                         logger.warning("No confirmation popup after save.")
 
-                    return  # Done with this row
-            time.sleep(poll_interval)
+                    row_handled = True
+                    break
+
+            if not row_handled:
+                time.sleep(poll_interval)
+
         except Exception as e:
             last_exception = e
             time.sleep(poll_interval)
 
-    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
-    logger.error(msg)
-    if last_exception:
-        logger.debug(f"Last exception: {last_exception}")
-    raise RuntimeError(msg)
+    if not row_handled:
+        msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
+        logger.error(msg)
+        if last_exception:
+            logger.debug(f"Last exception: {last_exception}")
+        raise RuntimeError(msg)
