@@ -1,30 +1,60 @@
-def dump_peak_margin_grid(peak_margin_win):
-    """
-    Reads all rows from Peak Margin grid and returns them as list of lists.
-    Each row will include cell text values.
-    Also logs control type + name for debugging to ensure correct column mapping.
-    """
-    all_rows = []
-    try:
-        grid = peak_margin_win.child_window(control_type="Table")
-        rows = grid.children(control_type="DataItem")
-        logger.info(f"Found {len(rows)} rows in Peak Margin grid.")
+def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=30, poll_interval=1):
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
+    end_time = time.time() + max_wait_seconds
 
-        for idx, row in enumerate(rows):
-            cells = row.children()
-            row_values = []
-            debug_info = []
-            for cell_idx, cell in enumerate(cells):
+    while time.time() < end_time:
+        rows = dump_peak_margin_complete(peak_margin_win)
+        for r_idx, (row_cells, row_values) in enumerate(rows):
+            if not row_values:
+                continue
+
+            # Find Start Time dynamically
+            try:
+                start_idx = next(i for i, v in enumerate(row_values) if v.strip() == target_start_time)
+            except StopIteration:
+                continue
+
+            # Find Status dynamically (PENDING or NORMAL)
+            try:
+                status_idx = next(i for i, v in enumerate(row_values) if v.strip().upper() in ["PENDING", "NORMAL"])
+            except StopIteration:
+                continue
+
+            status_val = row_values[status_idx].strip().upper()
+            if status_val == "PENDING":
+                logger.info(f"✅ Matched row {r_idx} with Start Time={target_start_time}, Status={status_val}")
+
+                # Click checkbox (last column, usually)
                 try:
-                    val = cell.legacy_properties().get("Value") or cell.window_text() or "(null)"
+                    row_cells[-1].click_input()
+                    time.sleep(0.3)
+                except Exception as e:
+                    logger.warning(f"Failed to click checkbox: {e}")
+
+                # Change Status to REJECT
+                status_cell = row_cells[status_idx]
+                status_cell.click_input()
+                time.sleep(0.3)
+                send_keys("{F2}")
+                time.sleep(0.2)
+                send_keys("REJECT{ENTER}")
+                time.sleep(0.3)
+
+                # Save
+                safe_click(peak_margin_win, title="Save", control_type="Button")
+                time.sleep(1.5)
+
+                # Handle confirmation popup
+                try:
+                    popup = app.window(best_match="Risk Management System")
+                    popup.wait("visible", timeout=8)
+                    safe_click(popup, auto_id="2", control_type="Button")
                 except Exception:
-                    val = "(error)"
-                row_values.append(val)
-                debug_info.append(f"[{cell_idx}:{cell.friendly_class_name()}:'{val}']")
-            logger.info(f"Row {idx}: {' | '.join(debug_info)}")
-            all_rows.append(row_values)
+                    pass
 
-    except Exception as e:
-        logger.error(f"Failed to dump Peak Margin grid: {e}")
+                return  # Done
 
-    return all_rows
+        time.sleep(poll_interval)
+
+    raise RuntimeError(f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s")
