@@ -1,10 +1,7 @@
-def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=30, poll_interval=1):
+def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     """
-    Reject a Peak Margin row for rash1 user:
-    1️⃣ Locate row by Start Time = target_start_time and Status = PENDING
-    2️⃣ Click checkbox
-    3️⃣ Click Status cell, Alt+Down, type REJECT
-    4️⃣ Save
+    Find the row with given Start Time and Status=PENDING, select its checkbox, 
+    then change Status to REJECT using Alt+Down + typing REJECT.
     """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -15,23 +12,28 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 
     while time.time() < end_time:
         try:
+            # Dump all rows
             rows = dump_peak_margin_grid(peak_margin_win)
+
             for r_idx, (row_cells, row_values) in enumerate(rows):
                 if len(row_values) < 6:
                     continue
+
                 start_time_val = row_values[1]
                 status_val = row_values[5]
+
                 if start_time_val == target_start_time and status_val.upper() == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
 
-                    # 1️⃣ Click the checkbox
-                    row_cells[-1].click_input()
+                    # 1️⃣ Select the checkbox (last cell)
+                    checkbox_cell = row_cells[-1]
+                    checkbox_cell.click_input()
                     time.sleep(0.3)
 
-                    # 2️⃣ Click Status cell to focus combo box
-                    status_cell = row_cells[5]  # Status column
-                    status_cell.click_input()
-                    time.sleep(0.3)
+                    # 2️⃣ Activate Status cell (double-click to edit)
+                    status_cell = row_cells[5]
+                    status_cell.click_input(double=True)
+                    time.sleep(0.5)  # wait for editing control to appear
 
                     # 3️⃣ Send Alt+Down to open dropdown
                     send_keys("%{DOWN}")
@@ -42,9 +44,9 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     logger.info(f"Changed Status to REJECT for Start Time={start_time_val}")
                     time.sleep(0.3)
 
-                    # 5️⃣ Click Save
+                    # 5️⃣ Save the row
                     safe_click(peak_margin_win, title="Save", control_type="Button")
-                    time.sleep(1)
+                    time.sleep(1.5)
 
                     # 6️⃣ Handle confirmation popup
                     try:
@@ -54,8 +56,11 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                         logger.info("Clicked OK on confirmation popup.")
                     except Exception:
                         logger.warning("No confirmation popup after save.")
-                    return  # Row handled, exit function
+
+                    return  # Row processed, exit function
+
             time.sleep(poll_interval)
+
         except Exception as e:
             last_exception = e
             time.sleep(poll_interval)
