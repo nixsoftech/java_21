@@ -1,29 +1,30 @@
 def dump_peak_margin_grid(peak_margin_win):
     """
-    Logs all rows and values from the Peak Margin grid.
-    Returns a list of tuples: (row_cells, row_values)
+    Reads all rows from Peak Margin grid and returns them as list of lists.
+    Each row will include cell text values.
+    Also logs control type + name for debugging to ensure correct column mapping.
     """
-    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
-    if not tables:
-        logger.warning("No tables/list views found in Peak Margin window for dumping")
-        return []
+    all_rows = []
+    try:
+        grid = peak_margin_win.child_window(control_type="Table")
+        rows = grid.children(control_type="DataItem")
+        logger.info(f"Found {len(rows)} rows in Peak Margin grid.")
 
-    grid = tables[0]
-    all_data_items = grid.descendants(control_type="DataItem")
-    columns_per_row = 9  # adjust as per your grid
-    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+        for idx, row in enumerate(rows):
+            cells = row.children()
+            row_values = []
+            debug_info = []
+            for cell_idx, cell in enumerate(cells):
+                try:
+                    val = cell.legacy_properties().get("Value") or cell.window_text() or "(null)"
+                except Exception:
+                    val = "(error)"
+                row_values.append(val)
+                debug_info.append(f"[{cell_idx}:{cell.friendly_class_name()}:'{val}']")
+            logger.info(f"Row {idx}: {' | '.join(debug_info)}")
+            all_rows.append(row_values)
 
-    rows = []
-    logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid:")
-    for r_idx, row_cells in enumerate(rows_cells):
-        row_values = []
-        for cell in row_cells:
-            try:
-                val = getattr(cell.legacy_properties, 'get', lambda k, d='': cell.window_text())('Value', '')
-            except Exception:
-                val = cell.window_text()
-            row_values.append(val)
-        logger.info(f"Row {r_idx}: {row_values}")
-        rows.append((row_cells, row_values))
+    except Exception as e:
+        logger.error(f"Failed to dump Peak Margin grid: {e}")
 
-    return rows
+    return all_rows
