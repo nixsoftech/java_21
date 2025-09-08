@@ -1,69 +1,58 @@
 def handle_peak_margin_reject_for_rash1_fixed(app, main_win, target_start_time, max_wait_seconds=30, poll_interval=1):
-    """
-    Reject a Peak Margin row for rash1 user by Start Time.
-    Uses fixed row detection for reliability.
-    """
     logger.info(f"Looking for Peak Margin row to reject Start Time={target_start_time}...")
-    
+
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
-    
+
     end_time = time.time() + max_wait_seconds
     last_exception = None
-    
+
     while time.time() < end_time:
         try:
-            rows = dump_peak_margin_complete_fixed(peak_margin_win, expected_columns=8)
-            
+            rows = dump_peak_margin_grid(peak_margin_win)  # your working dump
             for r_idx, (row_cells, row_values) in enumerate(rows):
                 if len(row_values) < 6:
-                    continue  # skip incomplete rows
-                
+                    continue
                 start_time_val = row_values[1].strip()
                 status_val = row_values[5].strip().upper()
-                
+
                 if start_time_val == target_start_time and status_val == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
-                    
-                    # Click edit checkbox if exists (usually last column)
-                    try:
-                        row_cells[-1].click_input()
-                        time.sleep(0.3)
-                    except Exception:
-                        logger.warning(f"Failed to click checkbox for row {r_idx}, continuing...")
-                    
-                    # Change status to REJECT
-                    try:
-                        status_cell = row_cells[5]
-                        status_cell.click_input()
-                        time.sleep(0.3)
-                        send_keys("{F2}")
-                        time.sleep(0.2)
-                        send_keys("REJECT{ENTER}")
-                        logger.info("Changed Status to REJECT.")
-                    except Exception as e:
-                        logger.error(f"Failed to set REJECT for row {r_idx}: {e}")
-                        continue
-                    
+
+                    # Click checkbox (last cell)
+                    row_cells[-1].click_input()
+                    time.sleep(0.3)
+
+                    # Update Status to REJECT
+                    status_cell = row_cells[5]
+                    status_cell.click_input()
+                    time.sleep(0.3)
+                    send_keys("{F2}")
+                    time.sleep(0.2)
+                    send_keys("REJECT{ENTER}")
+                    logger.info("Changed Status to REJECT.")
+
                     # Save changes
+                    safe_click(peak_margin_win, title="Save", control_type="Button")
+                    time.sleep(1.5)
+
+                    # Handle popup if appears
                     try:
-                        safe_click(peak_margin_win, title="Save", control_type="Button")
-                        time.sleep(1.5)
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
                         safe_click(popup, auto_id="2", control_type="Button")
                         logger.info("Clicked OK on confirmation popup.")
                     except Exception:
                         logger.warning("No confirmation popup after save.")
-                    
-                    return  # done successfully
+
+                    return  # done
 
             time.sleep(poll_interval)
 
         except Exception as e:
             last_exception = e
             time.sleep(poll_interval)
-    
+
     msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
     logger.error(msg)
     if last_exception:
