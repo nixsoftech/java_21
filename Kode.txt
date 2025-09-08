@@ -1,73 +1,63 @@
-def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
+def handle_peak_margin_reject_for_rash1(peak_margin_win, target_start_time):
+    """
+    Find the row matching target_start_time, tick the edit checkbox,
+    open Status ComboBox, select REJECT, then save.
+    """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={target_start_time}...")
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
+    rows = dump_peak_margin_grid(peak_margin_win)
 
-    end_time = time.time() + max_wait_seconds
-    last_exception = None
+    matched_row = None
+    for idx, row_values in enumerate(rows):
+        if len(row_values) > 1 and row_values[1] == target_start_time:
+            matched_row = idx
+            logger.info(f"✅ Matched row {idx} with Start Time={target_start_time}, Status={row_values[5]}")
+            break
 
-    while time.time() < end_time:
+    if matched_row is None:
+        logger.error(f"❌ No row found with Start Time={target_start_time}")
+        return
+
+    # Locate the row control again and interact
+    try:
+        grid = peak_margin_win.child_window(control_type="Table")
+        row_ctrl = grid.children(control_type="DataItem")[matched_row]
+        cells = row_ctrl.children()
+
+        # 1️⃣ Click Edit checkbox (last cell)
+        checkbox_cell = cells[-1]
         try:
-            rows = dump_peak_margin_grid(peak_margin_win)
-            for r_idx, (row_cells, row_values) in enumerate(rows):
-                if len(row_values) < 6:
-                    continue
-
-                start_time_val = row_values[1]
-                status_val = row_values[5]
-
-                if start_time_val == target_start_time and status_val.upper() == "PENDING":
-                    logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
-
-                    # 1. Select edit checkbox
-                    row_cells[-1].click_input()
-                    time.sleep(0.5)
-
-                    # 2. Activate status cell (combo box)
-                    status_cell = row_cells[5]
-                    status_cell.click_input()
-                    time.sleep(0.5)
-
-                    # --- NEW: Explicitly find list item "REJECT" ---
-                    try:
-                        combo = peak_margin_win.child_window(control_type="ComboBox", title="Editing Control")
-                        combo.wait("enabled", timeout=5)
-                        combo.expand()
-                        time.sleep(0.5)
-
-                        reject_item = combo.child_window(title="REJECT", control_type="ListItem")
-                        reject_item.wait("enabled", timeout=3)
-                        reject_item.click_input()
-                        logger.info("Selected 'REJECT' from combo box by direct click.")
-                    except Exception as e:
-                        logger.error(f"Failed to select REJECT directly: {e}")
-                        # fallback to keyboard as last resort
-                        from pywinauto.keyboard import send_keys
-                        send_keys("{DOWN}{ENTER}")
-                        logger.info("Fallback: used keyboard to select REJECT.")
-
-                    # 3. Save changes
-                    safe_click(peak_margin_win, title="Save", control_type="Button")
-                    logger.info("Clicked Save after selecting REJECT.")
-                    time.sleep(1)
-
-                    # 4. Handle success popup
-                    try:
-                        popup = app.window(best_match="Risk Management System")
-                        popup.wait("visible", timeout=10)
-                        safe_click(popup, auto_id="2", control_type="Button")
-                        logger.info("Clicked OK on 'Data Reject successfully' popup.")
-                    except Exception as e:
-                        logger.error(f"Failed to handle success popup: {e}")
-
-                    return  # Done
-            time.sleep(poll_interval)
+            checkbox = checkbox_cell.child_window(control_type="CheckBox")
+            checkbox.click_input()
+            logger.info("✅ Clicked edit checkbox.")
+            time.sleep(0.5)
         except Exception as e:
-            last_exception = e
-            time.sleep(poll_interval)
+            logger.error(f"Failed to click checkbox: {e}")
+            return
 
-    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
-    logger.error(msg)
-    if last_exception:
-        logger.debug(f"Last exception: {last_exception}")
-    raise RuntimeError(msg)
+        # 2️⃣ Click Status cell (column index 5) to activate combo
+        status_cell = cells[5]
+        status_cell.click_input()
+        time.sleep(0.5)
+
+        # Wait for Editing Control (combo box)
+        combo = peak_margin_win.child_window(control_type="ComboBox", title="Editing Control")
+        combo.wait("visible", timeout=5)
+        logger.info("✅ ComboBox detected, opening dropdown...")
+        combo.expand()
+        time.sleep(0.5)
+
+        # Select REJECT from dropdown
+        reject_item = combo.child_window(title="REJECT", control_type="ListItem")
+        reject_item.wait("visible", timeout=5)
+        reject_item.invoke()  # Equivalent to double-click
+        logger.info("✅ Selected REJECT from dropdown.")
+        time.sleep(0.5)
+
+        # 3️⃣ Click Save
+        save_btn = peak_margin_win.child_window(title="Save", control_type="Button")
+        save_btn.click_input()
+        logger.info("Clicked Save after selecting REJECT.")
+        time.sleep(1)
+
+    except Exception as e:
+        logger.error(f"Failed to process row for rash1: {e}")
