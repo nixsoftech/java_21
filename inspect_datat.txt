@@ -1,14 +1,14 @@
-Name:	"Start Time Row 7"
+Name:	"Start Time Row 6"
 ControlType:	UIA_DataItemControlTypeId (0xC36D)
 LocalizedControlType:	"item"
-BoundingRectangle:	{l:122 t:278 r:222 b:300}
+BoundingRectangle:	{l:156 t:308 r:256 b:330}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	true
 AccessKey:	""
-ProcessId:	11668
-ProviderDescription:	"[pid:11668,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	8664
+ProviderDescription:	"[pid:8664,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	"DataGridViewTextBoxCell(DataGridViewCell)"
 IsDialog:	false
@@ -17,12 +17,12 @@ LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	"DataGridViewTextBoxCell(DataGridViewCell)"
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Start Time Row 7"
+LegacyIAccessible.Name:	"Start Time Row 6"
 LegacyIAccessible.Role:	cell (0x1D)
 LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
-LegacyIAccessible.Value:	"17:13:00"
+LegacyIAccessible.Value:	"16:40:00"
 Value.IsReadOnly:	false
-Value.Value:	"17:13:00"
+Value.Value:	"16:40:00"
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -60,11 +60,85 @@ IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	"End Time Row 7" item
-Previous:	"Sr. No Row 7" item
+Next:	"End Time Row 6" item
+Previous:	"Sr. No Row 6" item
 Other Props:	Object has no additional properties
 Children:	Container has no children
-Ancestors:	"Row 7" 
+Ancestors:	"Row 6" 
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+========================
+Name:	"Status Row 6"
+ControlType:	UIA_DataItemControlTypeId (0xC36D)
+LocalizedControlType:	"item"
+BoundingRectangle:	{l:556 t:308 r:656 b:330}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	true
+AccessKey:	""
+ProcessId:	8664
+ProviderDescription:	"[pid:8664,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	"DataGridViewTextBoxCell(DataGridViewCell)"
+IsDialog:	false
+LegacyIAccessible.ChildId:	0
+LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	"DataGridViewTextBoxCell(DataGridViewCell)"
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"Status Row 6"
+LegacyIAccessible.Role:	cell (0x1D)
+LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
+LegacyIAccessible.Value:	"NORMAL"
+Value.IsReadOnly:	false
+Value.Value:	"NORMAL"
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	false
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	false
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	false
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	true
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"Maker Remarks Row 6" item
+Previous:	"Flag Row 6" item
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Row 6" 
 	"DataGridView" table
 	"Peak Margin" window
 	"" pane
