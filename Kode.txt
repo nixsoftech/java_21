@@ -1,9 +1,7 @@
-# ------------------- Peak Margin Complete Dump -------------------
 def dump_peak_margin_complete(peak_margin_win):
     """
-    Returns a list of rows in the Peak Margin grid.
-    Each row is a tuple: (list_of_cells, list_of_cell_values)
-    Handles nested children safely.
+    Dumps all rows from Peak Margin grid/list dynamically.
+    Returns a list of tuples: (row_cells, row_values)
     """
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
@@ -13,117 +11,29 @@ def dump_peak_margin_complete(peak_margin_win):
     grid = tables[0]
     all_data_items = grid.descendants(control_type="DataItem")
 
-    # Attempt to detect proper number of columns per row
-    # If unsure, fallback to 8 columns
-    columns_per_row = 8
-    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+    # Dynamically detect columns per row
+    # Use the first row with enough cells (>=1) to estimate columns
+    for cols_guess in range(1, 20):
+        if len(all_data_items) % cols_guess == 0:
+            columns_per_row = cols_guess
+            break
+    else:
+        columns_per_row = 8  # fallback
 
+    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
     rows = []
+
     for r_idx, row_cells in enumerate(rows_cells):
         row_values = []
         for cell in row_cells:
-            val = ""
             try:
                 val = cell.legacy_properties().get("Value", "")
             except Exception:
                 try:
                     val = cell.get_value()
                 except Exception:
-                    try:
-                        val = cell.window_text()
-                    except Exception:
-                        val = ""
+                    val = cell.window_text()
             row_values.append(val.strip() if val else "")
         logger.info(f"Row {r_idx}: {row_values}")
         rows.append((row_cells, row_values))
     return rows
-
-# ------------------- Peak Margin Reject (rash1) -------------------
-def handle_peak_margin_reject_for_rash1_complete(app, main_win, target_start_time, max_wait_seconds=25, poll_interval=1):
-    """
-    Searches for the row with Start Time = target_start_time and Status=PENDING
-    Then clicks the checkbox, selects REJECT, and saves.
-    Works reliably with nested children in grid.
-    """
-    logger.info(f"Looking for Peak Margin row to reject Start Time={target_start_time}...")
-
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
-
-    end_time = time.time() + max_wait_seconds
-    last_exception = None
-
-    while time.time() < end_time:
-        try:
-            rows = dump_peak_margin_complete(peak_margin_win)
-            for r_idx, (row_cells, row_values) in enumerate(rows):
-                if len(row_values) < 6:
-                    continue
-                start_time_val = row_values[1].strip()
-                status_val = row_values[5].strip().upper()
-
-                if start_time_val == target_start_time and status_val == "PENDING":
-                    logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
-
-                    # Click the last column (checkbox)
-                    try:
-                        row_cells[-1].click_input()
-                        time.sleep(0.3)
-                    except Exception as e:
-                        logger.warning(f"Failed to click checkbox: {e}")
-
-                    # Select REJECT in Status column (cell index 5)
-                    status_cell = row_cells[5]
-                    try:
-                        status_cell.click_input()
-                        time.sleep(0.3)
-                        send_keys("{F2}")
-                        time.sleep(0.2)
-
-                        # Search for "REJECT" item in the combo list
-                        combo_list = status_cell.descendants(control_type="ListItem")
-                        reject_found = False
-                        for item in combo_list:
-                            if item.window_text().strip().upper() == "REJECT":
-                                item.click_input()
-                                reject_found = True
-                                logger.info("Selected REJECT from dropdown")
-                                break
-
-                        if not reject_found:
-                            # Fallback: type REJECT manually
-                            send_keys("REJECT{ENTER}")
-                            logger.info("Typed REJECT manually")
-                        else:
-                            send_keys("{ENTER}")
-
-                    except Exception as e:
-                        logger.error(f"Failed to set status to REJECT: {e}")
-                        raise
-
-                    # Save
-                    safe_click(peak_margin_win, title="Save", control_type="Button")
-                    time.sleep(1.5)
-
-                    # Handle confirmation popup
-                    try:
-                        popup = app.window(best_match="Risk Management System")
-                        popup.wait("visible", timeout=8)
-                        safe_click(popup, auto_id="2", control_type="Button")
-                        logger.info("Clicked OK on confirmation popup.")
-                    except Exception:
-                        logger.warning("No confirmation popup after save.")
-
-                    return  # Done
-
-            time.sleep(poll_interval)
-
-        except Exception as e:
-            last_exception = e
-            time.sleep(poll_interval)
-
-    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
-    logger.error(msg)
-    if last_exception:
-        logger.debug(f"Last exception: {last_exception}")
-    raise RuntimeError(msg)
