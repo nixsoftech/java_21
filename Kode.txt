@@ -1,4 +1,4 @@
-def handle_peak_margin_reject_for_rash1(peak_margin_win, target_start_time):
+def handle_peak_margin_reject_for_rash1(app, peak_margin_win, target_start_time):
     """
     Find the row matching target_start_time, tick the edit checkbox,
     open Status ComboBox, select REJECT, then save.
@@ -17,43 +17,35 @@ def handle_peak_margin_reject_for_rash1(peak_margin_win, target_start_time):
         logger.error(f"❌ No row found with Start Time={target_start_time}")
         return
 
-    # Locate the row control again and interact
     try:
         grid = peak_margin_win.child_window(control_type="Table")
         row_ctrl = grid.children(control_type="DataItem")[matched_row]
         cells = row_ctrl.children()
 
-        # 1️⃣ Click Edit checkbox (last cell)
+        # 1️⃣ Click Edit checkbox
         checkbox_cell = cells[-1]
-        try:
-            checkbox = checkbox_cell.child_window(control_type="CheckBox")
-            checkbox.click_input()
-            logger.info("✅ Clicked edit checkbox.")
-            time.sleep(0.5)
-        except Exception as e:
-            logger.error(f"Failed to click checkbox: {e}")
-            return
+        checkbox = checkbox_cell.child_window(control_type="CheckBox")
+        checkbox.click_input()
+        logger.info("✅ Clicked edit checkbox.")
+        time.sleep(0.5)
 
-        # 2️⃣ Click Status cell (column index 5) to activate combo
+        # 2️⃣ Click Status cell to activate combo
         status_cell = cells[5]
         status_cell.click_input()
         time.sleep(0.5)
 
-        # Wait for Editing Control (combo box)
         combo = peak_margin_win.child_window(control_type="ComboBox", title="Editing Control")
         combo.wait("visible", timeout=5)
-        logger.info("✅ ComboBox detected, opening dropdown...")
         combo.expand()
+        logger.info("✅ ComboBox expanded.")
         time.sleep(0.5)
 
-        # Select REJECT from dropdown
         reject_item = combo.child_window(title="REJECT", control_type="ListItem")
         reject_item.wait("visible", timeout=5)
-        reject_item.invoke()  # Equivalent to double-click
+        reject_item.invoke()
         logger.info("✅ Selected REJECT from dropdown.")
         time.sleep(0.5)
 
-        # 3️⃣ Click Save
         save_btn = peak_margin_win.child_window(title="Save", control_type="Button")
         save_btn.click_input()
         logger.info("Clicked Save after selecting REJECT.")
