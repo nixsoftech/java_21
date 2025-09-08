@@ -1,39 +1,30 @@
-def dump_peak_margin_complete(peak_margin_win):
+def dump_peak_margin_complete_fixed(peak_margin_win, expected_columns=8):
     """
-    Dumps all rows from Peak Margin grid/list dynamically.
-    Returns a list of tuples: (row_cells, row_values)
+    Dump Peak Margin grid and reconstruct rows by fixed column count.
+    Returns list of tuples: (row_cells, row_values)
     """
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
-        logger.warning("No tables/list views found in Peak Margin window for dumping")
+        logger.warning("No tables/list views found in Peak Margin window")
         return []
 
     grid = tables[0]
-    all_data_items = grid.descendants(control_type="DataItem")
-
-    # Dynamically detect columns per row
-    # Use the first row with enough cells (>=1) to estimate columns
-    for cols_guess in range(1, 20):
-        if len(all_data_items) % cols_guess == 0:
-            columns_per_row = cols_guess
-            break
-    else:
-        columns_per_row = 8  # fallback
-
-    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+    all_cells = grid.descendants(control_type="DataItem")
     rows = []
 
-    for r_idx, row_cells in enumerate(rows_cells):
+    for i in range(0, len(all_cells), expected_columns):
+        row_cells = all_cells[i:i+expected_columns]
         row_values = []
         for cell in row_cells:
             try:
-                val = cell.legacy_properties().get("Value", "")
+                val = cell.legacy_properties().get("Value", "") or cell.window_text() or ""
             except Exception:
-                try:
-                    val = cell.get_value()
-                except Exception:
-                    val = cell.window_text()
+                val = ""
             row_values.append(val.strip() if val else "")
-        logger.info(f"Row {r_idx}: {row_values}")
         rows.append((row_cells, row_values))
+
+    # Log for debugging
+    for idx, (_, values) in enumerate(rows):
+        logger.info(f"Row {idx}: {values}")
+
     return rows
