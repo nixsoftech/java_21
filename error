@@ -1,13 +1,33 @@
 Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-08 17:11:26,925 [INFO] Successfully opened Peak Margin window.
-2025-09-08 17:11:26,925 [INFO] Looking for Peak Margin row to reject Start Time=17:54:00...
-2025-09-08 17:11:59,789 [ERROR] No row found with Start Time=17:54:00 & Status=PENDING within 30s
-2025-09-08 17:11:59,789 [ERROR] Automation failed: No row found with Start Time=17:54:00 & Status=PENDING within 30s
+2025-09-08 17:41:05,497 [INFO] Successfully opened Peak Margin window.
+2025-09-08 17:41:05,497 [INFO] Looking for Peak Margin panel for rash1 to reject Start Time=17:07:00...
+2025-09-08 17:41:11,579 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-08 17:41:11,688 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:11,813 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:11,923 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:12,032 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:12,142 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:12,267 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:12,376 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:12,485 [INFO] Row 7: ['8', '17:07:00', '17:17:00', '17:12:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 17:41:12,485 [INFO] ✅ Matched row 7 with Start Time=17:07:00, Status=PENDING
+2025-09-08 17:41:23,610 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-08 17:41:23,736 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:23,861 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:23,970 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:24,095 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:24,204 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:24,314 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:24,423 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 17:41:24,548 [INFO] Row 7: ['8', '17:07:00', '17:17:00', '17:12:00', 'N', 'PENDING', '(null)', '(null)', 'True']
+2025-09-08 17:41:24,548 [INFO] ✅ Matched row 7 with Start Time=17:07:00, Status=PENDING
+2025-09-08 17:41:29,878 [ERROR] No row found with Start Time=17:07:00 & Status=PENDING within 20s
+2025-09-08 17:41:29,878 [ERROR] Automation failed: No row found with Start Time=17:07:00 & Status=PENDING within 20s
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 354, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 341, in main
     run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 342, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 329, in run_workflow_for_user
     handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 293, in handle_peak_margin_reject_for_rash1
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 280, in handle_peak_margin_reject_for_rash1
     raise RuntimeError(msg)
-RuntimeError: No row found with Start Time=17:54:00 & Status=PENDING within 30s
+RuntimeError: No row found with Start Time=17:07:00 & Status=PENDING within 20s
