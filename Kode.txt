@@ -1,82 +1,92 @@
-from pywinauto.keyboard import send_keys
+def handle_peak_margin_reject_for_rash1(app, peak_margin_win, stored_start_time):
+    """
+    Handles rejecting a Peak Margin entry for rash1 user.
+    It matches the row with stored_start_time, selects the checkbox,
+    opens the Status dropdown, selects 'REJECT', and saves.
+    """
+    import time
+    from pywinauto.keyboard import send_keys
+    from pywinauto.timings import TimeoutError
 
-def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
-    logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={target_start_time}...")
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
+    logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={stored_start_time}...")
 
-    end_time = time.time() + max_wait_seconds
-    last_exception = None
+    # Step 1: Dump grid and find matching row
+    grid = peak_margin_win.child_window(control_type="Table")
+    rows = grid.children(control_type="DataItem")
 
-    while time.time() < end_time:
-        try:
-            rows = dump_peak_margin_grid(peak_margin_win)
-            for r_idx, (row_cells, row_values) in enumerate(rows):
-                if len(row_values) < 6:
-                    continue
+    matched_row = None
+    for idx, row in enumerate(rows):
+        cells = row.children()
+        # We expect Start Time in second column (adjust index if needed)
+        start_time_value = None
+        status_value = None
+        if len(cells) > 2:
+            try:
+                start_time_value = cells[1].legacy_properties().get("Value")
+                status_value = cells[5].legacy_properties().get("Value")
+            except Exception:
+                pass
 
-                start_time_val = row_values[1]
-                status_val = row_values[5]
+        logger.debug(f"Row {idx}: start_time={start_time_value}, status={status_value}")
+        if start_time_value == stored_start_time:
+            matched_row = row
+            logger.info(f"✅ Matched row {idx} with Start Time={start_time_value}, Status={status_value}")
+            break
 
-                if start_time_val == target_start_time and status_val.upper() == "PENDING":
-                    logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
+    if not matched_row:
+        logger.error(f"❌ No row found with Start Time={stored_start_time}")
+        return
 
-                    # 1. Select edit checkbox
-                    row_cells[-1].click_input()
-                    time.sleep(0.5)
+    cells = matched_row.children()
+    if len(cells) < 6:
+        logger.error("Row does not have enough cells to process.")
+        return
 
-                    # 2. Click Status cell to activate combo box
-                    status_cell = row_cells[5]
-                    status_cell.click_input()
-                    time.sleep(0.3)
+    # Step 2: Select checkbox (assume checkbox is in first column or last column)
+    try:
+        checkbox = cells[-1]
+        checkbox.click_input()
+        logger.info("Clicked edit checkbox for matched row.")
+    except Exception as e:
+        logger.warning(f"Could not click checkbox directly: {e}")
 
-                    # 3. Expand combo box with keyboard to ensure list is open
-                    send_keys("%{DOWN}")  # Alt+Down
-                    time.sleep(0.5)
+    # Step 3: Focus status cell and enter edit mode
+    status_cell = cells[5]
+    status_cell.click_input()
+    time.sleep(0.2)
 
-                    # 4. Locate combo list and log items
-                    try:
-                        combo_list = peak_margin_win.child_window(control_type="List", title="Editing Control")
-                        combo_list.wait("visible", timeout=5)
+    # Enter edit mode (F2 or double-click)
+    try:
+        status_cell.double_click_input()
+    except Exception:
+        send_keys("{F2}")
+    time.sleep(0.3)
 
-                        all_items = combo_list.children(control_type="ListItem")
-                        logger.info(f"Found {len(all_items)} items in combo:")
-                        for i, itm in enumerate(all_items):
-                            logger.info(f"   {i+1}) {itm.window_text()}")
+    # Step 4: Expand dropdown (Alt+Down is reliable)
+    send_keys("%{DOWN}")
+    time.sleep(0.5)
 
-                        reject_item = combo_list.child_window(title="REJECT", control_type="ListItem")
-                        reject_item.wait("enabled", timeout=5)
-                        reject_item.double_click_input()
-                        logger.info("✅ Selected 'REJECT' via double click.")
-                    except Exception as e:
-                        logger.error(f"Failed to directly double-click REJECT: {e}")
-                        logger.info("Fallback: using DOWN + ENTER to select REJECT")
-                        send_keys("{DOWN}{ENTER}")
+    # Step 5: Select "REJECT" from dropdown
+    try:
+        editing_combo = peak_margin_win.child_window(control_type="ComboBox", title="Editing Control")
+        editing_combo.wait("visible", timeout=3)
 
-                    time.sleep(0.5)
+        reject_item = editing_combo.child_window(title="REJECT", control_type="ListItem")
+        reject_item.wait("visible", timeout=3)
+        reject_item.double_click_input()
+        logger.info("✅ Visually selected 'REJECT' from dropdown.")
+    except TimeoutError:
+        logger.warning("Failed to select REJECT directly: timed out. Fallback using DOWN+ENTER.")
+        send_keys("{DOWN}{ENTER}")
 
-                    # 5. Click Save
-                    safe_click(peak_margin_win, title="Save", control_type="Button")
-                    logger.info("Clicked Save after selecting REJECT.")
-                    time.sleep(1)
+    # Step 6: Commit change and move focus out
+    send_keys("{TAB}")
+    time.sleep(0.3)
 
-                    # 6. Handle popup
-                    try:
-                        popup = app.window(best_match="Risk Management System")
-                        popup.wait("visible", timeout=10)
-                        safe_click(popup, auto_id="2", control_type="Button")
-                        logger.info("Clicked OK on 'Data Reject successfully' popup.")
-                    except Exception as e:
-                        logger.error(f"Failed to handle success popup: {e}")
-
-                    return  # Done
-            time.sleep(poll_interval)
-        except Exception as e:
-            last_exception = e
-            time.sleep(poll_interval)
-
-    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
-    logger.error(msg)
-    if last_exception:
-        logger.debug(f"Last exception: {last_exception}")
-    raise RuntimeError(msg)
+    # Step 7: Click Save
+    try:
+        save_btn = peak_margin_win.child_window(title="Save", control_type="Button")
+        save_btn.click_input()
+        logger.info("Clicked Save after selecting REJECT.")
+    except Exception as e:
+        logger.error(f"Could not click Save: {e}")
