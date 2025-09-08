@@ -1,11 +1,12 @@
-Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-08 14:57:37,163 [WARNING] No post-login popups appeared within timeout.
-2025-09-08 14:57:37,163 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-08 14:57:38,381 [INFO] Successfully opened Peak Margin window.
-2025-09-08 14:57:38,381 [INFO] Looking for Peak Margin panel for rash1 to reject start_time=17:39:00...
-2025-09-08 14:57:39,821 [ERROR] ❌ No row found with Start Time=17:39:00
-2025-09-08 14:57:43,212 [INFO] Clicked Exit (attempt 1)
-2025-09-08 14:57:44,227 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
-2025-09-08 14:57:46,761 [INFO] Clicked popup button with AutomationId=6
-2025-09-08 14:57:46,761 [INFO] Workflow completed for user: rash1
-2025-09-08 14:57:46,761 [INFO] Automation script completed successfully for both users.
+ Clicked popup button with AutomationId=6
+2025-09-08 15:54:51,067 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
+2025-09-08 15:55:11,199 [WARNING] No post-login popups appeared within timeout.
+2025-09-08 15:55:11,199 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-08 15:55:12,433 [INFO] Successfully opened Peak Margin window.
+2025-09-08 15:55:12,433 [ERROR] Automation failed: handle_peak_margin_reject_for_rash1() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 345, in main
+    run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 333, in run_workflow_for_user
+    handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
+TypeError: handle_peak_margin_reject_for_rash1() takes 2 positional arguments but 3 were given
