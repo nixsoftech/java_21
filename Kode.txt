@@ -119,7 +119,6 @@ def click_rms_configuration_and_peak_margin(main_win):
 
 # ------------------- Peak Margin Add (QA1) -------------------
 def set_cell_value(cell, value, max_attempts=3):
-    """Safely sets a value in a grid cell with retries."""
     for attempt in range(1, max_attempts + 1):
         try:
             cell.click_input(double=False)
@@ -149,8 +148,6 @@ def handle_peak_margin_add(app, main_win):
         raise RuntimeError("No tables/list views found in Peak Margin window after clicking Add")
 
     grid = tables[0]
-
-    # Wait until last row appears
     for attempt in range(5):
         all_data_items = grid.descendants(control_type="DataItem")
         if len(all_data_items) >= 8:
@@ -187,12 +184,8 @@ def handle_peak_margin_add(app, main_win):
 
     return start_time
 
-# ------------------- Peak Margin Reject (rash1) -------------------
+# ------------------- Peak Margin Dump -------------------
 def dump_peak_margin_grid(peak_margin_win):
-    """
-    Logs all rows and values from the Peak Margin grid.
-    Returns a list of tuples: (row_cells, row_values)
-    """
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
         logger.warning("No tables/list views found in Peak Margin window for dumping")
@@ -200,7 +193,7 @@ def dump_peak_margin_grid(peak_margin_win):
 
     grid = tables[0]
     all_data_items = grid.descendants(control_type="DataItem")
-    columns_per_row = 9  # adjust as per your grid
+    columns_per_row = 9
     rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
 
     rows = []
@@ -209,15 +202,19 @@ def dump_peak_margin_grid(peak_margin_win):
         row_values = []
         for cell in row_cells:
             try:
-                val = getattr(cell.legacy_properties, 'get', lambda k, d='': cell.window_text())('Value', '')
+                val = cell.legacy_properties().get("Value", "")
             except Exception:
-                val = cell.window_text()
-            row_values.append(val)
+                try:
+                    val = cell.get_value()
+                except Exception:
+                    val = cell.window_text()
+            row_values.append(val.strip() if val else "")
         logger.info(f"Row {r_idx}: {row_values}")
         rows.append((row_cells, row_values))
 
     return rows
 
+# ------------------- Peak Margin Reject (rash1) -------------------
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     logger.info(f"Looking for Peak Margin panel for rash1 to reject start_time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -229,56 +226,28 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 
     while time.time() < end_time:
         try:
-            tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
-            if not tables:
-                time.sleep(poll_interval)
-                continue
-            grid = tables[0]
-
-            # Get both cell objects and their values
-            all_data_items = grid.descendants(control_type="DataItem")
-            columns_per_row = 9
-            rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
-
-            rows = []
-            for row_cells in rows_cells:
-                row_values = []
-                for cell in row_cells:
-                    try:
-                        val = getattr(cell.legacy_properties, 'get', lambda k, d='': cell.window_text())('Value', '')
-                    except Exception:
-                        val = cell.window_text()
-                    row_values.append(val)
-                rows.append((row_cells, row_values))
-
-            logger.info(f"Dumping {len(rows)} rows from Peak Margin grid:")
-            for r_idx, (_, row_values) in enumerate(rows):
-                logger.info(f"Row {r_idx}: {row_values}")
-
-            # Scan rows for target Start Time
+            rows = dump_peak_margin_grid(peak_margin_win)
             for r_idx, (row_cells, row_values) in enumerate(rows):
-                start_cell_text = row_values[1].strip()
-                if start_cell_text == target_start_time:
-                    logger.info(f"Matched row {r_idx} with Start Time '{start_cell_text}'")
-
-                    # Click Edit checkbox (last column)
-                    row_cells[8].click_input()
+                if len(row_values) < 6:
+                    continue
+                start_time_val = row_values[1]
+                status_val = row_values[5]
+                if start_time_val == target_start_time and status_val.upper() == "PENDING":
+                    logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
+                    row_cells[-1].click_input()
                     time.sleep(0.3)
 
-                    # Open status dropdown and select REJECT
                     status_cell = row_cells[5]
                     status_cell.click_input()
-                    time.sleep(0.2)
+                    time.sleep(0.3)
                     send_keys("{F2}")
-                    time.sleep(0.2)
-                    send_keys("{DOWN}{ENTER}")
-                    logger.info("Selected REJECT in status dropdown.")
+                    time.sleep(0.3)
+                    send_keys("REJECT{ENTER}")
+                    logger.info("Changed Status to REJECT.")
 
-                    # Save changes
                     safe_click(peak_margin_win, title="Save", control_type="Button")
                     time.sleep(1.5)
 
-                    # Handle confirmation popup
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
@@ -286,16 +255,13 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                         logger.info("Clicked OK on confirmation popup.")
                     except Exception:
                         logger.warning("No confirmation popup after save.")
-
-                    found = True
                     return
-
             time.sleep(poll_interval)
         except Exception as e:
             last_exception = e
             time.sleep(poll_interval)
 
-    msg = f"No row found with Start Time = {target_start_time} within {max_wait_seconds}s"
+    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
     logger.error(msg)
     if last_exception:
         logger.debug(f"Last exception: {last_exception}")
