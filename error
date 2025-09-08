@@ -1,69 +1,24 @@
-Starting RMS for user: rash1
-2025-09-08 13:42:05,007 [INFO] Typed 'rash1' into txt_UserId (attempt 1)
-2025-09-08 13:42:06,350 [INFO] Typed 'change@1212' into txt_Password (attempt 1)
-2025-09-08 13:42:09,085 [INFO] Selected 'UAT' in cmb_Envionrnment (attempt 1)
-2025-09-08 13:42:11,725 [INFO] Selected 'RMS' in cmb_loginMethod (attempt 1)
-2025-09-08 13:42:13,397 [INFO] Clicked btn_Submit (attempt 1)
-2025-09-08 13:42:13,647 [INFO] Popup detected: 'Risk Management System - Login'
-2025-09-08 13:42:13,647 [WARNING] Popup text mismatch. Expected 'login to test/mock environment' but got 'Risk Management System - Login'
-2025-09-08 13:42:14,991 [INFO] Clicked popup button with AutomationId=6
-2025-09-08 13:42:32,991 [INFO] Waiting for 'BMS OpmsEngine Got abandoned' popup...
-2025-09-08 13:42:53,649 [WARNING] No post-login popups appeared within timeout.
-2025-09-08 13:42:53,649 [INFO] Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-08 13:42:54,665 [INFO] Successfully opened Peak Margin window.
-2025-09-08 13:42:54,665 [INFO] Looking for Peak Margin panel for rash1 to reject start_time=17:20:00...
-2025-09-08 13:43:00,681 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-08 13:43:00,681 [INFO] Row 0: ['Sr. No Row 0', 'Start Time Row 0', 'End Time Row 0', 'Executable Time Row 0', 'Flag Row 0', 'Status Row 0', 'Maker Remarks Row 0', 'Checker Remarks Row 0', 'Edit Row 0']
-2025-09-08 13:43:00,681 [INFO] Row 1: ['Sr. No Row 1', 'Start Time Row 1', 'End Time Row 1', 'Executable Time Row 1', 'Flag Row 1', 'Status Row 1', 'Maker Remarks Row 1', 'Checker Remarks Row 1', 'Edit Row 1']
-2025-09-08 13:43:00,681 [INFO] Row 2: ['Sr. No Row 2', 'Start Time Row 2', 'End Time Row 2', 'Executable Time Row 2', 'Flag Row 2', 'Status Row 2', 'Maker Remarks Row 2', 'Checker Remarks Row 2', 'Edit Row 2']
-2025-09-08 13:43:00,681 [INFO] Row 3: ['Sr. No Row 3', 'Start Time Row 3', 'End Time Row 3', 'Executable Time Row 3', 'Flag Row 3', 'Status Row 3', 'Maker Remarks Row 3', 'Checker Remarks Row 3', 'Edit Row 3']
-2025-09-08 13:43:00,681 [INFO] Row 4: ['Sr. No Row 4', 'Start Time Row 4', 'End Time Row 4', 'Executable Time Row 4', 'Flag Row 4', 'Status Row 4', 'Maker Remarks Row 4', 'Checker Remarks Row 4', 'Edit Row 4']
-2025-09-08 13:43:00,681 [INFO] Row 5: ['Sr. No Row 5', 'Start Time Row 5', 'End Time Row 5', 'Executable Time Row 5', 'Flag Row 5', 'Status Row 5', 'Maker Remarks Row 5', 'Checker Remarks Row 5', 'Edit Row 5']
-2025-09-08 13:43:00,681 [INFO] Row 6: ['Sr. No Row 6', 'Start Time Row 6', 'End Time Row 6', 'Executable Time Row 6', 'Flag Row 6', 'Status Row 6', 'Maker Remarks Row 6', 'Checker Remarks Row 6', 'Edit Row 6']
-2025-09-08 13:43:00,696 [INFO] Row 7: ['Sr. No Row 7', 'Start Time Row 7', 'End Time Row 7', 'Executable Time Row 7', 'Flag Row 7', 'Status Row 7', 'Maker Remarks Row 7', 'Checker Remarks Row 7', 'Edit Row 7']
-2025-09-08 13:43:05,368 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-08 13:43:05,368 [INFO] Row 0: ['Sr. No Row 0', 'Start Time Row 0', 'End Time Row 0', 'Executable Time Row 0', 'Flag Row 0', 'Status Row 0', 'Maker Remarks Row 0', 'Checker Remarks Row 0', 'Edit Row 0']
-2025-09-08 13:43:05,368 [INFO] Row 1: ['Sr. No Row 1', 'Start Time Row 1', 'End Time Row 1', 'Executable Time Row 1', 'Flag Row 1', 'Status Row 1', 'Maker Remarks Row 1', 'Checker Remarks Row 1', 'Edit Row 1']
-2025-09-08 13:43:05,368 [INFO] Row 2: ['Sr. No Row 2', 'Start Time Row 2', 'End Time Row 2', 'Executable Time Row 2', 'Flag Row 2', 'Status Row 2', 'Maker Remarks Row 2', 'Checker Remarks Row 2', 'Edit Row 2']
-2025-09-08 13:43:05,368 [INFO] Row 3: ['Sr. No Row 3', 'Start Time Row 3', 'End Time Row 3', 'Executable Time Row 3', 'Flag Row 3', 'Status Row 3', 'Maker Remarks Row 3', 'Checker Remarks Row 3', 'Edit Row 3']
-2025-09-08 13:43:05,368 [INFO] Row 4: ['Sr. No Row 4', 'Start Time Row 4', 'End Time Row 4', 'Executable Time Row 4', 'Flag Row 4', 'Status Row 4', 'Maker Remarks Row 4', 'Checker Remarks Row 4', 'Edit Row 4']
-2025-09-08 13:43:05,368 [INFO] Row 5: ['Sr. No Row 5', 'Start Time Row 5', 'End Time Row 5', 'Executable Time Row 5', 'Flag Row 5', 'Status Row 5', 'Maker Remarks Row 5', 'Checker Remarks Row 5', 'Edit Row 5']
-2025-09-08 13:43:05,368 [INFO] Row 6: ['Sr. No Row 6', 'Start Time Row 6', 'End Time Row 6', 'Executable Time Row 6', 'Flag Row 6', 'Status Row 6', 'Maker Remarks Row 6', 'Checker Remarks Row 6', 'Edit Row 6']
-2025-09-08 13:43:05,384 [INFO] Row 7: ['Sr. No Row 7', 'Start Time Row 7', 'End Time Row 7', 'Executable Time Row 7', 'Flag Row 7', 'Status Row 7', 'Maker Remarks Row 7', 'Checker Remarks Row 7', 'Edit Row 7']
-2025-09-08 13:43:10,010 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-08 13:43:10,010 [INFO] Row 0: ['Sr. No Row 0', 'Start Time Row 0', 'End Time Row 0', 'Executable Time Row 0', 'Flag Row 0', 'Status Row 0', 'Maker Remarks Row 0', 'Checker Remarks Row 0', 'Edit Row 0']
-2025-09-08 13:43:10,010 [INFO] Row 1: ['Sr. No Row 1', 'Start Time Row 1', 'End Time Row 1', 'Executable Time Row 1', 'Flag Row 1', 'Status Row 1', 'Maker Remarks Row 1', 'Checker Remarks Row 1', 'Edit Row 1']
-2025-09-08 13:43:10,010 [INFO] Row 2: ['Sr. No Row 2', 'Start Time Row 2', 'End Time Row 2', 'Executable Time Row 2', 'Flag Row 2', 'Status Row 2', 'Maker Remarks Row 2', 'Checker Remarks Row 2', 'Edit Row 2']
-2025-09-08 13:43:10,010 [INFO] Row 3: ['Sr. No Row 3', 'Start Time Row 3', 'End Time Row 3', 'Executable Time Row 3', 'Flag Row 3', 'Status Row 3', 'Maker Remarks Row 3', 'Checker Remarks Row 3', 'Edit Row 3']
-2025-09-08 13:43:10,010 [INFO] Row 4: ['Sr. No Row 4', 'Start Time Row 4', 'End Time Row 4', 'Executable Time Row 4', 'Flag Row 4', 'Status Row 4', 'Maker Remarks Row 4', 'Checker Remarks Row 4', 'Edit Row 4']
-2025-09-08 13:43:10,010 [INFO] Row 5: ['Sr. No Row 5', 'Start Time Row 5', 'End Time Row 5', 'Executable Time Row 5', 'Flag Row 5', 'Status Row 5', 'Maker Remarks Row 5', 'Checker Remarks Row 5', 'Edit Row 5']
-2025-09-08 13:43:10,010 [INFO] Row 6: ['Sr. No Row 6', 'Start Time Row 6', 'End Time Row 6', 'Executable Time Row 6', 'Flag Row 6', 'Status Row 6', 'Maker Remarks Row 6', 'Checker Remarks Row 6', 'Edit Row 6']
-2025-09-08 13:43:10,010 [INFO] Row 7: ['Sr. No Row 7', 'Start Time Row 7', 'End Time Row 7', 'Executable Time Row 7', 'Flag Row 7', 'Status Row 7', 'Maker Remarks Row 7', 'Checker Remarks Row 7', 'Edit Row 7']
-2025-09-08 13:43:14,746 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-08 13:43:14,746 [INFO] Row 0: ['Sr. No Row 0', 'Start Time Row 0', 'End Time Row 0', 'Executable Time Row 0', 'Flag Row 0', 'Status Row 0', 'Maker Remarks Row 0', 'Checker Remarks Row 0', 'Edit Row 0']
-2025-09-08 13:43:14,746 [INFO] Row 1: ['Sr. No Row 1', 'Start Time Row 1', 'End Time Row 1', 'Executable Time Row 1', 'Flag Row 1', 'Status Row 1', 'Maker Remarks Row 1', 'Checker Remarks Row 1', 'Edit Row 1']
-2025-09-08 13:43:14,746 [INFO] Row 2: ['Sr. No Row 2', 'Start Time Row 2', 'End Time Row 2', 'Executable Time Row 2', 'Flag Row 2', 'Status Row 2', 'Maker Remarks Row 2', 'Checker Remarks Row 2', 'Edit Row 2']
-2025-09-08 13:43:14,746 [INFO] Row 3: ['Sr. No Row 3', 'Start Time Row 3', 'End Time Row 3', 'Executable Time Row 3', 'Flag Row 3', 'Status Row 3', 'Maker Remarks Row 3', 'Checker Remarks Row 3', 'Edit Row 3']
-2025-09-08 13:43:14,746 [INFO] Row 4: ['Sr. No Row 4', 'Start Time Row 4', 'End Time Row 4', 'Executable Time Row 4', 'Flag Row 4', 'Status Row 4', 'Maker Remarks Row 4', 'Checker Remarks Row 4', 'Edit Row 4']
-2025-09-08 13:43:14,762 [INFO] Row 5: ['Sr. No Row 5', 'Start Time Row 5', 'End Time Row 5', 'Executable Time Row 5', 'Flag Row 5', 'Status Row 5', 'Maker Remarks Row 5', 'Checker Remarks Row 5', 'Edit Row 5']
-2025-09-08 13:43:14,762 [INFO] Row 6: ['Sr. No Row 6', 'Start Time Row 6', 'End Time Row 6', 'Executable Time Row 6', 'Flag Row 6', 'Status Row 6', 'Maker Remarks Row 6', 'Checker Remarks Row 6', 'Edit Row 6']
-2025-09-08 13:43:14,762 [INFO] Row 7: ['Sr. No Row 7', 'Start Time Row 7', 'End Time Row 7', 'Executable Time Row 7', 'Flag Row 7', 'Status Row 7', 'Maker Remarks Row 7', 'Checker Remarks Row 7', 'Edit Row 7']
-2025-09-08 13:43:19,356 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-08 13:43:19,356 [INFO] Row 0: ['Sr. No Row 0', 'Start Time Row 0', 'End Time Row 0', 'Executable Time Row 0', 'Flag Row 0', 'Status Row 0', 'Maker Remarks Row 0', 'Checker Remarks Row 0', 'Edit Row 0']
-2025-09-08 13:43:19,356 [INFO] Row 1: ['Sr. No Row 1', 'Start Time Row 1', 'End Time Row 1', 'Executable Time Row 1', 'Flag Row 1', 'Status Row 1', 'Maker Remarks Row 1', 'Checker Remarks Row 1', 'Edit Row 1']
-2025-09-08 13:43:19,356 [INFO] Row 2: ['Sr. No Row 2', 'Start Time Row 2', 'End Time Row 2', 'Executable Time Row 2', 'Flag Row 2', 'Status Row 2', 'Maker Remarks Row 2', 'Checker Remarks Row 2', 'Edit Row 2']
-2025-09-08 13:43:19,371 [INFO] Row 3: ['Sr. No Row 3', 'Start Time Row 3', 'End Time Row 3', 'Executable Time Row 3', 'Flag Row 3', 'Status Row 3', 'Maker Remarks Row 3', 'Checker Remarks Row 3', 'Edit Row 3']
-2025-09-08 13:43:19,371 [INFO] Row 4: ['Sr. No Row 4', 'Start Time Row 4', 'End Time Row 4', 'Executable Time Row 4', 'Flag Row 4', 'Status Row 4', 'Maker Remarks Row 4', 'Checker Remarks Row 4', 'Edit Row 4']
-2025-09-08 13:43:19,371 [INFO] Row 5: ['Sr. No Row 5', 'Start Time Row 5', 'End Time Row 5', 'Executable Time Row 5', 'Flag Row 5', 'Status Row 5', 'Maker Remarks Row 5', 'Checker Remarks Row 5', 'Edit Row 5']
-2025-09-08 13:43:19,371 [INFO] Row 6: ['Sr. No Row 6', 'Start Time Row 6', 'End Time Row 6', 'Executable Time Row 6', 'Flag Row 6', 'Status Row 6', 'Maker Remarks Row 6', 'Checker Remarks Row 6', 'Edit Row 6']
-2025-09-08 13:43:19,371 [INFO] Row 7: ['Sr. No Row 7', 'Start Time Row 7', 'End Time Row 7', 'Executable Time Row 7', 'Flag Row 7', 'Status Row 7', 'Maker Remarks Row 7', 'Checker Remarks Row 7', 'Edit Row 7']
-2025-09-08 13:43:20,372 [ERROR] No row found with Start Time = 17:20:00 within 20s
-2025-09-08 13:43:20,372 [ERROR] Automation failed: No row found with Start Time = 17:20:00 within 20s
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 363, in main
-    run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 351, in run_workflow_for_user
-    handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto9.py", line 302, in handle_peak_margin_reject_for_rash1
-    raise RuntimeError(msg)
-RuntimeError: No row found with Start Time = 17:20:00 within 20s
+Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-08 14:46:30,684 [INFO] Successfully opened Peak Margin window.
+2025-09-08 14:46:30,684 [INFO] Looking for Peak Margin panel for rash1 to reject start_time=17:33:00...
+2025-09-08 14:46:36,716 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-08 14:46:36,841 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:36,951 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,060 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,185 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,295 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,404 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,513 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,623 [INFO] Row 7: ['8', '17:33:00', '17:43:00', '17:38:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-08 14:46:37,623 [INFO] ✅ Matched row 7 with Start Time=17:33:00, Status=PENDING
+2025-09-08 14:46:45,749 [ERROR] Failed to directly double-click REJECT: timed out
+2025-09-08 14:46:45,749 [INFO] Fallback: using DOWN + ENTER to select REJECT
+2025-09-08 14:46:50,076 [INFO] Clicked Save (attempt 1)
+2025-09-08 14:46:50,076 [INFO] Clicked Save after selecting REJECT.
+2025-09-08 14:46:54,705 [INFO] Clicked 2 (attempt 1)
+2025-09-08 14:46:54,705 [INFO] Clicked OK on 'Data Reject successfully' popup.
+2025-09-08 14:46:58,221 [INFO] Clicked Exit (attempt 1)
+2025-09-08 14:46:59,096 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-08 14:47:01,707 [INFO] Clicked popup button with AutomationId=6
+2025-09-08 14:47:01,707 [INFO] Workflow completed for user: rash1
+2025-09-08 14:47:01,707 [INFO] Automation script completed successfully for both users.
