@@ -1,57 +1,31 @@
- Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-09 16:03:22,937 [INFO] Successfully opened Peak Margin window.
-2025-09-09 16:03:22,937 [INFO] Looking for Peak Margin panel for rash1 to reject Start Time=17:40:00...
-2025-09-09 16:03:29,046 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 16:03:29,156 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,265 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,390 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,500 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,625 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,750 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,859 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,984 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-09 16:03:29,984 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
-2025-09-09 16:03:30,109 [INFO] ☑️ Selected checkbox.
-2025-09-09 16:03:35,656 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 16:03:35,765 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:35,875 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:36,000 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:36,109 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:36,218 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:36,343 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:36,468 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:36,578 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'True']
-2025-09-09 16:03:36,578 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
-2025-09-09 16:03:36,703 [INFO] ☑️ Selected checkbox.
-2025-09-09 16:03:42,203 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 16:03:42,328 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:42,453 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:42,562 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:42,672 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:42,797 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:42,906 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:43,047 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:43,156 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-09 16:03:43,156 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
-2025-09-09 16:03:43,297 [INFO] ☑️ Selected checkbox.
-2025-09-09 16:03:48,922 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 16:03:49,031 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,156 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,265 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,390 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,515 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,625 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,750 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:03:49,859 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'True']
-2025-09-09 16:03:49,859 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
-2025-09-09 16:03:49,984 [INFO] ☑️ Selected checkbox.
-2025-09-09 16:03:52,000 [ERROR] No row found with Start Time=17:40:00 & Status=PENDING within 20s
-2025-09-09 16:03:52,000 [ERROR] Automation failed: No row found with Start Time=17:40:00 & Status=PENDING within 20s
+Dumping 8 rows from Peak Margin grid:
+2025-09-09 16:36:54,540 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:54,665 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:54,790 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:54,915 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:55,025 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:55,150 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:55,275 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:36:55,384 [INFO] Row 7: ['8', '17:41:00', '17:51:00', '17:46:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-09 16:36:55,384 [INFO] ✅ Found row 7: Start=17:41:00, Status=PENDING
+2025-09-09 16:36:55,509 [INFO] ☑️ Checkbox selected.
+2025-09-09 16:36:56,509 [INFO] Moving mouse to PENDING cell at (0, 0)...
+2025-09-09 16:36:57,134 [INFO] 🖱️ Double-clicked on PENDING cell.
+2025-09-09 16:36:57,634 [INFO] After double-click, cell value still: (null)
+2025-09-09 16:36:58,596 [INFO] ✅ Sent REJECT via keyboard.
+2025-09-09 16:37:04,198 [WARNING] Attempt 1 failed for Save: timed out
+2025-09-09 16:37:11,198 [WARNING] Attempt 2 failed for Save: timed out
+2025-09-09 16:37:18,357 [WARNING] Attempt 3 failed for Save: timed out
+2025-09-09 16:37:25,515 [WARNING] Attempt 4 failed for Save: timed out
+2025-09-09 16:37:32,577 [WARNING] Attempt 5 failed for Save: timed out
+2025-09-09 16:37:34,577 [ERROR] Automation failed: Failed to click Save after 5 attempts
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 395, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 355, in main
     run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 383, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 343, in run_workflow_for_user
     handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 334, in handle_peak_margin_reject_for_rash1
-    raise RuntimeError(msg)
-RuntimeError: No row found with Start Time=17:40:00 & Status=PENDING within 20s
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 275, in handle_peak_margin_reject_for_rash1
+    safe_click(peak_margin_win, title="Save", control_type="Button")
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 67, in safe_click
+    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+pywinauto.timings.TimeoutError: Failed to click Save after 5 attempts
