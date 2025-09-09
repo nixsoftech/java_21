@@ -1,7 +1,7 @@
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     """
     Find row with given Start Time & PENDING status, tick checkbox,
-    wait 1s, reset mouse, click PENDING cell, use F2 and Alt+Down to select REJECT.
+    wait 1s, reset mouse, double-click PENDING cell, use Alt+Down to select REJECT.
     """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -24,17 +24,34 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 if start_time_val == target_start_time and status_val.upper() == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
 
-                    # 1️⃣ Click the checkbox
+                    # 1️⃣ Set focus on the grid to stabilize interactions
+                    grid = peak_margin_win.child_window(control_type="Table")
+                    grid.set_focus()
+                    time.sleep(0.2)
+                    logger.info("Set focus on grid.")
+
+                    # 2️⃣ Click the checkbox and verify state
                     checkbox_cell = row_cells[-1]
-                    if checkbox_cell.rectangle().width() > 0:
-                        checkbox_cell.click_input()
-                        logger.info("☑️ Selected checkbox.")
+                    for attempt in range(3):
+                        if checkbox_cell.rectangle().width() > 0:
+                            checkbox_cell.click_input()
+                            logger.info(f"☑️ Selected checkbox (attempt {attempt+1}).")
+                            time.sleep(0.5)  # Brief wait to check state
+                            updated_rows = dump_peak_margin_grid(peak_margin_win)
+                            if updated_rows[r_idx][1][-1].lower() == "true":
+                                logger.info("Checkbox confirmed as selected (True).")
+                                break
+                            logger.warning(f"Checkbox not selected (attempt {attempt+1}); retrying...")
+                            time.sleep(0.5)
+                        else:
+                            logger.error("Checkbox cell not clickable — aborting.")
+                            raise RuntimeError("Checkbox cell has invalid rectangle.")
                     else:
-                        logger.error("Checkbox cell not clickable — aborting.")
-                        raise RuntimeError("Checkbox cell has invalid rectangle.")
+                        raise RuntimeError("Failed to select checkbox after 3 attempts.")
+
                     time.sleep(1.0)  # Wait 1 second after checkbox click as requested
 
-                    # 2️⃣ Reset mouse position to status cell center
+                    # 3️⃣ Reset mouse position to status cell center
                     status_cell = row_cells[5]
                     rect = status_cell.rectangle()
                     x = rect.left + rect.width() // 2
@@ -44,29 +61,24 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     logger.info(f"Reset mouse position to status cell center: ({x}, {y})")
                     logger.info(f"Status cell rectangle: {rect}")
 
-                    # 3️⃣ Click Status cell (PENDING) and send F2
+                    # 4️⃣ Double-click Status cell (PENDING)
                     try:
                         if rect.width() > 0:
                             status_cell.set_focus()
                             time.sleep(0.2)
-                            status_cell.click_input()
-                            logger.info("🖱️ Clicked Status cell (PENDING).")
+                            status_cell.click_input(double=True)
+                            logger.info("🖱️ Double-clicked Status cell (PENDING).")
                         else:
                             logger.error("Status cell rectangle invalid, attempting fallback.")
                             raise RuntimeError("Status cell rectangle invalid.")
                     except Exception as e:
-                        logger.warning(f"Direct click failed: {e}, using mouse fallback.")
-                        click(coords=(x, y))
-                        logger.info("🖱️ Clicked Status cell via manual coords.")
-                    time.sleep(0.5)
-
-                    # 4️⃣ Send F2 to enter editing mode
-                    send_keys("{F2}")
-                    logger.info("Sent F2 to enter editing mode.")
-                    time.sleep(0.5)
+                        logger.warning(f"Direct double-click failed: {e}, using mouse fallback.")
+                        click(coords=(x, y), double=True)
+                        logger.info("🖱️ Double-clicked Status cell via manual coords.")
+                    time.sleep(0.5)  # Brief pause for dropdown to appear
 
                     # 5️⃣ Log mouse position for debugging
-                    logger.info(f"Mouse position after status click and F2: {get_position()}")
+                    logger.info(f"Mouse position after status double-click: {get_position()}")
 
                     # 6️⃣ Use Alt+Down to open dropdown and type REJECT
                     try:
@@ -107,6 +119,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 
         except Exception as e:
             last_exception = e
+            logger.debug(f"Exception in loop: {e}")
             time.sleep(poll_interval)
 
     msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
