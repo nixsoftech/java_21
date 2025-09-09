@@ -1,7 +1,7 @@
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     """
-    Find the row with given Start Time and Status=PENDING, select its checkbox, 
-    then change Status to REJECT using Alt+Down + typing REJECT.
+    Find row with given Start Time & PENDING status, tick checkbox,
+    click PENDING cell, open dropdown (Alt+Down) and select REJECT.
     """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -12,7 +12,6 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 
     while time.time() < end_time:
         try:
-            # Dump all rows
             rows = dump_peak_margin_grid(peak_margin_win)
 
             for r_idx, (row_cells, row_values) in enumerate(rows):
@@ -25,30 +24,53 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 if start_time_val == target_start_time and status_val.upper() == "PENDING":
                     logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
 
-                    # 1️⃣ Select the checkbox (last cell)
+                    # 1️⃣ Click the checkbox
                     checkbox_cell = row_cells[-1]
-                    checkbox_cell.click_input()
-                    time.sleep(0.3)
+                    if checkbox_cell.rectangle().width() > 0:
+                        checkbox_cell.click_input()
+                        logger.info("☑️ Selected checkbox.")
+                    else:
+                        logger.error("Checkbox cell not clickable — aborting.")
+                        raise RuntimeError("Checkbox cell has invalid rectangle.")
+                    time.sleep(0.4)
 
-                    # 2️⃣ Activate Status cell (double-click to edit)
-                    status_cell = row_cells[5]
-                    status_cell.click_input(double=True)
-                    time.sleep(0.5)  # wait for editing control to appear
+                    # 2️⃣ Re-locate Status cell (column 5) dynamically
+                    try:
+                        status_cell = row_cells[5]
+                        rect = status_cell.rectangle()
+                        if rect.width() > 0:
+                            status_cell.click_input()
+                            logger.info("🖱️ Clicked Status cell (PENDING).")
+                        else:
+                            raise RuntimeError("Status cell rectangle invalid.")
+                    except Exception as e:
+                        logger.warning(f"Direct click failed: {e}, using mouse fallback.")
+                        # Fallback: manually move mouse & click center of cell
+                        rect = row_cells[5].rectangle()
+                        x = rect.left + rect.width() // 2
+                        y = rect.top + rect.height() // 2
+                        from pywinauto.mouse import move, click
+                        move(coords=(x, y))
+                        click(coords=(x, y))
+                        logger.info("🖱️ Clicked Status cell via manual coords.")
 
-                    # 3️⃣ Send Alt+Down to open dropdown
+                    time.sleep(0.5)
+
+                    # 3️⃣ Alt+Down to expand dropdown
                     send_keys("%{DOWN}")
                     time.sleep(0.3)
 
                     # 4️⃣ Type REJECT + Enter
                     send_keys("REJECT{ENTER}")
                     logger.info(f"Changed Status to REJECT for Start Time={start_time_val}")
-                    time.sleep(0.3)
+                    time.sleep(0.5)
 
-                    # 5️⃣ Save the row
+                    # 5️⃣ Click Save
                     safe_click(peak_margin_win, title="Save", control_type="Button")
-                    time.sleep(1.5)
+                    logger.info("💾 Clicked Save.")
+                    time.sleep(1.2)
 
-                    # 6️⃣ Handle confirmation popup
+                    # 6️⃣ Handle popup
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
@@ -57,7 +79,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     except Exception:
                         logger.warning("No confirmation popup after save.")
 
-                    return  # Row processed, exit function
+                    return
 
             time.sleep(poll_interval)
 
