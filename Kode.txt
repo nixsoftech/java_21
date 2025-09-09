@@ -24,45 +24,54 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 checkbox_cell = row_cells[-1]
                 checkbox_cell.click_input()
                 logger.info("☑️ Checkbox selected.")
-                time.sleep(1)  # <-- wait 1 sec after checkbox selection
+                time.sleep(1)
 
-                # Step 2: Reset mouse position & double-click PENDING cell
+                # Step 2: Move mouse & double-click PENDING cell
                 pending_cell = row_cells[5]
                 rect = pending_cell.rectangle()
-
-                # Move mouse to center of the cell
                 center_x = rect.left + rect.width() // 2
                 center_y = rect.top + rect.height() // 2
+                logger.info(f"Moving mouse to PENDING cell at ({center_x}, {center_y})...")
                 move(coords=(center_x, center_y))
-                time.sleep(0.2)
-
+                time.sleep(0.3)
                 double_click(coords=(center_x, center_y))
-                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
+                logger.info("🖱️ Double-clicked on PENDING cell.")
                 time.sleep(0.5)
 
-                # Step 3: Send REJECT
+                # Extra check: Read current value again
+                try:
+                    new_val = pending_cell.legacy_properties().get("Value", "")
+                    logger.info(f"After double-click, cell value still: {new_val}")
+                except:
+                    new_val = None
+
+                # Step 3: Try to open dropdown (alt+down if needed)
+                send_keys("%{DOWN}")  # Alt+Down
+                time.sleep(0.3)
+
+                # Step 4: Send REJECT
                 send_keys("REJECT{ENTER}")
-                logger.info("Changed Status to REJECT.")
+                logger.info("✅ Sent REJECT via keyboard.")
                 time.sleep(0.5)
 
-                # Step 4: Save changes
+                # Step 5: Save
                 safe_click(peak_margin_win, title="Save", control_type="Button")
                 logger.info("💾 Clicked Save button.")
-                time.sleep(1.5)
+                time.sleep(1)
 
-                # Step 5: Handle popup
+                # Step 6: Handle confirmation popup
                 try:
                     popup = app.window(best_match="Risk Management System")
-                    popup.wait("visible", timeout=8)
+                    popup.wait("visible", timeout=5)
                     safe_click(popup, auto_id="2", control_type="Button")
                     logger.info("Clicked OK on confirmation popup.")
                 except Exception:
                     logger.warning("No confirmation popup after save.")
 
-                return
+                # ✅ Only return after successful REJECT + Save
+                return  
 
+        logger.debug("Row not matched yet, retrying...")
         time.sleep(poll_interval)
 
-    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
-    logger.error(msg)
-    raise RuntimeError(msg)
+    raise RuntimeError(f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s")
