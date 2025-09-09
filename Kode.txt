@@ -8,7 +8,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
     end_time = time.time() + max_wait_seconds
 
     while time.time() < end_time:
-        rows = dump_peak_margin_grid(peak_margin_win)  # should return [(cells, values), ...]
+        rows = dump_peak_margin_grid(peak_margin_win)
 
         for r_idx, (row_cells, row_values) in enumerate(rows):
             if len(row_values) < 6:
@@ -24,17 +24,23 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 checkbox_cell = row_cells[-1]
                 checkbox_cell.click_input()
                 logger.info("☑️ Checkbox selected.")
-                time.sleep(0.3)
+                time.sleep(1)  # <-- wait 1 sec after checkbox selection
 
-                # Step 2: Find pending cell and double-click
-                pending_cell = row_cells[5]  # Status column
+                # Step 2: Reset mouse position & double-click PENDING cell
+                pending_cell = row_cells[5]
                 rect = pending_cell.rectangle()
-                move(coords=(rect.left + rect.width() // 2, rect.top + rect.height() // 2))
-                double_click(coords=(rect.left + rect.width() // 2, rect.top + rect.height() // 2))
-                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
-                time.sleep(0.4)
 
-                # Step 3: Type REJECT and press Enter
+                # Move mouse to center of the cell
+                center_x = rect.left + rect.width() // 2
+                center_y = rect.top + rect.height() // 2
+                move(coords=(center_x, center_y))
+                time.sleep(0.2)
+
+                double_click(coords=(center_x, center_y))
+                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
+                time.sleep(0.5)
+
+                # Step 3: Send REJECT
                 send_keys("REJECT{ENTER}")
                 logger.info("Changed Status to REJECT.")
                 time.sleep(0.5)
@@ -42,7 +48,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 # Step 4: Save changes
                 safe_click(peak_margin_win, title="Save", control_type="Button")
                 logger.info("💾 Clicked Save button.")
-                time.sleep(1.2)
+                time.sleep(1.5)
 
                 # Step 5: Handle popup
                 try:
@@ -53,7 +59,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 except Exception:
                     logger.warning("No confirmation popup after save.")
 
-                return  # ✅ Done for this row
+                return
 
         time.sleep(poll_interval)
 
