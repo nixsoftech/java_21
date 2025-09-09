@@ -1,9 +1,26 @@
-0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,009 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,118 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,243 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,368 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,493 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,603 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,728 [INFO] Row 7: ['8', '17:07:00', '17:17:00', '17:12:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-08 18:15:57,728 [INFO] ✅ Matched row 7 with Start Time=17:07:00, Status=PENDING
+Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-09 13:51:25,267 [INFO] Successfully opened Peak Margin window.
+2025-09-09 13:51:25,282 [INFO] Looking for Peak Margin panel for rash1 to reject Start Time=17:52:00...
+2025-09-09 13:51:31,267 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-09 13:51:31,439 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:31,564 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:31,689 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:31,798 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:31,923 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:32,032 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:32,157 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 13:51:32,267 [INFO] Row 7: ['8', '17:52:00', '18:02:00', '17:57:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-09 13:51:32,267 [INFO] ✅ Matched row 7 with Start Time=17:52:00, Status=PENDING
+2025-09-09 13:51:32,485 [INFO] ☑️ Selected checkbox.
+2025-09-09 13:51:33,048 [WARNING] Direct click failed: Status cell rectangle invalid., using mouse fallback.
+2025-09-09 13:51:33,735 [INFO] 🖱️ Clicked Status cell via manual coords.
+2025-09-09 13:51:35,173 [INFO] Changed Status to REJECT for Start Time=17:52:00
+2025-09-09 13:51:40,504 [INFO] Clicked Save (attempt 1)
+2025-09-09 13:51:40,504 [INFO] 💾 Clicked Save.
+2025-09-09 13:51:45,272 [INFO] Clicked 2 (attempt 1)
+2025-09-09 13:51:45,272 [INFO] Clicked OK on confirmation popup.
+2025-09-09 13:51:48,820 [INFO] Clicked Exit (attempt 1)
+2025-09-09 13:51:49,648 [INFO] Popup detected: 'NCDEX RISK MANAGEMENT SYSTEM 6.3.0'
+2025-09-09 13:51:55,791 [ERROR] Failed to click popup button with AutomationId=6: timed out
+2025-09-09 13:51:55,791 [INFO] Workflow completed for user: rash1
+2025-09-09 13:51:55,791 [INFO] Automation script completed successfully for both users.
