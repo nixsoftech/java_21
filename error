@@ -1,30 +1,29 @@
 Dumping 8 rows from Peak Margin grid:
-2025-09-09 16:36:54,540 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:54,665 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:54,790 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:54,915 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:55,025 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:55,150 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:55,275 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 16:36:55,384 [INFO] Row 7: ['8', '17:41:00', '17:51:00', '17:46:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-09 16:36:55,384 [INFO] ✅ Found row 7: Start=17:41:00, Status=PENDING
-2025-09-09 16:36:55,509 [INFO] ☑️ Checkbox selected.
-2025-09-09 16:36:56,509 [INFO] Moving mouse to PENDING cell at (0, 0)...
-2025-09-09 16:36:57,134 [INFO] 🖱️ Double-clicked on PENDING cell.
-2025-09-09 16:36:57,634 [INFO] After double-click, cell value still: (null)
-2025-09-09 16:36:58,596 [INFO] ✅ Sent REJECT via keyboard.
-2025-09-09 16:37:04,198 [WARNING] Attempt 1 failed for Save: timed out
-2025-09-09 16:37:11,198 [WARNING] Attempt 2 failed for Save: timed out
-2025-09-09 16:37:18,357 [WARNING] Attempt 3 failed for Save: timed out
-2025-09-09 16:37:25,515 [WARNING] Attempt 4 failed for Save: timed out
-2025-09-09 16:37:32,577 [WARNING] Attempt 5 failed for Save: timed out
-2025-09-09 16:37:34,577 [ERROR] Automation failed: Failed to click Save after 5 attempts
+2025-09-09 17:00:34,449 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:34,605 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:34,777 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:34,933 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:35,090 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:35,246 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:35,418 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 17:00:35,589 [INFO] Row 7: ['8', '17:49:00', '17:59:00', '17:54:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-09 17:00:35,589 [INFO] ✅ Found row 7: Start=17:49:00, Status=PENDING
+2025-09-09 17:00:35,730 [INFO] ☑️ Checkbox selected.
+2025-09-09 17:00:36,808 [INFO] 🖱️ About to double-click PENDING cell: ControlType=DataItem, Value=( null)
+2025-09-09 17:00:36,949 [INFO] 🖱️ Double-clicked on PENDING cell to open dropdown.
+2025-09-09 17:00:38,412 [INFO] ✅ Selected REJECT via keyboard.
+2025-09-09 17:00:43,936 [WARNING] Attempt 1 failed for Save: timed out
+2025-09-09 17:00:51,030 [WARNING] Attempt 2 failed for Save: timed out
+2025-09-09 17:00:58,188 [WARNING] Attempt 3 failed for Save: timed out
+2025-09-09 17:01:05,328 [WARNING] Attempt 4 failed for Save: timed out
+2025-09-09 17:01:12,502 [WARNING] Attempt 5 failed for Save: timed out
+2025-09-09 17:01:14,505 [ERROR] Automation failed: Failed to click Save after 5 attempts
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 355, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 357, in main
     run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 343, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 345, in run_workflow_for_user
     handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 275, in handle_peak_margin_reject_for_rash1
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 278, in handle_peak_margin_reject_for_rash1
     safe_click(peak_margin_win, title="Save", control_type="Button")
   File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 67, in safe_click
     raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
