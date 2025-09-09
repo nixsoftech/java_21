@@ -14,7 +14,7 @@ def dump_peak_margin_grid(peak_margin_win):
     logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid:")
     for r_idx, row_cells in enumerate(rows_cells):
         row_values = []
-        for cell in row_cells:
+        for c_idx, cell in enumerate(row_cells):
             try:
                 val = cell.legacy_properties().get("Value", "")
             except Exception:
@@ -22,11 +22,27 @@ def dump_peak_margin_grid(peak_margin_win):
                     val = cell.get_value()
                 except Exception:
                     val = cell.window_text()
-            row_values.append(val.strip() if val else "")
+
+            val = val.strip() if val else ""
+            row_values.append(val)
+
+            # 🔎 EXTRA LOGGING: Show ControlType + Value + Rectangle for debugging
+            try:
+                rect = cell.rectangle()
+                logger.debug(
+                    f"Row {r_idx}, Col {c_idx}: "
+                    f"ControlType={cell.friendly_class_name()}, "
+                    f"Value='{val}', "
+                    f"Bounds=({rect.left},{rect.top},{rect.right},{rect.bottom})"
+                )
+            except Exception:
+                logger.debug(f"Row {r_idx}, Col {c_idx}: ControlType={cell.friendly_class_name()}, Value='{val}'")
+
         logger.info(f"Row {r_idx}: {row_values}")
         rows.append((row_cells, row_values))
 
     return rows
+
 
 # ------------------- Peak Margin Reject (rash1) -------------------
 
@@ -58,6 +74,8 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
 
                 # Step 2: Double-click PENDING cell (programmatic)
                 pending_cell = row_cells[5]
+                logger.info(f"🖱️ About to double-click PENDING cell: ControlType={pending_cell.friendly_class_name()}, "
+                            f"Value={pending_cell.legacy_properties().get('Value', '')}")
                 pending_cell.double_click_input()
                 logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
                 time.sleep(0.5)
