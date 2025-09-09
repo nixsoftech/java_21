@@ -1,4 +1,4 @@
-from pywinauto.mouse import move, double_click
+from pywinauto.keyboard import send_keys
 
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
@@ -24,42 +24,27 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 checkbox_cell = row_cells[-1]
                 checkbox_cell.click_input()
                 logger.info("☑️ Checkbox selected.")
-                time.sleep(1)
+                time.sleep(1)  # Give grid time to register selection
 
-                # Step 2: Move mouse & double-click PENDING cell
+                # Step 2: Double-click PENDING cell (programmatic)
                 pending_cell = row_cells[5]
-                rect = pending_cell.rectangle()
-                center_x = rect.left + rect.width() // 2
-                center_y = rect.top + rect.height() // 2
-                logger.info(f"Moving mouse to PENDING cell at ({center_x}, {center_y})...")
-                move(coords=(center_x, center_y))
-                time.sleep(0.3)
-                double_click(coords=(center_x, center_y))
-                logger.info("🖱️ Double-clicked on PENDING cell.")
+                pending_cell.double_click_input()
+                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
                 time.sleep(0.5)
 
-                # Extra check: Read current value again
-                try:
-                    new_val = pending_cell.legacy_properties().get("Value", "")
-                    logger.info(f"After double-click, cell value still: {new_val}")
-                except:
-                    new_val = None
-
-                # Step 3: Try to open dropdown (alt+down if needed)
-                send_keys("%{DOWN}")  # Alt+Down
+                # Step 3: Open dropdown and choose REJECT
+                send_keys("%{DOWN}")  # Alt+Down to open combo
                 time.sleep(0.3)
-
-                # Step 4: Send REJECT
                 send_keys("REJECT{ENTER}")
-                logger.info("✅ Sent REJECT via keyboard.")
+                logger.info("✅ Selected REJECT via keyboard.")
                 time.sleep(0.5)
 
-                # Step 5: Save
+                # Step 4: Save changes
                 safe_click(peak_margin_win, title="Save", control_type="Button")
                 logger.info("💾 Clicked Save button.")
                 time.sleep(1)
 
-                # Step 6: Handle confirmation popup
+                # Step 5: Handle confirmation popup
                 try:
                     popup = app.window(best_match="Risk Management System")
                     popup.wait("visible", timeout=5)
@@ -68,8 +53,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 except Exception:
                     logger.warning("No confirmation popup after save.")
 
-                # ✅ Only return after successful REJECT + Save
-                return  
+                return  # ✅ Success
 
         logger.debug("Row not matched yet, retrying...")
         time.sleep(poll_interval)
