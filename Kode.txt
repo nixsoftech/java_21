@@ -1,7 +1,7 @@
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     """
     Find row with given Start Time & PENDING status, tick checkbox,
-    wait 1s, reset mouse, double-click PENDING cell, use Alt+Down to select REJECT.
+    wait 1s, reset mouse, click PENDING cell, use F2 and Alt+Down to select REJECT.
     """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -39,27 +39,36 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     rect = status_cell.rectangle()
                     x = rect.left + rect.width() // 2
                     y = rect.top + rect.height() // 2
-                    from pywinauto.mouse import move, click
+                    from pywinauto.mouse import move, click, get_position
                     move(coords=(x, y))
                     logger.info(f"Reset mouse position to status cell center: ({x}, {y})")
+                    logger.info(f"Status cell rectangle: {rect}")
 
-                    # 3️⃣ Double-click Status cell (PENDING)
+                    # 3️⃣ Click Status cell (PENDING) and send F2
                     try:
                         if rect.width() > 0:
-                            status_cell.click_input(double=True)
-                            logger.info("🖱️ Double-clicked Status cell (PENDING).")
+                            status_cell.set_focus()
+                            time.sleep(0.2)
+                            status_cell.click_input()
+                            logger.info("🖱️ Clicked Status cell (PENDING).")
                         else:
+                            logger.error("Status cell rectangle invalid, attempting fallback.")
                             raise RuntimeError("Status cell rectangle invalid.")
                     except Exception as e:
-                        logger.warning(f"Direct double-click failed: {e}, using mouse fallback.")
-                        click(coords=(x, y), double=True)
-                        logger.info("🖱️ Double-clicked Status cell via manual coords.")
-                    time.sleep(0.5)  # Brief pause for dropdown to initialize
+                        logger.warning(f"Direct click failed: {e}, using mouse fallback.")
+                        click(coords=(x, y))
+                        logger.info("🖱️ Clicked Status cell via manual coords.")
+                    time.sleep(0.5)
 
-                    # 4️⃣ Log mouse position for debugging
-                    logger.info(f"Mouse position after status double-click: {pywinauto.mouse.get_position()}")
+                    # 4️⃣ Send F2 to enter editing mode
+                    send_keys("{F2}")
+                    logger.info("Sent F2 to enter editing mode.")
+                    time.sleep(0.5)
 
-                    # 5️⃣ Use Alt+Down to open dropdown and type REJECT
+                    # 5️⃣ Log mouse position for debugging
+                    logger.info(f"Mouse position after status click and F2: {get_position()}")
+
+                    # 6️⃣ Use Alt+Down to open dropdown and type REJECT
                     try:
                         send_keys("%{DOWN}")
                         logger.info("Sent Alt+Down to open dropdown.")
@@ -78,12 +87,12 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                         logger.error(f"Failed to interact with dropdown via keyboard: {e}")
                         raise RuntimeError(f"Could not select REJECT via keyboard: {e}")
 
-                    # 6️⃣ Click Save
+                    # 7️⃣ Click Save
                     safe_click(peak_margin_win, title="Save", control_type="Button")
                     logger.info("💾 Clicked Save.")
                     time.sleep(1.5)
 
-                    # 7️⃣ Handle popup
+                    # 8️⃣ Handle popup
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
