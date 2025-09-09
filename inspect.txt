@@ -1,30 +1,27 @@
-Name:	"Editing Control"
-ControlType:	UIA_ComboBoxControlTypeId (0xC353)
-LocalizedControlType:	"combo box"
-BoundingRectangle:	{l:522 t:278 r:621 b:299}
+How found:	Mouse move (207,327)
+	hwnd=0x00000000001808AC 32bit class="WindowsForms10.Window.8.app.0.bb8560_r20_ad1" style=0x56010000 ex=0x0
+Name:	"Status Row 7"
+ControlType:	UIA_DataItemControlTypeId (0xC36D)
+LocalizedControlType:	"item"
+BoundingRectangle:	{l:170 t:319 r:270 b:341}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
-HasKeyboardFocus:	true
+HasKeyboardFocus:	false
 AccessKey:	""
-ProcessId:	6904
-RuntimeId:	[2A.B0732]
-AutomationId:	"722738"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.COMBOBOX.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0xB0732
-ProviderDescription:	"[pid:10660,providerId:0xB0732 Main:Nested [pid:6904,providerId:0xB0732 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	14292
+ProviderDescription:	"[pid:14292,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
-HelpText:	""
+HelpText:	"DataGridViewTextBoxCell(DataGridViewCell)"
 IsDialog:	false
 LegacyIAccessible.ChildId:	0
 LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
+LegacyIAccessible.Help:	"DataGridViewTextBoxCell(DataGridViewCell)"
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Editing Control"
-LegacyIAccessible.Role:	combo box (0x2E)
-LegacyIAccessible.State:	focused,expanded,focusable (0x100204)
+LegacyIAccessible.Name:	"Status Row 7"
+LegacyIAccessible.Role:	cell (0x1D)
+LegacyIAccessible.State:	focusable,selectable (0x300000)
 LegacyIAccessible.Value:	"PENDING"
 Value.IsReadOnly:	false
 Value.Value:	"PENDING"
@@ -63,43 +60,42 @@ IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
-FirstChild:	"Editing Control" list
-LastChild:	"Close" button
-Next:	[null]
-Previous:	[null]
+FirstChild:	[null]
+LastChild:	[null]
+Next:	"Maker Remarks Row 7" item
+Previous:	"Flag Row 7" item
 Other Props:	Object has no additional properties
-Children:	"Editing Control" list
-	"Editing Control" text
-	"Close" button
-Ancestors:	"Editing Panel" pane
+Children:	Container has no children
+Ancestors:	"Row 7" 
 	"DataGridView" table
 	"Peak Margin" window
 	"" pane
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
-=====================
-Name:	"REJECT"
+===================
+How found:	Focus
+Name:	"PENDING"
 ControlType:	UIA_ListItemControlTypeId (0xC357)
 LocalizedControlType:	"list item"
-BoundingRectangle:	{l:523 t:326 r:642 b:339}
+BoundingRectangle:	{l:171 t:341 r:290 b:354}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	true
 AccessKey:	""
-ProcessId:	6904
-RuntimeId:	[2A.90736.4.80000001.90736.FFFFFFFC.3]
-ProviderDescription:	"[pid:6904,providerId:0x0 Annotation:Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	14292
+RuntimeId:	[2A.28E0598.4.80000001.28E0598.FFFFFFFC.1]
+ProviderDescription:	"[pid:14292,providerId:0x0 Annotation:Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
 HelpText:	""
 IsDialog:	false
-LegacyIAccessible.ChildId:	3
+LegacyIAccessible.ChildId:	1
 LegacyIAccessible.DefaultAction:	"Double Click"
 LegacyIAccessible.Description:	""
 LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"REJECT"
+LegacyIAccessible.Name:	"PENDING"
 LegacyIAccessible.Role:	list item (0x22)
 LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
 LegacyIAccessible.Value:	""
@@ -142,8 +138,8 @@ IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	[null]
-Previous:	"APPROVE" list item
+Next:	"APPROVE" list item
+Previous:	[null]
 Other Props:	Object has no additional properties
 Children:	Container has no children
 Ancestors:	"Editing Control" list
@@ -155,152 +151,3 @@ Ancestors:	"Editing Control" list
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
-========================
-Name:	"Data Reject successfully"
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:409 t:383 r:532 b:398}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	false
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	6904
-RuntimeId:	[2A.F07CA]
-AutomationId:	"65535"
-FrameworkId:	"Win32"
-ClassName:	"Static"
-NativeWindowHandle:	0xF07CA
-ProviderDescription:	"[pid:10660,providerId:0xF07CA Main:Nested [pid:6904,providerId:0xF07CA Annotation(parent link):Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main:Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	""
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Data Reject successfully"
-LegacyIAccessible.Role:	text (0x29)
-LegacyIAccessible.State:	read only (0x40)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	(null) title bar
-Previous:	"" image
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Risk Management System" dialog
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-=======================
-Name:	"OK"
-ControlType:	UIA_ButtonControlTypeId (0xC350)
-LocalizedControlType:	"button"
-BoundingRectangle:	{l:470 t:438 r:545 b:461}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	6904
-RuntimeId:	[2A.C06FA]
-AutomationId:	"2"
-FrameworkId:	"Win32"
-ClassName:	"Button"
-NativeWindowHandle:	0xC06FA
-ProviderDescription:	"[pid:10660,providerId:0xC06FA Main:Nested [pid:6904,providerId:0xC06FA Annotation(parent link):Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main:Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	"Press"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"OK"
-LegacyIAccessible.Role:	push button (0x2B)
-LegacyIAccessible.State:	hot tracked,focusable (0x100080)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"" image
-Previous:	[null]
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Risk Management System" dialog
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-
