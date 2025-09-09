@@ -1,7 +1,7 @@
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     """
     Find row with given Start Time & PENDING status, tick checkbox,
-    click PENDING cell, open dropdown and select REJECT.
+    wait 1s, reset mouse, double-click PENDING cell, use Alt+Down to select REJECT.
     """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -32,82 +32,58 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     else:
                         logger.error("Checkbox cell not clickable — aborting.")
                         raise RuntimeError("Checkbox cell has invalid rectangle.")
-                    time.sleep(0.5)
+                    time.sleep(1.0)  # Wait 1 second after checkbox click as requested
 
-                    # 2️⃣ Re-locate Status cell (column 5) dynamically
+                    # 2️⃣ Reset mouse position to status cell center
+                    status_cell = row_cells[5]
+                    rect = status_cell.rectangle()
+                    x = rect.left + rect.width() // 2
+                    y = rect.top + rect.height() // 2
+                    from pywinauto.mouse import move, click
+                    move(coords=(x, y))
+                    logger.info(f"Reset mouse position to status cell center: ({x}, {y})")
+
+                    # 3️⃣ Double-click Status cell (PENDING)
                     try:
-                        status_cell = row_cells[5]
-                        rect = status_cell.rectangle()
                         if rect.width() > 0:
-                            status_cell.click_input()
-                            logger.info("🖱️ Clicked Status cell (PENDING).")
+                            status_cell.click_input(double=True)
+                            logger.info("🖱️ Double-clicked Status cell (PENDING).")
                         else:
                             raise RuntimeError("Status cell rectangle invalid.")
                     except Exception as e:
-                        logger.warning(f"Direct click failed: {e}, using mouse fallback.")
-                        rect = row_cells[5].rectangle()
-                        x = rect.left + rect.width() // 2
-                        y = rect.top + rect.height() // 2
-                        from pywinauto.mouse import move, click
-                        move(coords=(x, y))
-                        click(coords=(x, y))
-                        logger.info("🖱️ Clicked Status cell via manual coords.")
-                    time.sleep(1.0)  # Increased delay for UI to render combo box
+                        logger.warning(f"Direct double-click failed: {e}, using mouse fallback.")
+                        click(coords=(x, y), double=True)
+                        logger.info("🖱️ Double-clicked Status cell via manual coords.")
+                    time.sleep(0.5)  # Brief pause for dropdown to initialize
 
-                    # 3️⃣ Locate and interact with the dropdown
+                    # 4️⃣ Log mouse position for debugging
+                    logger.info(f"Mouse position after status double-click: {pywinauto.mouse.get_position()}")
+
+                    # 5️⃣ Use Alt+Down to open dropdown and type REJECT
                     try:
-                        # Broader search for combo box in top window
-                        combo_boxes = app.top_window().descendants(control_type="ComboBox")
-                        if not combo_boxes:
-                            logger.error("No combo boxes found in top window.")
-                            raise RuntimeError("No combo box found after clicking status cell.")
-                        combo_box = combo_boxes[0]  # Assume first combo box is the editing control
-                        combo_box.wait("visible enabled", timeout=8)
-                        logger.info(f"Located editing combo box: {combo_box.window_text()}")
-
-                        # Log combo box state for debugging
-                        logger.info(f"Combo box focused: {combo_box.has_keyboard_focus()}, expanded: {combo_box.is_expanded()}")
-
-                        # Expand the dropdown
-                        combo_box.expand()
-                        time.sleep(0.5)  # Increased delay for dropdown to render
-
-                        # Locate the dropdown list and REJECT item
-                        dropdown_list = combo_box.child_window(control_type="List")
-                        reject_item = dropdown_list.child_window(title="REJECT", control_type="ListItem")
-                        reject_item.wait("visible", timeout=5)
-                        logger.info("Found REJECT list item.")
-
-                        # Log available list items for debugging
-                        list_items = dropdown_list.descendants(control_type="ListItem")
-                        logger.info(f"Dropdown items: {[item.window_text() for item in list_items]}")
-
-                        # Select the REJECT item
-                        reject_item.select()
-                        logger.info("Selected REJECT list item.")
+                        send_keys("%{DOWN}")
+                        logger.info("Sent Alt+Down to open dropdown.")
+                        time.sleep(0.3)
+                        send_keys("REJECT{ENTER}")
+                        logger.info("Typed REJECT and pressed ENTER.")
                         time.sleep(0.5)
 
-                        # Commit the change (try ENTER first, then fallback to clicking another cell)
-                        send_keys("{ENTER}")
-                        time.sleep(0.5)
-                        # Verify if status changed; if not, try clicking another cell
+                        # Verify if status changed
                         updated_rows = dump_peak_margin_grid(peak_margin_win)
                         if updated_rows[r_idx][1][5].upper() != "REJECT":
-                            logger.warning("ENTER did not commit REJECT; trying cell click.")
+                            logger.warning("REJECT not applied; trying cell click to commit.")
                             row_cells[0].click_input()  # Click first cell to commit
                             time.sleep(0.5)
                     except Exception as e:
-                        logger.error(f"Failed to interact with dropdown: {e}")
-                        # Log all combo boxes for debugging
-                        logger.info(f"Available combo boxes: {[cb.window_text() for cb in combo_boxes]}")
-                        raise RuntimeError(f"Could not select REJECT in dropdown: {e}")
+                        logger.error(f"Failed to interact with dropdown via keyboard: {e}")
+                        raise RuntimeError(f"Could not select REJECT via keyboard: {e}")
 
-                    # 4️⃣ Click Save
+                    # 6️⃣ Click Save
                     safe_click(peak_margin_win, title="Save", control_type="Button")
                     logger.info("💾 Clicked Save.")
                     time.sleep(1.5)
 
-                    # 5️⃣ Handle popup
+                    # 7️⃣ Handle popup
                     try:
                         popup = app.window(best_match="Risk Management System")
                         popup.wait("visible", timeout=8)
