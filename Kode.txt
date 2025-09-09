@@ -1,129 +1,62 @@
+from pywinauto.mouse import move, double_click
+
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
-    """
-    Find row with given Start Time & PENDING status, tick checkbox,
-    wait 1s, reset mouse, double-click PENDING cell, use Alt+Down to select REJECT.
-    """
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
 
     end_time = time.time() + max_wait_seconds
-    last_exception = None
 
     while time.time() < end_time:
-        try:
-            rows = dump_peak_margin_grid(peak_margin_win)
+        rows = dump_peak_margin_grid(peak_margin_win)  # should return [(cells, values), ...]
 
-            for r_idx, (row_cells, row_values) in enumerate(rows):
-                if len(row_values) < 6:
-                    continue
+        for r_idx, (row_cells, row_values) in enumerate(rows):
+            if len(row_values) < 6:
+                continue
 
-                start_time_val = row_values[1]
-                status_val = row_values[5]
+            start_time_val = row_values[1]
+            status_val = row_values[5]
 
-                if start_time_val == target_start_time and status_val.upper() == "PENDING":
-                    logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
+            if start_time_val == target_start_time and status_val.upper() == "PENDING":
+                logger.info(f"✅ Found row {r_idx}: Start={start_time_val}, Status={status_val}")
 
-                    # 1️⃣ Set focus on the grid to stabilize interactions
-                    grid = peak_margin_win.child_window(control_type="Table")
-                    grid.set_focus()
-                    time.sleep(0.2)
-                    logger.info("Set focus on grid.")
+                # Step 1: Select checkbox
+                checkbox_cell = row_cells[-1]
+                checkbox_cell.click_input()
+                logger.info("☑️ Checkbox selected.")
+                time.sleep(0.3)
 
-                    # 2️⃣ Click the checkbox and verify state
-                    checkbox_cell = row_cells[-1]
-                    for attempt in range(3):
-                        if checkbox_cell.rectangle().width() > 0:
-                            checkbox_cell.click_input()
-                            logger.info(f"☑️ Selected checkbox (attempt {attempt+1}).")
-                            time.sleep(0.5)  # Brief wait to check state
-                            updated_rows = dump_peak_margin_grid(peak_margin_win)
-                            if updated_rows[r_idx][1][-1].lower() == "true":
-                                logger.info("Checkbox confirmed as selected (True).")
-                                break
-                            logger.warning(f"Checkbox not selected (attempt {attempt+1}); retrying...")
-                            time.sleep(0.5)
-                        else:
-                            logger.error("Checkbox cell not clickable — aborting.")
-                            raise RuntimeError("Checkbox cell has invalid rectangle.")
-                    else:
-                        raise RuntimeError("Failed to select checkbox after 3 attempts.")
+                # Step 2: Find pending cell and double-click
+                pending_cell = row_cells[5]  # Status column
+                rect = pending_cell.rectangle()
+                move(coords=(rect.left + rect.width() // 2, rect.top + rect.height() // 2))
+                double_click(coords=(rect.left + rect.width() // 2, rect.top + rect.height() // 2))
+                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
+                time.sleep(0.4)
 
-                    time.sleep(1.0)  # Wait 1 second after checkbox click as requested
+                # Step 3: Type REJECT and press Enter
+                send_keys("REJECT{ENTER}")
+                logger.info("Changed Status to REJECT.")
+                time.sleep(0.5)
 
-                    # 3️⃣ Reset mouse position to status cell center
-                    status_cell = row_cells[5]
-                    rect = status_cell.rectangle()
-                    x = rect.left + rect.width() // 2
-                    y = rect.top + rect.height() // 2
-                    from pywinauto.mouse import move, click, get_position
-                    move(coords=(x, y))
-                    logger.info(f"Reset mouse position to status cell center: ({x}, {y})")
-                    logger.info(f"Status cell rectangle: {rect}")
+                # Step 4: Save changes
+                safe_click(peak_margin_win, title="Save", control_type="Button")
+                logger.info("💾 Clicked Save button.")
+                time.sleep(1.2)
 
-                    # 4️⃣ Double-click Status cell (PENDING)
-                    try:
-                        if rect.width() > 0:
-                            status_cell.set_focus()
-                            time.sleep(0.2)
-                            status_cell.click_input(double=True)
-                            logger.info("🖱️ Double-clicked Status cell (PENDING).")
-                        else:
-                            logger.error("Status cell rectangle invalid, attempting fallback.")
-                            raise RuntimeError("Status cell rectangle invalid.")
-                    except Exception as e:
-                        logger.warning(f"Direct double-click failed: {e}, using mouse fallback.")
-                        click(coords=(x, y), double=True)
-                        logger.info("🖱️ Double-clicked Status cell via manual coords.")
-                    time.sleep(0.5)  # Brief pause for dropdown to appear
+                # Step 5: Handle popup
+                try:
+                    popup = app.window(best_match="Risk Management System")
+                    popup.wait("visible", timeout=8)
+                    safe_click(popup, auto_id="2", control_type="Button")
+                    logger.info("Clicked OK on confirmation popup.")
+                except Exception:
+                    logger.warning("No confirmation popup after save.")
 
-                    # 5️⃣ Log mouse position for debugging
-                    logger.info(f"Mouse position after status double-click: {get_position()}")
+                return  # ✅ Done for this row
 
-                    # 6️⃣ Use Alt+Down to open dropdown and type REJECT
-                    try:
-                        send_keys("%{DOWN}")
-                        logger.info("Sent Alt+Down to open dropdown.")
-                        time.sleep(0.3)
-                        send_keys("REJECT{ENTER}")
-                        logger.info("Typed REJECT and pressed ENTER.")
-                        time.sleep(0.5)
-
-                        # Verify if status changed
-                        updated_rows = dump_peak_margin_grid(peak_margin_win)
-                        if updated_rows[r_idx][1][5].upper() != "REJECT":
-                            logger.warning("REJECT not applied; trying cell click to commit.")
-                            row_cells[0].click_input()  # Click first cell to commit
-                            time.sleep(0.5)
-                    except Exception as e:
-                        logger.error(f"Failed to interact with dropdown via keyboard: {e}")
-                        raise RuntimeError(f"Could not select REJECT via keyboard: {e}")
-
-                    # 7️⃣ Click Save
-                    safe_click(peak_margin_win, title="Save", control_type="Button")
-                    logger.info("💾 Clicked Save.")
-                    time.sleep(1.5)
-
-                    # 8️⃣ Handle popup
-                    try:
-                        popup = app.window(best_match="Risk Management System")
-                        popup.wait("visible", timeout=8)
-                        safe_click(popup, auto_id="2", control_type="Button")
-                        logger.info("Clicked OK on confirmation popup.")
-                    except Exception:
-                        logger.warning("No confirmation popup after save.")
-
-                    return
-
-            time.sleep(poll_interval)
-
-        except Exception as e:
-            last_exception = e
-            logger.debug(f"Exception in loop: {e}")
-            time.sleep(poll_interval)
+        time.sleep(poll_interval)
 
     msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
     logger.error(msg)
-    if last_exception:
-        logger.debug(f"Last exception: {last_exception}")
     raise RuntimeError(msg)
