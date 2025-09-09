@@ -1,54 +1,57 @@
-Navigating to RMS Configuration -> Peak Margin via menu_select...
-2025-09-09 14:28:31,592 [INFO] Successfully opened Peak Margin window.
-2025-09-09 14:28:31,592 [INFO] Looking for Peak Margin panel for rash1 to reject Start Time=17:48:00...
-2025-09-09 14:28:37,703 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 14:28:37,844 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:37,984 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,094 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,219 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,344 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,469 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,594 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,719 [INFO] Row 7: ['8', '17:48:00', '17:58:00', '17:53:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-09 14:28:38,719 [INFO] ✅ Matched row 7 with Start Time=17:48:00, Status=PENDING
-2025-09-09 14:28:38,922 [INFO] ☑️ Selected checkbox.
-2025-09-09 14:28:39,359 [WARNING] Direct click failed: Status cell rectangle invalid., using mouse fallback.
-2025-09-09 14:28:40,062 [INFO] 🖱️ Clicked Status cell via manual coords.
-2025-09-09 14:28:42,734 [ERROR] Failed to interact with dropdown: No combo box found after clicking status cell.
-2025-09-09 14:28:48,486 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 14:28:48,611 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:48,720 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:48,845 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:48,970 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:49,079 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:49,204 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:49,345 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:49,454 [INFO] Row 7: ['8', '17:48:00', '17:58:00', '17:53:00', 'N', 'PENDING', '(null)', '(null)', 'True']
-2025-09-09 14:28:49,454 [INFO] ✅ Matched row 7 with Start Time=17:48:00, Status=PENDING
-2025-09-09 14:28:49,595 [INFO] ☑️ Selected checkbox.
-2025-09-09 14:28:50,128 [INFO] 🖱️ Clicked Status cell (PENDING).
-2025-09-09 14:28:52,331 [ERROR] Failed to interact with dropdown: No combo box found after clicking status cell.
-2025-09-09 14:28:56,896 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 14:28:57,021 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,146 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,271 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,380 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,505 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:02:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,630 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,755 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:43:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,864 [INFO] Row 7: ['8', '17:48:00', '17:58:00', '17:53:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-09 14:28:57,864 [INFO] ✅ Matched row 7 with Start Time=17:48:00, Status=PENDING
-2025-09-09 14:28:58,005 [INFO] ☑️ Selected checkbox.
-2025-09-09 14:28:58,411 [WARNING] Direct click failed: Status cell rectangle invalid., using mouse fallback.
-2025-09-09 14:28:59,099 [INFO] 🖱️ Clicked Status cell via manual coords.
-2025-09-09 14:29:01,804 [ERROR] Failed to interact with dropdown: No combo box found after clicking status cell.
-2025-09-09 14:29:02,804 [ERROR] No row found with Start Time=17:48:00 & Status=PENDING within 20s
-2025-09-09 14:29:02,804 [ERROR] Automation failed: No row found with Start Time=17:48:00 & Status=PENDING within 20s
+ Navigating to RMS Configuration -> Peak Margin via menu_select...
+2025-09-09 16:03:22,937 [INFO] Successfully opened Peak Margin window.
+2025-09-09 16:03:22,937 [INFO] Looking for Peak Margin panel for rash1 to reject Start Time=17:40:00...
+2025-09-09 16:03:29,046 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-09 16:03:29,156 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,265 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,390 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,500 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,625 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,750 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,859 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,984 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-09 16:03:29,984 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
+2025-09-09 16:03:30,109 [INFO] ☑️ Selected checkbox.
+2025-09-09 16:03:35,656 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-09 16:03:35,765 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:35,875 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:36,000 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:36,109 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:36,218 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:36,343 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:36,468 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:36,578 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'True']
+2025-09-09 16:03:36,578 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
+2025-09-09 16:03:36,703 [INFO] ☑️ Selected checkbox.
+2025-09-09 16:03:42,203 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-09 16:03:42,328 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:42,453 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:42,562 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:42,672 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:42,797 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:42,906 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:43,047 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:43,156 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'False']
+2025-09-09 16:03:43,156 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
+2025-09-09 16:03:43,297 [INFO] ☑️ Selected checkbox.
+2025-09-09 16:03:48,922 [INFO] Dumping 8 rows from Peak Margin grid:
+2025-09-09 16:03:49,031 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,156 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,265 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,390 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,515 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,625 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,750 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
+2025-09-09 16:03:49,859 [INFO] Row 7: ['8', '17:40:00', '17:50:00', '17:45:00', 'N', 'PENDING', '(null)', '(null)', 'True']
+2025-09-09 16:03:49,859 [INFO] ✅ Matched row 7 with Start Time=17:40:00, Status=PENDING
+2025-09-09 16:03:49,984 [INFO] ☑️ Selected checkbox.
+2025-09-09 16:03:52,000 [ERROR] No row found with Start Time=17:40:00 & Status=PENDING within 20s
+2025-09-09 16:03:52,000 [ERROR] Automation failed: No row found with Start Time=17:40:00 & Status=PENDING within 20s
 Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 396, in main
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 395, in main
     run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 384, in run_workflow_for_user
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 383, in run_workflow_for_user
     handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 335, in handle_peak_margin_reject_for_rash1
+  File "C:\Users\Test3\Desktop\automation\rms\test-case_pywinauto10.py", line 334, in handle_peak_margin_reject_for_rash1
     raise RuntimeError(msg)
-RuntimeError: No row found with Start Time=17:48:00 & Status=PENDING within 20s
+RuntimeError: No row found with Start Time=17:40:00 & Status=PENDING within 20s
