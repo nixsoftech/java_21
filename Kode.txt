@@ -1,3 +1,45 @@
+# ------------------- Peak Margin Dump -------------------
+def dump_peak_margin_grid(peak_margin_win):
+    """
+    Reads all rows from Peak Margin grid and returns a list of tuples:
+    [
+        (row_cells, row_values),
+        (row_cells, row_values),
+        ...
+    ]
+    where row_cells is a list of cell objects and row_values is list of string values.
+    """
+    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+    if not tables:
+        logger.warning("No tables/list views found in Peak Margin window for dumping")
+        return []
+
+    grid = tables[0]
+    all_data_items = grid.descendants(control_type="DataItem")
+    columns_per_row = 9
+    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+
+    rows = []
+    logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid:")
+    for r_idx, row_cells in enumerate(rows_cells):
+        row_values = []
+        for cell in row_cells:
+            try:
+                val = cell.legacy_properties().get("Value", "")
+            except Exception:
+                try:
+                    val = cell.get_value()
+                except Exception:
+                    val = cell.window_text()
+            row_values.append(val.strip() if val else "")
+        logger.info(f"Row {r_idx}: {row_values}")
+        rows.append((row_cells, row_values))
+
+    return rows
+
+
+# ------------------- Peak Margin Reject (rash1) -------------------
+
 def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
@@ -22,44 +64,47 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 checkbox_cell = row_cells[-1]
                 checkbox_cell.click_input()
                 logger.info("☑️ Checkbox selected.")
-                time.sleep(1)  # Allow grid refresh
+                time.sleep(1)  # Wait for UI update
 
-                # 🔄 Step 1.5: Re-read grid to get fresh handles
+                # Step 2: Re-read grid after checkbox selection
                 rows_after_click = dump_peak_margin_grid(peak_margin_win)
                 if r_idx >= len(rows_after_click):
-                    logger.error("Grid changed after checkbox selection, row index out of range!")
-                    continue  # Retry loop
+                    logger.error(f"Row index {r_idx} not found after checkbox click, retrying...")
+                    time.sleep(poll_interval)
+                    continue
 
-                row_cells_after = rows_after_click[r_idx]
-                pending_cell = row_cells_after[5]
+                row_cells_after, row_values_after = rows_after_click[r_idx]
+                logger.debug(f"Row after checkbox: cells={len(row_cells_after)}, values={row_values_after}")
 
-                logger.info(f"🖱️ About to double-click fresh PENDING cell: "
-                            f"Value={pending_cell.legacy_properties().get('Value','')}")
+                # Step 3: Find column index for PENDING dynamically
+                try:
+                    status_col_index = row_values_after.index("PENDING")
+                except ValueError:
+                    logger.error("PENDING status not found after checkbox selection, retrying...")
+                    time.sleep(poll_interval)
+                    continue
+
+                pending_cell = row_cells_after[status_col_index]
+                logger.info(f"🖱️ About to double-click fresh PENDING cell: Value={row_values_after[status_col_index]}")
+
+                # Step 4: Double-click to open dropdown
                 pending_cell.double_click_input()
                 logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
                 time.sleep(0.5)
 
-                # Step 3: Wait for Editing Control to appear
-                try:
-                    editing_ctrl = peak_margin_win.child_window(control_type="ComboBox", found_index=0)
-                    editing_ctrl.wait("ready", timeout=3)
-                    logger.info("✅ Editing Control detected.")
-                except Exception:
-                    logger.warning("⚠️ Editing Control not found after double-click, may fail.")
-
-                # Step 4: Open dropdown and choose REJECT
-                send_keys("%{DOWN}")
+                # Step 5: Open dropdown and choose REJECT
+                send_keys("%{DOWN}")  # Alt+Down to open combo
                 time.sleep(0.3)
                 send_keys("REJECT{ENTER}")
                 logger.info("✅ Selected REJECT via keyboard.")
                 time.sleep(0.5)
 
-                # Step 5: Save changes
+                # Step 6: Save changes
                 safe_click(peak_margin_win, title="Save", control_type="Button")
                 logger.info("💾 Clicked Save button.")
                 time.sleep(1)
 
-                # Step 6: Handle confirmation popup
+                # Step 7: Handle confirmation popup if any
                 try:
                     popup = app.window(best_match="Risk Management System")
                     popup.wait("visible", timeout=5)
@@ -68,7 +113,7 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                 except Exception:
                     logger.warning("No confirmation popup after save.")
 
-                return  # ✅ Success
+                return  # ✅ Success - exit function
 
         logger.debug("Row not matched yet, retrying...")
         time.sleep(poll_interval)
