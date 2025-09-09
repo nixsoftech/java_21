@@ -1,28 +1,29 @@
-Name:	"Start Time Row 6"
-ControlType:	UIA_DataItemControlTypeId (0xC36D)
-LocalizedControlType:	"item"
-BoundingRectangle:	{l:156 t:308 r:256 b:330}
+Name:	"PENDING"
+ControlType:	UIA_ListItemControlTypeId (0xC357)
+LocalizedControlType:	"list item"
+BoundingRectangle:	{l:140 t:311 r:259 b:324}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	true
 AccessKey:	""
-ProcessId:	8664
-ProviderDescription:	"[pid:8664,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	7156
+RuntimeId:	[2A.96080A.4.80000001.96080A.FFFFFFFC.1]
+ProviderDescription:	"[pid:7156,providerId:0x0 Annotation:Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
-HelpText:	"DataGridViewTextBoxCell(DataGridViewCell)"
+HelpText:	""
 IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	""
+LegacyIAccessible.ChildId:	1
+LegacyIAccessible.DefaultAction:	"Double Click"
 LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	"DataGridViewTextBoxCell(DataGridViewCell)"
+LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Start Time Row 6"
-LegacyIAccessible.Role:	cell (0x1D)
+LegacyIAccessible.Name:	"PENDING"
+LegacyIAccessible.Role:	list item (0x22)
 LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
-LegacyIAccessible.Value:	"16:40:00"
-Value.IsReadOnly:	false
-Value.Value:	"16:40:00"
+LegacyIAccessible.Value:	""
+SelectionItem.IsSelected:	true
+SelectionItem.SelectionContainer:	"Editing Control" list
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -30,15 +31,15 @@ IsDropTargetPatternAvailable:	false
 IsExpandCollapsePatternAvailable:	false
 IsGridItemPatternAvailable:	false
 IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
+IsInvokePatternAvailable:	true
 IsItemContainerPatternAvailable:	false
 IsLegacyIAccessiblePatternAvailable:	true
 IsMultipleViewPatternAvailable:	false
 IsObjectModelPatternAvailable:	false
 IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
+IsScrollItemPatternAvailable:	true
 IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
+IsSelectionItemPatternAvailable:	true
 IsSelectionPatternAvailable:	false
 IsSpreadsheetItemPatternAvailable:	false
 IsSpreadsheetPatternAvailable:	false
@@ -53,50 +54,134 @@ IsTextPattern2Available:	false
 IsTogglePatternAvailable:	false
 IsTransformPatternAvailable:	false
 IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	true
+IsValuePatternAvailable:	false
 IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
 FirstChild:	[null]
 LastChild:	[null]
-Next:	"End Time Row 6" item
-Previous:	"Sr. No Row 6" item
+Next:	"APPROVE" list item
+Previous:	[null]
 Other Props:	Object has no additional properties
 Children:	Container has no children
-Ancestors:	"Row 6" 
+Ancestors:	"Editing Control" list
+	"Editing Control" combo box
+	"Editing Panel" pane
 	"DataGridView" table
 	"Peak Margin" window
 	"" pane
 	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
 	"Desktop 1" pane
 	[ No Parent ]
-========================
-Name:	"Status Row 6"
-ControlType:	UIA_DataItemControlTypeId (0xC36D)
-LocalizedControlType:	"item"
-BoundingRectangle:	{l:556 t:308 r:656 b:330}
+=========================
+Name:	"REJECT"
+ControlType:	UIA_ListItemControlTypeId (0xC357)
+LocalizedControlType:	"list item"
+BoundingRectangle:	{l:140 t:337 r:259 b:350}
 IsEnabled:	true
 IsOffscreen:	false
 IsKeyboardFocusable:	true
 HasKeyboardFocus:	true
 AccessKey:	""
-ProcessId:	8664
-ProviderDescription:	"[pid:8664,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
+ProcessId:	7156
+RuntimeId:	[2A.96080A.4.80000001.96080A.FFFFFFFC.3]
+ProviderDescription:	"[pid:7156,providerId:0x0 Annotation:Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
 IsPassword:	false
-HelpText:	"DataGridViewTextBoxCell(DataGridViewCell)"
+HelpText:	""
+IsDialog:	false
+LegacyIAccessible.ChildId:	3
+LegacyIAccessible.DefaultAction:	"Double Click"
+LegacyIAccessible.Description:	""
+LegacyIAccessible.Help:	""
+LegacyIAccessible.KeyboardShortcut:	""
+LegacyIAccessible.Name:	"REJECT"
+LegacyIAccessible.Role:	list item (0x22)
+LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
+LegacyIAccessible.Value:	""
+SelectionItem.IsSelected:	true
+SelectionItem.SelectionContainer:	"Editing Control" list
+IsAnnotationPatternAvailable:	false
+IsDragPatternAvailable:	false
+IsDockPatternAvailable:	false
+IsDropTargetPatternAvailable:	false
+IsExpandCollapsePatternAvailable:	false
+IsGridItemPatternAvailable:	false
+IsGridPatternAvailable:	false
+IsInvokePatternAvailable:	true
+IsItemContainerPatternAvailable:	false
+IsLegacyIAccessiblePatternAvailable:	true
+IsMultipleViewPatternAvailable:	false
+IsObjectModelPatternAvailable:	false
+IsRangeValuePatternAvailable:	false
+IsScrollItemPatternAvailable:	true
+IsScrollPatternAvailable:	false
+IsSelectionItemPatternAvailable:	true
+IsSelectionPatternAvailable:	false
+IsSpreadsheetItemPatternAvailable:	false
+IsSpreadsheetPatternAvailable:	false
+IsStylesPatternAvailable:	false
+IsSynchronizedInputPatternAvailable:	false
+IsTableItemPatternAvailable:	false
+IsTablePatternAvailable:	false
+IsTextChildPatternAvailable:	false
+IsTextEditPatternAvailable:	false
+IsTextPatternAvailable:	false
+IsTextPattern2Available:	false
+IsTogglePatternAvailable:	false
+IsTransformPatternAvailable:	false
+IsTransform2PatternAvailable:	false
+IsValuePatternAvailable:	false
+IsVirtualizedItemPatternAvailable:	false
+IsWindowPatternAvailable:	false
+IsCustomNavigationPatternAvailable:	false
+IsSelectionPattern2Available:	false
+FirstChild:	[null]
+LastChild:	[null]
+Next:	[null]
+Previous:	"APPROVE" list item
+Other Props:	Object has no additional properties
+Children:	Container has no children
+Ancestors:	"Editing Control" list
+	"Editing Control" combo box
+	"Editing Panel" pane
+	"DataGridView" table
+	"Peak Margin" window
+	"" pane
+	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
+	"Desktop 1" pane
+	[ No Parent ]
+================
+Name:	"Editing Control"
+ControlType:	UIA_ComboBoxControlTypeId (0xC353)
+LocalizedControlType:	"combo box"
+BoundingRectangle:	{l:139 t:289 r:238 b:310}
+IsEnabled:	true
+IsOffscreen:	false
+IsKeyboardFocusable:	true
+HasKeyboardFocus:	true
+AccessKey:	""
+ProcessId:	7156
+RuntimeId:	[2A.A502E4]
+AutomationId:	"10814180"
+FrameworkId:	"WinForm"
+ClassName:	"WindowsForms10.COMBOBOX.app.0.bb8560_r20_ad1"
+NativeWindowHandle:	0xA502E4
+ProviderDescription:	"[pid:11284,providerId:0xA502E4 Main:Nested [pid:7156,providerId:0xA502E4 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
+IsPassword:	false
+HelpText:	""
 IsDialog:	false
 LegacyIAccessible.ChildId:	0
 LegacyIAccessible.DefaultAction:	""
 LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	"DataGridViewTextBoxCell(DataGridViewCell)"
+LegacyIAccessible.Help:	""
 LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Status Row 6"
-LegacyIAccessible.Role:	cell (0x1D)
-LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
-LegacyIAccessible.Value:	"NORMAL"
+LegacyIAccessible.Name:	"Editing Control"
+LegacyIAccessible.Role:	combo box (0x2E)
+LegacyIAccessible.State:	focused,collapsed,focusable (0x100404)
+LegacyIAccessible.Value:	"REJECT"
 Value.IsReadOnly:	false
-Value.Value:	"NORMAL"
+Value.Value:	"REJECT"
 IsAnnotationPatternAvailable:	false
 IsDragPatternAvailable:	false
 IsDockPatternAvailable:	false
@@ -132,13 +217,14 @@ IsVirtualizedItemPatternAvailable:	false
 IsWindowPatternAvailable:	false
 IsCustomNavigationPatternAvailable:	false
 IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"Maker Remarks Row 6" item
-Previous:	"Flag Row 6" item
+FirstChild:	"Editing Control" text
+LastChild:	"Open" button
+Next:	[null]
+Previous:	[null]
 Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Row 6" 
+Children:	"Editing Control" text
+	"Open" button
+Ancestors:	"Editing Panel" pane
 	"DataGridView" table
 	"Peak Margin" window
 	"" pane
