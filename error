@@ -1,6 +1,14 @@
-
-
-TASK [Add private Ubuntu repository for bionic] ************************************************************************************************************************
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
+root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists# ls -ltr
+total 36
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 bionic-security
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 bionic-updates
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 bionic
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 focal-security
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 focal-updates
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 focal
+drwxr-xr-x 4 root root 4096 Apr 24 01:30 jammy-security
+drwxr-xr-x 4 root root 4096 Sep  9 12:19 jammy-updates
+drwxr-xr-x 4 root root 4096 Sep  9 12:19 jammy
+root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists# pwd
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists
+root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists#
