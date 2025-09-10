@@ -1,23 +1,6 @@
-Dumping 8 rows from Peak Margin grid:
-2025-09-09 17:06:56,329 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:56,485 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:56,642 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:56,799 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:56,955 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:57,111 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:57,268 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:06:57,486 [INFO] Row 7: ['8', '17:38:00', '17:48:00', '17:43:00', 'N', 'PENDING', '(null)', '(null)', 'False']
-2025-09-09 17:06:57,486 [INFO] ✅ Found row 7: Start=17:38:00, Status=PENDING
-2025-09-09 17:06:57,596 [INFO] ☑️ Checkbox selected.
-2025-09-09 17:07:02,127 [INFO] Dumping 8 rows from Peak Margin grid:
-2025-09-09 17:07:02,283 [INFO] Row 0: ['1', '12:50:00', '12:50:00', '12:50:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:02,502 [INFO] Row 1: ['2', '13:11:00', '13:11:00', '13:11:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:02,658 [INFO] Row 2: ['3', '13:20:00', '13:20:00', '13:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:02,815 [INFO] Row 3: ['4', '15:00:00', '15:00:00', '15:00:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:02,987 [INFO] Row 4: ['5', '16:01:00', '16:15:00', '16:06:00', 'Y', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:03,143 [INFO] Row 5: ['6', '16:20:00', '16:20:00', '16:20:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:03,299 [INFO] Row 6: ['7', '16:40:00', '16:50:00', '16:48:00', 'N', 'NORMAL', '(null)', '(null)', 'False']
-2025-09-09 17:07:03,455 [INFO] Row 7: ['8', '17:38:00', '17:48:00', '17:43:00', 'N', 'PENDING', '(null)', '(null)', 'True']
-2025-09-09 17:07:03,455 [ERROR] Automation failed: tuple index out of range
-Traceback (most recent call last):
-  File "C:\Users\Test3\Desktop
+
+
+TASK [Add private Ubuntu repository for bionic] ************************************************************************************************************************
+failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
+failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
+failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/multiverse/dep11/icons-48x48.tar  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
