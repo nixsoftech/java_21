@@ -1,35 +1,49 @@
 #!/bin/bash
 # ============================================
-# Script: sync-ubuntu-dists.sh
-# Purpose: Dry-run & sync selected Ubuntu dists
-# Author: Your Name
+# Script: sync-ubuntu-dists-http.sh
+# Purpose: Dry-run & sync selected Ubuntu dists over HTTP
 # ============================================
 
-# --- Configuration ---
-MIRROR_PATH="/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists"
-SOURCE="rsync://archive.ubuntu.com/ubuntu/dists"
-DISTS=("bionic" "bionic-updates" "bionic-security"
-       "focal" "focal-updates" "focal-security"
-       "jammy" "jammy-updates" "jammy-security")
+# Base URL of the official Ubuntu mirror
+BASE_URL="http://archive.ubuntu.com/ubuntu"
 
-echo "🔍 Starting dry-run for selected distributions..."
-echo "==================================================="
+# Local path where mirror is stored
+LOCAL_PATH="/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu"
 
-for dist in "${DISTS[@]}"; do
-  echo -e "\n🔎 Checking $dist ..."
-  rsync -av --dry-run "${SOURCE}/${dist}/" "${MIRROR_PATH}/${dist}/"
+# Log files
+LOG_DIR="/var/log/ubuntu_mirror"
+mkdir -p "$LOG_DIR"
+DRYRUN_LOG="$LOG_DIR/dryrun_$(date +%F_%H-%M-%S).log"
+DOWNLOAD_LOG="$LOG_DIR/download_$(date +%F_%H-%M-%S).log"
+
+# List of distributions to check/sync
+DISTS="bionic bionic-updates bionic-security \
+focal focal-updates focal-security \
+jammy jammy-updates jammy-security"
+
+echo "🔍 Starting dry-run check for selected distributions..."
+echo "===================================================" | tee -a "$DRYRUN_LOG"
+
+# Dry-run: Check missing files using wget --spider
+for dist in $DISTS; do
+  echo -e "\n🔎 Checking $dist ..." | tee -a "$DRYRUN_LOG"
+  wget --spider -r -np -nH --cut-dirs=1 -R "index.html*" \
+       "$BASE_URL/$dist/" 2>&1 | tee -a "$DRYRUN_LOG" | grep -i "404"
 done
 
-echo -e "\n✅ Dry-run completed. Review the list above."
-read -p "Do you want to perform actual sync? (y/n): " confirm
+echo -e "\n✅ Dry-run check completed. Review 404 errors above." | tee -a "$DRYRUN_LOG"
 
-if [[ $confirm =~ ^[Yy]$ ]]; then
-    echo -e "\n🚀 Starting real sync..."
-    for dist in "${DISTS[@]}"; do
-      echo -e "\n⬇️ Syncing $dist ..."
-      rsync -av "${SOURCE}/${dist}/" "${MIRROR_PATH}/${dist}/"
+# Ask user if they want to download missing files
+read -p "Do you want to download missing files now? (y/n): " confirm
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+    echo -e "\n🚀 Starting real download..." | tee -a "$DOWNLOAD_LOG"
+    for dist in $DISTS; do
+      echo -e "\n⬇️ Downloading $dist ..." | tee -a "$DOWNLOAD_LOG"
+      wget -c -r -np -nH --cut-dirs=1 -R "index.html*" \
+           -P "$LOCAL_PATH" "$BASE_URL/$dist/" 2>&1 | tee -a "$DOWNLOAD_LOG"
     done
-    echo -e "\n🎉 Sync completed successfully."
+    echo -e "\n🎉 Download completed successfully." | tee -a "$DOWNLOAD_LOG"
 else
-    echo -e "\n❌ Sync aborted by user."
+    echo -e "\n❌ Download skipped by user." | tee -a "$DOWNLOAD_LOG"
 fi
