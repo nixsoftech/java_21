@@ -1,246 +1,35 @@
-after login , if any popup appears click ok
-and after that if another pop appears if you want to close rms application, yes or no, click no
-=============================
-after login, we have to check if rms is running or not,
-if running, exit the application or continue the automation task
-========================
-How found:	Mouse move (469,723)
-	hwnd=0x000000000036052C 32bit class="WindowsForms10.Window.8.app.0.bb8560_r20_ad1" style=0x56000000 ex=0x10000
-Name:	"RMS Running     Trades Processed : 0     01:17:12 PM"
-ControlType:	UIA_TextControlTypeId (0xC364)
-LocalizedControlType:	"text"
-BoundingRectangle:	{l:450 t:712 r:829 b:729}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	false
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	2936
-ProviderDescription:	"[pid:2936,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	""
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"RMS Running     Trades Processed : 0     01:17:12 PM"
-LegacyIAccessible.Role:	text (0x29)
-LegacyIAccessible.State:	read only (0x40)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"[0 Trades/Sec]  " text
-Previous:	"03-Sep-2025" text
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"statusStrip1" status bar
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-============================
-click on RMS configuration,
-Name:	"RMS Configuration"
-ControlType:	UIA_MenuItemControlTypeId (0xC35B)
-LocalizedControlType:	"menu item"
-BoundingRectangle:	{l:580 t:44 r:714 b:62}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
-AccessKey:	"Alt+c"
-ProcessId:	2936
-ProviderDescription:	"[pid:2936,providerId:0x0 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	"Press"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	"Alt+c"
-LegacyIAccessible.Name:	"RMS Configuration"
-LegacyIAccessible.Role:	menu item (0xC)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	"Start RMS" menu item
-LastChild:	"BMS File Upload" menu item
-Next:	"Tools" menu item
-Previous:	"Client Collateral" menu item
-Other Props:	Object has no additional properties
-Children:	"Start RMS" menu item
-	"Timings For Volatility Calculation" menu item
-	"Timings For Drop Delivery Margin" menu item
-	"Change Password" menu item
-	"Generate GPSP/Process BK01" menu item
-	"Drop Delivery Margin" menu item
-	"Process CRMS/FUNDS File" menu item
-	"Timings for Intraday PSN" menu item
-	"Peak Margin" menu item
-	"BMS File Upload" menu item
-Ancestors:	"Main Menu" menu bar
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-==================================
-next click on Peak Margin
-Name:	"Peak Margin"
-ControlType:	UIA_WindowControlTypeId (0xC370)
-LocalizedControlType:	"window"
-BoundingRectangle:	{l:33 t:110 r:952 b:609}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	false
-AccessKey:	""
-ProcessId:	2936
-RuntimeId:	[2A.1C05F6]
-AutomationId:	"mnuPeakMargin"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.Window.8.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0x1C05F6
-ProviderDescription:	"[pid:15788,providerId:0x1C05F6 Main:Nested [pid:2936,providerId:0x1C05F6 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Nonclient:Microsoft: Non-Client Proxy (unmanaged:uiautomationcore.dll); Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	""
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Peak Margin"
-LegacyIAccessible.Role:	client (0xA)
-LegacyIAccessible.State:	focusable (0x100000)
-LegacyIAccessible.Value:	""
-Transform.CanMove:	true
-Transform.CanResize:	false
-Transform.CanRotate:	false
-Window.CanMaximize:	true
-Window.CanMinimize:	true
-Window.IsModal:	false
-Window.IsTopmost:	false
-Window.WindowInteractionState:	ReadyForUserInteraction (2)
-Window.WindowVisualState:	Normal (0)
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	true
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	true
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	"Export" button
-LastChild:	(null) title bar
-Next:	"Horizontal" scroll bar
-Previous:	[null]
-Other Props:	Object has no additional properties
-Children:	"Export" button
-	"Save" button
-	"Delete" button
-	"Add" button
-	"DataGridView" table
-	(null) title bar
-Ancestors:	"" pane
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-========================
-after click on peak margin, exit the application
+#!/bin/bash
+# ============================================
+# Script: sync-ubuntu-dists.sh
+# Purpose: Dry-run & sync selected Ubuntu dists
+# Author: Your Name
+# ============================================
+
+# --- Configuration ---
+MIRROR_PATH="/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists"
+SOURCE="rsync://archive.ubuntu.com/ubuntu/dists"
+DISTS=("bionic" "bionic-updates" "bionic-security"
+       "focal" "focal-updates" "focal-security"
+       "jammy" "jammy-updates" "jammy-security")
+
+echo "🔍 Starting dry-run for selected distributions..."
+echo "==================================================="
+
+for dist in "${DISTS[@]}"; do
+  echo -e "\n🔎 Checking $dist ..."
+  rsync -av --dry-run "${SOURCE}/${dist}/" "${MIRROR_PATH}/${dist}/"
+done
+
+echo -e "\n✅ Dry-run completed. Review the list above."
+read -p "Do you want to perform actual sync? (y/n): " confirm
+
+if [[ $confirm =~ ^[Yy]$ ]]; then
+    echo -e "\n🚀 Starting real sync..."
+    for dist in "${DISTS[@]}"; do
+      echo -e "\n⬇️ Syncing $dist ..."
+      rsync -av "${SOURCE}/${dist}/" "${MIRROR_PATH}/${dist}/"
+    done
+    echo -e "\n🎉 Sync completed successfully."
+else
+    echo -e "\n❌ Sync aborted by user."
+fi
