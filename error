@@ -1,14 +1,35 @@
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists# ls -ltr
-total 36
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 bionic-security
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 bionic-updates
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 bionic
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 focal-security
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 focal-updates
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 focal
-drwxr-xr-x 4 root root 4096 Apr 24 01:30 jammy-security
-drwxr-xr-x 4 root root 4096 Sep  9 12:19 jammy-updates
-drwxr-xr-x 4 root root 4096 Sep  9 12:19 jammy
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists# pwd
-/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists#
+ bash repo_sync.sh
+🔍 Starting dry-run check for selected distributions...
+===================================================
+
+🔎 Checking bionic ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking bionic-updates ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking bionic-security ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking focal ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking focal-updates ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking focal-security ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking jammy ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking jammy-updates ...
+HTTP request sent, awaiting response... 404 Not Found
+
+🔎 Checking jammy-security ...
+HTTP request sent, awaiting response... 404 Not Found
+
+✅ Dry-run check completed. Review 404 errors above.
+Do you want to download missing files now? (y/n): n
+
+❌ Download skipped by user.
