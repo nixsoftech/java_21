@@ -1,121 +1,248 @@
-# ------------------- Peak Margin Dump -------------------
-def dump_peak_margin_grid(peak_margin_win):
-    """
-    Reads all rows from Peak Margin grid and returns a list of tuples:
-    [
-        (row_cells, row_values),
-        (row_cells, row_values),
-        ...
-    ]
-    where row_cells is a list of cell objects and row_values is list of string values.
-    """
-    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
-    if not tables:
-        logger.warning("No tables/list views found in Peak Margin window for dumping")
-        return []
+cat upgrade-ubuntu_test1.yml
+---
+- name: Upgrade Ubuntu 18.04 to 22.04 with private repository
+  hosts: all
+  become: yes
+  vars:
+    reboot_wait_timeout: 1800  # 30 minutes in seconds
+    script_execution_timeout: 14400  # 4 hours in seconds
+    repo_url: "http://10.13.0.88:8080/ubuntu"
 
-    grid = tables[0]
-    all_data_items = grid.descendants(control_type="DataItem")
-    columns_per_row = 9
-    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+  tasks:
+    # Phase 1: Upgrade from 18.04 to 20.04
+    - name: Check if reboot is required before 18.04 to 20.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_initial
+      failed_when: false
+      changed_when: false
 
-    rows = []
-    logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid:")
-    for r_idx, row_cells in enumerate(rows_cells):
-        row_values = []
-        for cell in row_cells:
-            try:
-                val = cell.legacy_properties().get("Value", "")
-            except Exception:
-                try:
-                    val = cell.get_value()
-                except Exception:
-                    val = cell.window_text()
-            row_values.append(val.strip() if val else "")
-        logger.info(f"Row {r_idx}: {row_values}")
-        rows.append((row_cells, row_values))
+    - name: Reboot server if required before 18.04 to 20.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_initial.rc == 0
 
-    return rows
+    - name: Add private Ubuntu repository for bionic
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: no
+      loop:
+        - "deb [arch=amd64] {{ repo_url }} bionic main universe"
+        - "deb [arch=amd64] {{ repo_url }} bionic-updates main universe"
+        - "deb [arch=amd64] {{ repo_url }} bionic-security main universe"
+      register: repo_added_bionic
 
+    - name: Update apt cache after adding bionic repository
+      ansible.builtin.apt:
+        update_cache: yes
+      when: repo_added_bionic.changed
 
-# ------------------- Peak Margin Reject (rash1) -------------------
+    - name: Remove lxd package
+      ansible.builtin.apt:
+        name: lxd
+        state: absent
+        purge: yes
+        update_cache: no
 
-def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
-    logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
+    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
 
-    end_time = time.time() + max_wait_seconds
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
 
-    while time.time() < end_time:
-        rows = dump_peak_margin_grid(peak_margin_win)
+          echo "Updating package list..."
+          apt-get update -yq
 
-        for r_idx, (row_cells, row_values) in enumerate(rows):
-            if len(row_values) < 6:
-                continue
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
 
-            start_time_val = row_values[1]
-            status_val = row_values[5]
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
 
-            if start_time_val == target_start_time and status_val.upper() == "PENDING":
-                logger.info(f"✅ Found row {r_idx}: Start={start_time_val}, Status={status_val}")
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
 
-                # Step 1: Select checkbox
-                checkbox_cell = row_cells[-1]
-                checkbox_cell.click_input()
-                logger.info("☑️ Checkbox selected.")
-                time.sleep(1)  # Wait for UI update
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
 
-                # Step 2: Re-read grid after checkbox selection
-                rows_after_click = dump_peak_margin_grid(peak_margin_win)
-                if r_idx >= len(rows_after_click):
-                    logger.error(f"Row index {r_idx} not found after checkbox click, retrying...")
-                    time.sleep(poll_interval)
-                    continue
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade1.sh
+        mode: '0755'
 
-                row_cells_after, row_values_after = rows_after_click[r_idx]
-                logger.debug(f"Row after checkbox: cells={len(row_cells_after)}, values={row_values_after}")
+    - name: Execute auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/auto-upgrade1.sh
+      async: saj{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade1_result
+      ignore_errors: yes
 
-                # Step 3: Find column index for PENDING dynamically
-                try:
-                    status_col_index = row_values_after.index("PENDING")
-                except ValueError:
-                    logger.error("PENDING status not found after checkbox selection, retrying...")
-                    time.sleep(poll_interval)
-                    continue
+    - name: Check if reboot is required after auto-upgrade1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade1
+      failed_when: false
+      changed_when: false
 
-                pending_cell = row_cells_after[status_col_index]
-                logger.info(f"🖱️ About to double-click fresh PENDING cell: Value={row_values_after[status_col_index]}")
+    - name: Reboot server if required after auto-upgrade1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade1.rc == 0
 
-                # Step 4: Double-click to open dropdown
-                pending_cell.double_click_input()
-                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
-                time.sleep(0.5)
+    - name: Copy do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release1.sh
+        mode: '0755'
 
-                # Step 5: Open dropdown and choose REJECT
-                send_keys("%{DOWN}")  # Alt+Down to open combo
-                time.sleep(0.3)
-                send_keys("REJECT{ENTER}")
-                logger.info("✅ Selected REJECT via keyboard.")
-                time.sleep(0.5)
+    - name: Execute do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/do-release1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release1_result
+      ignore_errors: yes
 
-                # Step 6: Save changes
-                safe_click(peak_margin_win, title="Save", control_type="Button")
-                logger.info("💾 Clicked Save button.")
-                time.sleep(1)
+    - name: Check if reboot is required after do-release1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release1
+      failed_when: false
+      changed_when: false
 
-                # Step 7: Handle confirmation popup if any
-                try:
-                    popup = app.window(best_match="Risk Management System")
-                    popup.wait("visible", timeout=5)
-                    safe_click(popup, auto_id="2", control_type="Button")
-                    logger.info("Clicked OK on confirmation popup.")
-                except Exception:
-                    logger.warning("No confirmation popup after save.")
+    - name: Reboot server if required after do-release1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release1.rc == 0
 
-                return  # ✅ Success - exit function
+    # Phase 2: Upgrade from 20.04 to 22.04
+    - name: Update private Ubuntu repository for focal
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: no
+      loop:
+        - "deb [arch=amd64] {{ repo_url }} focal main universe"
+        - "deb [arch=amd64] {{ repo_url }} focal-updates main universe"
+        - "deb [arch=amd64] {{ repo_url }} focal-security main universe"
+      register: repo_added_focal
 
-        logger.debug("Row not matched yet, retrying...")
-        time.sleep(poll_interval)
+    - name: Update apt cache after adding focal repository
+      ansible.builtin.apt:
+        update_cache: yes
+      when: repo_added_focal.changed
 
-    raise RuntimeError(f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s")
+    - name: Check if reboot is required before 20.04 to 22.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_pre_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required before 20.04 to 22.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_pre_upgrade2.rc == 0
+
+    - name: Copy auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
+
+          echo "Updating package list..."
+          apt-get update -yq
+
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
+
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
+
+          echo "Cleaning up unnecessary packagesවටි packages..."
+          apt-get autoremove -yq
+
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
+
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade2.sh
+        mode: '0755'
+
+    - name: Execute auto-upgrade2.sh script for 20.04 to 22.CMS
+      ansible.builtin.shell: /tmp/auto-upgrade2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after auto-upgrade2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after auto-upgrade2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade2.rc == 0
+
+    - name: Update private Ubuntu repository for jammy
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: no
+      loop:
+        - "deb [arch=amd64] {{ repo_url }} jammy main universe"
+        - "deb [arch=amd64] {{ repo_url }} jammy-updates main universe"
+        - "deb [arch=amd64] {{ repo_url }} jammy-security main universe"
+      register: repo_added_jammy
+
+    - name: Update apt cache after adding jammy repository
+      ansible.builtin.apt:
+        update_cache: yes
+      when: repo_added_jammy.changed
+
+    - name: Copy do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release2.sh
+        mode: '0755'
+
+    - name: Execute do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/do-release2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after do-release2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after do-release2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release2.rc == 0
+
+    - name: Check OS release
+      ansible.builtin.command: lsb_release -a
+      register: os_release
+      changed_when: false
+
+    - name: Print OS release information
+      ansible.builtin.debug:
+        msg: "{{ os_release.stdout_lines }}
