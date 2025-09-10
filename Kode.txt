@@ -1,136 +1,52 @@
-✅ 1. Locate Your apt-mirror Directory
-
-Check the apt-mirror configuration file:
-
-grep '^set base_path' /etc/apt/mirror.list
-
-
-By default, apt-mirror stores files under:
-
-/var/spool/apt-mirror/mirror/<mirror-hostname>/ubuntu/
-
-
-Example:
-
-/var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
-
-✅ 2. Check Repository Structure
-
-Make sure all required distributions are present:
-
-ls -1 /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/dists/
-
-
-You should see folders like:
-
-bionic
-bionic-updates
-bionic-security
-focal
-focal-updates
-focal-security
-jammy
-jammy-updates
-jammy-security
-
-
-If some are missing, you must sync again.
-
-✅ 3. Test the Repository from a Client
-
-From a client machine, run:
-
-curl -I http://<your-mirror-ip>:8080/ubuntu/dists/jammy/InRelease
-
-
-You should get HTTP/1.1 200 OK.
-Then run:
-
-sudo apt-get clean
-sudo apt-get update
-
-
-If you see no 404 Not Found errors, your repo is fine.
-
-✅ 4. Dry-Run Rsync (Check for Missing Files)
-
-Compare your mirror with the official Ubuntu archive without downloading:
-
-rsync -av --dry-run rsync://archive.ubuntu.com/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
-
-
---dry-run → Shows what files would be downloaded/updated.
-
--a → Preserves permissions and timestamps.
-
--v → Verbose output.
-
-If you see many files listed, your mirror is missing data.
-
-✅ 5. Synchronize Missing Files (Real Run)
-
-Once you're satisfied with the dry-run result, run rsync without --dry-run:
-
-rsync -av rsync://archive.ubuntu.com/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
-
-
-This will:
-
-Download only missing or changed files
-
-Bring your mirror fully up to date
-
-✅ 6. (Optional) Use a Nearby Mirror
-
-For faster sync, find a mirror closer to your location:
-🔗 https://launchpad.net/ubuntu/+archivemirrors
-
-Then use it in rsync:
-
-rsync -av rsync://mirror.cse.iitk.ac.in/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
-
-✅ 7. Automate with Cron
-
-To keep your mirror updated regularly, add a cron job:
-
-sudo crontab -e
-
-
-Example entry (sync every night at 2 AM):
-
-0 2 * * * rsync -az rsync://archive.ubuntu.com/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/ > /var/log/apt-mirror-rsync.log 2>&1
-
-🛠️ Example: Shell Script for Easy Sync
-
-Save as /usr/local/bin/sync-apt-mirror.sh:
-
 #!/bin/bash
-MIRROR_PATH="/var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/"
-SOURCE="rsync://archive.ubuntu.com/ubuntu/"
+# ============================================
+# Script: sync-ubuntu-dists-http.sh
+# Purpose: Automatically download selected Ubuntu dists over HTTP
+#          with success/failure messages
+# ============================================
 
-echo "🔍 Running dry-run check..."
-rsync -av --dry-run $SOURCE $MIRROR_PATH | tee /tmp/apt-mirror-check.log
+# Base URL of the official Ubuntu mirror (include /dists/)
+BASE_URL="http://archive.ubuntu.com/ubuntu/dists"
 
-echo "✅ Review the list above."
-read -p "Do you want to perform actual sync? (y/n): " confirm
+# Local path where mirror is stored
+LOCAL_PATH="/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu"
 
-if [[ $confirm == "y" || $confirm == "Y" ]]; then
-    echo "🚀 Starting sync..."
-    rsync -av $SOURCE $MIRROR_PATH
-    echo "🎉 Sync completed successfully."
+# Log files
+LOG_DIR="/var/log/ubuntu_mirror"
+mkdir -p "$LOG_DIR"
+DOWNLOAD_LOG="$LOG_DIR/download_$(date +%F_%H-%M-%S).log"
+
+# List of distributions to check/sync
+DISTS="bionic bionic-updates bionic-security \
+focal focal-updates focal-security \
+jammy jammy-updates jammy-security"
+
+echo "🚀 Starting download of selected Ubuntu distributions..."
+echo "===================================================" | tee -a "$DOWNLOAD_LOG"
+
+# Initialize status variable
+ALL_SUCCESS=true
+
+# Download each distribution
+for dist in $DISTS; do
+  echo -e "\n⬇️ Downloading $dist ..." | tee -a "$DOWNLOAD_LOG"
+  
+  wget -c -r -np -nH --cut-dirs=2 -R "index.html*" \
+       -P "$LOCAL_PATH" "$BASE_URL/$dist/" 2>&1 | tee -a "$DOWNLOAD_LOG"
+  
+  # Check if wget succeeded
+  if [ ${PIPESTATUS[0]} -ne 0 ]; then
+    echo "❌ $dist download FAILED or incomplete!" | tee -a "$DOWNLOAD_LOG"
+    ALL_SUCCESS=false
+  else
+    echo "✅ $dist download SUCCESS!" | tee -a "$DOWNLOAD_LOG"
+  fi
+done
+
+# Final overall status
+echo -e "\n===================================================" | tee -a "$DOWNLOAD_LOG"
+if [ "$ALL_SUCCESS" = true ]; then
+    echo "🎉 ALL downloads completed SUCCESSFULLY." | tee -a "$DOWNLOAD_LOG"
 else
-    echo "❌ Sync aborted by user."
+    echo "⚠️ Some downloads FAILED or are incomplete. Check the log for details: $DOWNLOAD_LOG" | tee -a "$DOWNLOAD_LOG"
 fi
-
-
-Make it executable:
-
-sudo chmod +x /usr/local/bin/sync-apt-mirror.sh
-
-
-Run manually:
-
-sudo /usr/local/bin/sync-apt-mirror.sh
-
-
-✅ After sync, always test with apt-get update on a client machine before using the repo for upgrades.
