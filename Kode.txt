@@ -1,248 +1,136 @@
-cat upgrade-ubuntu_test1.yml
----
-- name: Upgrade Ubuntu 18.04 to 22.04 with private repository
-  hosts: all
-  become: yes
-  vars:
-    reboot_wait_timeout: 1800  # 30 minutes in seconds
-    script_execution_timeout: 14400  # 4 hours in seconds
-    repo_url: "http://10.13.0.88:8080/ubuntu"
+✅ 1. Locate Your apt-mirror Directory
 
-  tasks:
-    # Phase 1: Upgrade from 18.04 to 20.04
-    - name: Check if reboot is required before 18.04 to 20.04 upgrade
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_initial
-      failed_when: false
-      changed_when: false
+Check the apt-mirror configuration file:
 
-    - name: Reboot server if required before 18.04 to 20.04 upgrade
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_initial.rc == 0
+grep '^set base_path' /etc/apt/mirror.list
 
-    - name: Add private Ubuntu repository for bionic
-      ansible.builtin.apt_repository:
-        repo: "{{ item }}"
-        state: present
-        update_cache: no
-      loop:
-        - "deb [arch=amd64] {{ repo_url }} bionic main universe"
-        - "deb [arch=amd64] {{ repo_url }} bionic-updates main universe"
-        - "deb [arch=amd64] {{ repo_url }} bionic-security main universe"
-      register: repo_added_bionic
 
-    - name: Update apt cache after adding bionic repository
-      ansible.builtin.apt:
-        update_cache: yes
-      when: repo_added_bionic.changed
+By default, apt-mirror stores files under:
 
-    - name: Remove lxd package
-      ansible.builtin.apt:
-        name: lxd
-        state: absent
-        purge: yes
-        update_cache: no
+/var/spool/apt-mirror/mirror/<mirror-hostname>/ubuntu/
 
-    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          set -e
 
-          # Set environment to non-interactive
-          export DEBIAN_FRONTEND=noninteractive
+Example:
 
-          echo "Updating package list..."
-          apt-get update -yq
+/var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
 
-          echo "Performing standard upgrades..."
-          apt-get upgrade -yq
+✅ 2. Check Repository Structure
 
-          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
-          apt-get dist-upgrade -yq
+Make sure all required distributions are present:
 
-          echo "Cleaning up unnecessary packages..."
-          apt-get autoremove -yq
+ls -1 /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/dists/
 
-          echo "Installing update-manager-core if needed..."
-          apt-get install -yq update-manager-core
 
-          echo "Package upgrade phase completed successfully."
-        dest: /tmp/auto-upgrade1.sh
-        mode: '0755'
+You should see folders like:
 
-    - name: Execute auto-upgrade1.sh script for 18.04 to 20.04
-      ansible.builtin.shell: /tmp/auto-upgrade1.sh
-      async: saj{{ script_execution_timeout }}"
-      poll: 10
-      register: auto_upgrade1_result
-      ignore_errors: yes
+bionic
+bionic-updates
+bionic-security
+focal
+focal-updates
+focal-security
+jammy
+jammy-updates
+jammy-security
 
-    - name: Check if reboot is required after auto-upgrade1.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_upgrade1
-      failed_when: false
-      changed_when: false
 
-    - name: Reboot server if required after auto-upgrade1.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_upgrade1.rc == 0
+If some are missing, you must sync again.
 
-    - name: Copy do-release1.sh script for 18.04 to 20.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-          apt-get autoremove -yq
-          apt-get clean
-          systemctl restart sshd
-        dest: /tmp/do-release1.sh
-        mode: '0755'
+✅ 3. Test the Repository from a Client
 
-    - name: Execute do-release1.sh script for 18.04 to 20.04
-      ansible.builtin.shell: /tmp/do-release1.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: do_release1_result
-      ignore_errors: yes
+From a client machine, run:
 
-    - name: Check if reboot is required after do-release1.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_release1
-      failed_when: false
-      changed_when: false
+curl -I http://<your-mirror-ip>:8080/ubuntu/dists/jammy/InRelease
 
-    - name: Reboot server if required after do-release1.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_release1.rc == 0
 
-    # Phase 2: Upgrade from 20.04 to 22.04
-    - name: Update private Ubuntu repository for focal
-      ansible.builtin.apt_repository:
-        repo: "{{ item }}"
-        state: present
-        update_cache: no
-      loop:
-        - "deb [arch=amd64] {{ repo_url }} focal main universe"
-        - "deb [arch=amd64] {{ repo_url }} focal-updates main universe"
-        - "deb [arch=amd64] {{ repo_url }} focal-security main universe"
-      register: repo_added_focal
+You should get HTTP/1.1 200 OK.
+Then run:
 
-    - name: Update apt cache after adding focal repository
-      ansible.builtin.apt:
-        update_cache: yes
-      when: repo_added_focal.changed
+sudo apt-get clean
+sudo apt-get update
 
-    - name: Check if reboot is required before 20.04 to 22.04 upgrade
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_pre_upgrade2
-      failed_when: false
-      changed_when: false
 
-    - name: Reboot server if required before 20.04 to 22.04 upgrade
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_pre_upgrade2.rc == 0
+If you see no 404 Not Found errors, your repo is fine.
 
-    - name: Copy auto-upgrade2.sh script for 20.04 to 22.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          set -e
+✅ 4. Dry-Run Rsync (Check for Missing Files)
 
-          # Set environment to non-interactive
-          export DEBIAN_FRONTEND=noninteractive
+Compare your mirror with the official Ubuntu archive without downloading:
 
-          echo "Updating package list..."
-          apt-get update -yq
+rsync -av --dry-run rsync://archive.ubuntu.com/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
 
-          echo "Performing standard upgrades..."
-          apt-get upgrade -yq
 
-          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
-          apt-get dist-upgrade -yq
+--dry-run → Shows what files would be downloaded/updated.
 
-          echo "Cleaning up unnecessary packagesවටි packages..."
-          apt-get autoremove -yq
+-a → Preserves permissions and timestamps.
 
-          echo "Installing update-manager-core if needed..."
-          apt-get install -yq update-manager-core
+-v → Verbose output.
 
-          echo "Package upgrade phase completed successfully."
-        dest: /tmp/auto-upgrade2.sh
-        mode: '0755'
+If you see many files listed, your mirror is missing data.
 
-    - name: Execute auto-upgrade2.sh script for 20.04 to 22.CMS
-      ansible.builtin.shell: /tmp/auto-upgrade2.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: auto_upgrade2_result
-      ignore_errors: yes
+✅ 5. Synchronize Missing Files (Real Run)
 
-    - name: Check if reboot is required after auto-upgrade2.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_upgrade2
-      failed_when: false
-      changed_when: false
+Once you're satisfied with the dry-run result, run rsync without --dry-run:
 
-    - name: Reboot server if required after auto-upgrade2.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_upgrade2.rc == 0
+rsync -av rsync://archive.ubuntu.com/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
 
-    - name: Update private Ubuntu repository for jammy
-      ansible.builtin.apt_repository:
-        repo: "{{ item }}"
-        state: present
-        update_cache: no
-      loop:
-        - "deb [arch=amd64] {{ repo_url }} jammy main universe"
-        - "deb [arch=amd64] {{ repo_url }} jammy-updates main universe"
-        - "deb [arch=amd64] {{ repo_url }} jammy-security main universe"
-      register: repo_added_jammy
 
-    - name: Update apt cache after adding jammy repository
-      ansible.builtin.apt:
-        update_cache: yes
-      when: repo_added_jammy.changed
+This will:
 
-    - name: Copy do-release2.sh script for 20.04 to 22.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-          apt-get autoremove -yq
-          apt-get clean
-          systemctl restart sshd
-        dest: /tmp/do-release2.sh
-        mode: '0755'
+Download only missing or changed files
 
-    - name: Execute do-release2.sh script for 20.04 to 22.04
-      ansible.builtin.shell: /tmp/do-release2.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: do_release2_result
-      ignore_errors: yes
+Bring your mirror fully up to date
 
-    - name: Check if reboot is required after do-release2.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_release2
-      failed_when: false
-      changed_when: false
+✅ 6. (Optional) Use a Nearby Mirror
 
-    - name: Reboot server if required after do-release2.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_release2.rc == 0
+For faster sync, find a mirror closer to your location:
+🔗 https://launchpad.net/ubuntu/+archivemirrors
 
-    - name: Check OS release
-      ansible.builtin.command: lsb_release -a
-      register: os_release
-      changed_when: false
+Then use it in rsync:
 
-    - name: Print OS release information
-      ansible.builtin.debug:
-        msg: "{{ os_release.stdout_lines }}
+rsync -av rsync://mirror.cse.iitk.ac.in/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/
+
+✅ 7. Automate with Cron
+
+To keep your mirror updated regularly, add a cron job:
+
+sudo crontab -e
+
+
+Example entry (sync every night at 2 AM):
+
+0 2 * * * rsync -az rsync://archive.ubuntu.com/ubuntu/ /var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/ > /var/log/apt-mirror-rsync.log 2>&1
+
+🛠️ Example: Shell Script for Easy Sync
+
+Save as /usr/local/bin/sync-apt-mirror.sh:
+
+#!/bin/bash
+MIRROR_PATH="/var/spool/apt-mirror/mirror/archive.ubuntu.com/ubuntu/"
+SOURCE="rsync://archive.ubuntu.com/ubuntu/"
+
+echo "🔍 Running dry-run check..."
+rsync -av --dry-run $SOURCE $MIRROR_PATH | tee /tmp/apt-mirror-check.log
+
+echo "✅ Review the list above."
+read -p "Do you want to perform actual sync? (y/n): " confirm
+
+if [[ $confirm == "y" || $confirm == "Y" ]]; then
+    echo "🚀 Starting sync..."
+    rsync -av $SOURCE $MIRROR_PATH
+    echo "🎉 Sync completed successfully."
+else
+    echo "❌ Sync aborted by user."
+fi
+
+
+Make it executable:
+
+sudo chmod +x /usr/local/bin/sync-apt-mirror.sh
+
+
+Run manually:
+
+sudo /usr/local/bin/sync-apt-mirror.sh
+
+
+✅ After sync, always test with apt-get update on a client machine before using the repo for upgrades.
