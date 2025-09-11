@@ -1,233 +1,183 @@
-Name:	"PENDING"
-ControlType:	UIA_ListItemControlTypeId (0xC357)
-LocalizedControlType:	"list item"
-BoundingRectangle:	{l:140 t:311 r:259 b:324}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	true
-AccessKey:	""
-ProcessId:	7156
-RuntimeId:	[2A.96080A.4.80000001.96080A.FFFFFFFC.1]
-ProviderDescription:	"[pid:7156,providerId:0x0 Annotation:Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	1
-LegacyIAccessible.DefaultAction:	"Double Click"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"PENDING"
-LegacyIAccessible.Role:	list item (0x22)
-LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
-LegacyIAccessible.Value:	""
-SelectionItem.IsSelected:	true
-SelectionItem.SelectionContainer:	"Editing Control" list
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	true
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	true
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	"APPROVE" list item
-Previous:	[null]
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Editing Control" list
-	"Editing Control" combo box
-	"Editing Panel" pane
-	"DataGridView" table
-	"Peak Margin" window
-	"" pane
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-=========================
-Name:	"REJECT"
-ControlType:	UIA_ListItemControlTypeId (0xC357)
-LocalizedControlType:	"list item"
-BoundingRectangle:	{l:140 t:337 r:259 b:350}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	true
-AccessKey:	""
-ProcessId:	7156
-RuntimeId:	[2A.96080A.4.80000001.96080A.FFFFFFFC.3]
-ProviderDescription:	"[pid:7156,providerId:0x0 Annotation:Microsoft: Annotation Proxy (unmanaged:uiautomationcore.dll); Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	3
-LegacyIAccessible.DefaultAction:	"Double Click"
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"REJECT"
-LegacyIAccessible.Role:	list item (0x22)
-LegacyIAccessible.State:	selected,focused,focusable,selectable (0x300006)
-LegacyIAccessible.Value:	""
-SelectionItem.IsSelected:	true
-SelectionItem.SelectionContainer:	"Editing Control" list
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	true
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	true
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	true
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	false
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	[null]
-LastChild:	[null]
-Next:	[null]
-Previous:	"APPROVE" list item
-Other Props:	Object has no additional properties
-Children:	Container has no children
-Ancestors:	"Editing Control" list
-	"Editing Control" combo box
-	"Editing Panel" pane
-	"DataGridView" table
-	"Peak Margin" window
-	"" pane
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
-================
-Name:	"Editing Control"
-ControlType:	UIA_ComboBoxControlTypeId (0xC353)
-LocalizedControlType:	"combo box"
-BoundingRectangle:	{l:139 t:289 r:238 b:310}
-IsEnabled:	true
-IsOffscreen:	false
-IsKeyboardFocusable:	true
-HasKeyboardFocus:	true
-AccessKey:	""
-ProcessId:	7156
-RuntimeId:	[2A.A502E4]
-AutomationId:	"10814180"
-FrameworkId:	"WinForm"
-ClassName:	"WindowsForms10.COMBOBOX.app.0.bb8560_r20_ad1"
-NativeWindowHandle:	0xA502E4
-ProviderDescription:	"[pid:11284,providerId:0xA502E4 Main:Nested [pid:7156,providerId:0xA502E4 Main(parent link):Microsoft: MSAA Proxy (unmanaged:uiautomationcore.dll)]; Hwnd(parent link):Microsoft: HWND Proxy (unmanaged:uiautomationcore.dll)]"
-IsPassword:	false
-HelpText:	""
-IsDialog:	false
-LegacyIAccessible.ChildId:	0
-LegacyIAccessible.DefaultAction:	""
-LegacyIAccessible.Description:	""
-LegacyIAccessible.Help:	""
-LegacyIAccessible.KeyboardShortcut:	""
-LegacyIAccessible.Name:	"Editing Control"
-LegacyIAccessible.Role:	combo box (0x2E)
-LegacyIAccessible.State:	focused,collapsed,focusable (0x100404)
-LegacyIAccessible.Value:	"REJECT"
-Value.IsReadOnly:	false
-Value.Value:	"REJECT"
-IsAnnotationPatternAvailable:	false
-IsDragPatternAvailable:	false
-IsDockPatternAvailable:	false
-IsDropTargetPatternAvailable:	false
-IsExpandCollapsePatternAvailable:	false
-IsGridItemPatternAvailable:	false
-IsGridPatternAvailable:	false
-IsInvokePatternAvailable:	false
-IsItemContainerPatternAvailable:	false
-IsLegacyIAccessiblePatternAvailable:	true
-IsMultipleViewPatternAvailable:	false
-IsObjectModelPatternAvailable:	false
-IsRangeValuePatternAvailable:	false
-IsScrollItemPatternAvailable:	false
-IsScrollPatternAvailable:	false
-IsSelectionItemPatternAvailable:	false
-IsSelectionPatternAvailable:	false
-IsSpreadsheetItemPatternAvailable:	false
-IsSpreadsheetPatternAvailable:	false
-IsStylesPatternAvailable:	false
-IsSynchronizedInputPatternAvailable:	false
-IsTableItemPatternAvailable:	false
-IsTablePatternAvailable:	false
-IsTextChildPatternAvailable:	false
-IsTextEditPatternAvailable:	false
-IsTextPatternAvailable:	false
-IsTextPattern2Available:	false
-IsTogglePatternAvailable:	false
-IsTransformPatternAvailable:	false
-IsTransform2PatternAvailable:	false
-IsValuePatternAvailable:	true
-IsVirtualizedItemPatternAvailable:	false
-IsWindowPatternAvailable:	false
-IsCustomNavigationPatternAvailable:	false
-IsSelectionPattern2Available:	false
-FirstChild:	"Editing Control" text
-LastChild:	"Open" button
-Next:	[null]
-Previous:	[null]
-Other Props:	Object has no additional properties
-Children:	"Editing Control" text
-	"Open" button
-Ancestors:	"Editing Panel" pane
-	"DataGridView" table
-	"Peak Margin" window
-	"" pane
-	"NCDEX RISK MANAGEMENT SYSTEM 6.3.0" window
-	"Desktop 1" pane
-	[ No Parent ]
+---
+- name: Upgrade Ubuntu 18.04 to 22.04 with private repository (no python3-apt dependency)
+  hosts: all
+  become: yes
+  vars:
+    reboot_wait_timeout: 1800  # 30 minutes
+    script_execution_timeout: 14400  # 4 hours
+    repo_url: "http://10.13.0.88:8080/ubuntu"
+
+  tasks:
+    # ==========================================================
+    # PREP WORK - REMOVE i386 & REFRESH CACHE
+    # ==========================================================
+    - name: Remove i386 architecture (avoid 404 errors)
+      ansible.builtin.raw: |
+        dpkg --remove-architecture i386 || true
+        apt-get update -y || true
+      changed_when: false
+
+    # ==========================================================
+    # PHASE 1: 18.04 -> 20.04
+    # ==========================================================
+    - name: Add private repo for bionic manually
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/custom-bionic.list
+        content: |
+          deb [arch=amd64] {{ repo_url }} bionic main universe
+          deb [arch=amd64] {{ repo_url }} bionic-updates main universe
+          deb [arch=amd64] {{ repo_url }} bionic-security main universe
+        mode: '0644'
+
+    - name: Update apt cache for bionic
+      ansible.builtin.shell: apt-get update -y
+      register: apt_update_bionic
+      changed_when: "'Reading package lists' in apt_update_bionic.stdout"
+
+    - name: Remove lxd package (blocking upgrade sometimes)
+      ansible.builtin.shell: apt-get remove --purge -y lxd || true
+
+    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        dest: /tmp/auto-upgrade1.sh
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update -yq
+          apt-get upgrade -yq
+          apt-get dist-upgrade -yq
+          apt-get autoremove -yq
+          apt-get install -yq update-manager-core
+
+    - name: Execute auto-upgrade1.sh
+      ansible.builtin.shell: /tmp/auto-upgrade1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade1_result
+      ignore_errors: yes
+
+    - name: Reboot if required after first upgrade
+      ansible.builtin.shell: test -f /var/run/reboot-required && reboot || true
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    - name: Copy do-release1.sh script for 18.04 -> 20.04
+      ansible.builtin.copy:
+        dest: /tmp/do-release1.sh
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+
+    - name: Execute do-release1.sh
+      ansible.builtin.shell: /tmp/do-release1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release1_result
+      ignore_errors: yes
+
+    - name: Reboot if required after release upgrade
+      ansible.builtin.shell: test -f /var/run/reboot-required && reboot || true
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    # ==========================================================
+    # PHASE 2: 20.04 -> 22.04
+    # ==========================================================
+    - name: Add private repo for focal manually
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/custom-focal.list
+        content: |
+          deb [arch=amd64] {{ repo_url }} focal main universe
+          deb [arch=amd64] {{ repo_url }} focal-updates main universe
+          deb [arch=amd64] {{ repo_url }} focal-security main universe
+        mode: '0644'
+
+    - name: Update apt cache for focal
+      ansible.builtin.shell: apt-get update -y
+      register: apt_update_focal
+      changed_when: "'Reading package lists' in apt_update_focal.stdout"
+
+    - name: Copy auto-upgrade2.sh script for 20.04 -> 22.04
+      ansible.builtin.copy:
+        dest: /tmp/auto-upgrade2.sh
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update -yq
+          apt-get upgrade -yq
+          apt-get dist-upgrade -yq
+          apt-get autoremove -yq
+          apt-get install -yq update-manager-core
+
+    - name: Execute auto-upgrade2.sh
+      ansible.builtin.shell: /tmp/auto-upgrade2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade2_result
+      ignore_errors: yes
+
+    - name: Reboot if required after auto-upgrade2.sh
+      ansible.builtin.shell: test -f /var/run/reboot-required && reboot || true
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    - name: Add private repo for jammy manually
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/custom-jammy.list
+        content: |
+          deb [arch=amd64] {{ repo_url }} jammy main universe
+          deb [arch=amd64] {{ repo_url }} jammy-updates main universe
+          deb [arch=amd64] {{ repo_url }} jammy-security main universe
+        mode: '0644'
+
+    - name: Update apt cache for jammy
+      ansible.builtin.shell: apt-get update -y
+      register: apt_update_jammy
+      changed_when: "'Reading package lists' in apt_update_jammy.stdout"
+
+    - name: Copy do-release2.sh script for 20.04 -> 22.04
+      ansible.builtin.copy:
+        dest: /tmp/do-release2.sh
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+
+    - name: Execute do-release2.sh
+      ansible.builtin.shell: /tmp/do-release2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release2_result
+      ignore_errors: yes
+
+    - name: Reboot if required after do-release2.sh
+      ansible.builtin.shell: test -f /var/run/reboot-required && reboot || true
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    # ==========================================================
+    # FINAL CHECK
+    # ==========================================================
+    - name: Check OS release
+      ansible.builtin.command: lsb_release -a
+      register: os_release
+      changed_when: false
+
+    - name: Print OS release information
+      ansible.builtin.debug:
+        msg: "{{ os_release.stdout_lines }}"
