@@ -3,6 +3,7 @@ import os
 import random
 import logging
 import psutil
+import re
 from datetime import datetime, timedelta
 from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
@@ -118,83 +119,77 @@ def click_rms_configuration_and_peak_margin(main_win):
         time.sleep(1)
         safe_click(main_win, title="Peak Margin", control_type="MenuItem")
 
-# ------------------- Peak Margin Add (QA1) -------------------
-def set_cell_value(cell, value, max_attempts=3):
-    for attempt in range(1, max_attempts + 1):
-        try:
-            cell.click_input(double=False)
-            cell.type_keys("{F2}")
-            time.sleep(0.3)
-            send_keys("^a{BACKSPACE}", pause=0.05)
-            send_keys(value, pause=0.05)
-            send_keys("{ENTER}", pause=0.05)
-            time.sleep(0.3)
-            return
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed to set value '{value}': {e}")
-            time.sleep(0.5)
-    raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
 
-def handle_peak_margin_add(app, main_win):
-    logger.info("Looking for Peak Margin panel inside main window...")
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
-
-    logger.info("Peak Margin panel detected. Clicking Add...")
-    safe_click(peak_margin_win, title="Add", control_type="Button")
-    time.sleep(2)
-
-    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
-    if not tables:
-        raise RuntimeError("No tables/list views found in Peak Margin window after clicking Add")
-
-    grid = tables[0]
-    for attempt in range(5):
-        all_data_items = grid.descendants(control_type="DataItem")
-        if len(all_data_items) >= 8:
-            break
-        logger.warning(f"Attempt {attempt+1}: Only {len(all_data_items)} cells found, retrying...")
-        time.sleep(1)
-    if len(all_data_items) < 8:
-        raise RuntimeError(f"Not enough cells after Add: found {len(all_data_items)}")
-
-    columns_per_row = 8
-    rows = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
-    last_row_cells = rows[-1]
-    logger.info(f"Selected last row with {len(last_row_cells)} cells.")
-
-    now = datetime.now()
-    start_time = (datetime.combine(now.date(), datetime.min.time()) +
-                  timedelta(hours=17, minutes=random.randint(0, 59))).strftime("%H:%M:%S")
-    end_time = (datetime.strptime(start_time, "%H:%M:%S") + timedelta(minutes=10)).strftime("%H:%M:%S")
-    logger.info(f"Filling new row with Start={start_time}, End={end_time}")
-
-    set_cell_value(last_row_cells[1], start_time)
-    set_cell_value(last_row_cells[2], end_time)
-
-    safe_click(peak_margin_win, title="Save", control_type="Button")
-    time.sleep(2)
-
+# ---------------- Grid utilities (robust) ----------------
+def detect_columns_per_row(grid, min_cols=5, max_cols=12):
+    """
+    Try to detect number of columns per row in the DataGrid by testing candidate column counts.
+    Prefers a count where rows' first column looks like incremental numbers or where time columns are consistent.
+    """
     try:
-        popup = app.window(best_match="Risk Management System")
-        popup.wait("visible", timeout=10)
-        safe_click(popup, auto_id="2", control_type="Button")
-    except Exception as e:
-        logger.error(f"Failed to handle confirmation popup: {e}")
-        raise
+        items = grid.descendants(control_type="DataItem")
+    except Exception:
+        return 8
 
-    return start_time
+    n = len(items)
+    if n == 0:
+        return 8
 
-# ------------------- Peak Margin Dump -------------------
+    # first try divisor candidates with numeric first column heuristic
+    for cols in range(max_cols, min_cols - 1, -1):
+        if n % cols != 0:
+            continue
+        rows_count = n // cols
+        rows = [items[i:i+cols] for i in range(0, rows_count*cols, cols)]
+        first_texts = []
+        for r in rows:
+            try:
+                t = r[0].window_text().strip()
+            except Exception:
+                t = ""
+            first_texts.append(t)
+        numeric_count = sum(1 for t in first_texts if re.match(r'^\d+$', t))
+        if numeric_count >= max(1, rows_count // 2):
+            logger.debug(f"detect_columns_per_row -> chose {cols} columns because {numeric_count}/{rows_count} first cells numeric")
+            return cols
+
+    # fallback: choose candidate that maximizes occurrences of time-like cells in columns
+    best = None
+    best_score = -1
+    time_re = re.compile(r'^\d{2}:\d{2}:\d{2}$')
+    for cols in range(min_cols, max_cols + 1):
+        if cols > n:
+            break
+        rows_count = n // cols
+        if rows_count == 0:
+            continue
+        rows = [items[i:i+cols] for i in range(0, rows_count*cols, cols)]
+        score = 0
+        for col_idx in range(cols):
+            cnt = 0
+            for r in rows:
+                try:
+                    txt = r[col_idx].window_text().strip()
+                except Exception:
+                    txt = ""
+                if time_re.match(txt):
+                    cnt += 1
+            score += cnt
+        if score > best_score:
+            best_score = score
+            best = cols
+
+    if best:
+        logger.debug(f"detect_columns_per_row -> fallback chose {best} columns (best_score={best_score})")
+        return best
+
+    logger.debug("detect_columns_per_row -> fallback to 8")
+    return 8
+
 def dump_peak_margin_grid(peak_margin_win):
     """
-    Reads all rows from Peak Margin grid and returns a list of tuples:
-    [
-        (row_cells, row_values),
-        (row_cells, row_values),
-        ...
-    ]
-    where row_cells is a list of cell objects and row_values is list of string values.
+    Reads all rows from Peak Margin grid and returns list of (row_cells, row_values).
+    Uses dynamic columns detection to avoid misalignment.
     """
     tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
     if not tables:
@@ -203,30 +198,196 @@ def dump_peak_margin_grid(peak_margin_win):
 
     grid = tables[0]
     all_data_items = grid.descendants(control_type="DataItem")
-    columns_per_row = 9
+    if not all_data_items:
+        logger.info("No DataItem descendants found in grid")
+        return []
+
+    columns_per_row = detect_columns_per_row(grid)
+    if columns_per_row <= 0:
+        columns_per_row = 8
+
+    # group into rows
     rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
 
     rows = []
-    logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid:")
+    logger.info(f"Dumping {len(rows_cells)} rows from Peak Margin grid (cols={columns_per_row}):")
     for r_idx, row_cells in enumerate(rows_cells):
         row_values = []
         for cell in row_cells:
             try:
-                val = cell.legacy_properties().get("Value", "")
-            except Exception:
+                # prefer Value via legacy props if available, else window_text
                 try:
-                    val = cell.get_value()
+                    val = cell.legacy_properties().get("Value", "")
                 except Exception:
                     val = cell.window_text()
-            row_values.append(val.strip() if val else "")
+                if val is None:
+                    val = ""
+            except Exception:
+                try:
+                    val = cell.window_text()
+                except Exception:
+                    val = ""
+            row_values.append(val.strip() if isinstance(val, str) else str(val))
         logger.info(f"Row {r_idx}: {row_values}")
         rows.append((row_cells, row_values))
 
     return rows
 
-# ------------------- Peak Margin Reject (rash1) -------------------
+def parse_time_str_to_dt(timestr):
+    """Parse 'HH:MM:SS' into a datetime (today + time). Returns None if can't parse."""
+    try:
+        t = datetime.strptime(timestr, "%H:%M:%S")
+        today = datetime.now().date()
+        return datetime.combine(today, t.time())
+    except Exception:
+        return None
 
-def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
+# ------------------- Peak Margin Add -------------------
+def set_cell_value(cell, value, max_attempts=3):
+    """Safely set value into a cell (keeps F2 editing approach for grid text cells)."""
+    for attempt in range(1, max_attempts + 1):
+        try:
+            cell.click_input(double=False)
+            time.sleep(0.15)
+            # Some controls respond better without sending F2; but keep as earlier for reliability on add-edit.
+            cell.type_keys("{F2}")
+            time.sleep(0.25)
+            send_keys("^a{BACKSPACE}", pause=0.05)
+            send_keys(value, pause=0.05)
+            send_keys("{ENTER}", pause=0.05)
+            time.sleep(0.25)
+            return
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed to set value '{value}': {e}")
+            time.sleep(0.5)
+    raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
+
+def handle_peak_margin_add(app, main_win):
+    """
+    Adds a new Peak Margin row ensuring the start_time is strictly greater than the last end time.
+    """
+    logger.info("Looking for Peak Margin panel inside main window...")
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
+
+    # Read existing rows before adding
+    logger.info("Reading existing grid rows to find last end time...")
+    existing_rows = dump_peak_margin_grid(peak_margin_win)
+    last_end_dt = None
+
+    if existing_rows:
+        # Consider last physical row; parse all time-like values in that row and pick the maximum
+        last_row_vals = existing_rows[-1][1]
+        time_candidates = []
+        for v in last_row_vals:
+            if re.match(r'^\d{2}:\d{2}:\d{2}$', v):
+                dt = parse_time_str_to_dt(v)
+                if dt:
+                    time_candidates.append(dt)
+        if time_candidates:
+            last_end_dt = max(time_candidates)
+            logger.info(f"Detected last row end/time candidates, choosing last_end_dt={last_end_dt.time().strftime('%H:%M:%S')}")
+        else:
+            logger.info("No time-like values found in last row; will fallback to default start time logic.")
+    else:
+        logger.info("Grid empty; no existing rows found.")
+
+    # Click Add
+    logger.info("Clicking Add button to create new row...")
+    safe_click(peak_margin_win, title="Add", control_type="Button")
+    time.sleep(1.8)
+
+    # Re-detect grid items and grouping
+    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+    if not tables:
+        raise RuntimeError("No tables/list views found in Peak Margin window after clicking Add")
+    grid = tables[0]
+
+    # Wait for the new row to appear
+    all_data_items = []
+    for attempt in range(6):
+        all_data_items = grid.descendants(control_type="DataItem")
+        if len(all_data_items) > 0:
+            break
+        time.sleep(0.5)
+    if not all_data_items:
+        raise RuntimeError("No data items found in grid after Add")
+
+    columns_per_row = detect_columns_per_row(grid)
+    logger.info(f"Using {columns_per_row} columns per row for filling the new row.")
+    # Build rows
+    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
+    last_row_cells = rows_cells[-1]
+    logger.info(f"Selected last row with {len(last_row_cells)} cells for input.")
+
+    # Determine where to set start/end: find indices in this last_row that contain time-like patterns or are editable
+    last_row_values = []
+    for c in last_row_cells:
+        try:
+            txt = c.window_text().strip()
+        except Exception:
+            txt = ""
+        last_row_values.append(txt)
+
+    # Find time column indices in the last row
+    time_indices = [i for i, v in enumerate(last_row_values) if re.match(r'^\d{2}:\d{2}:\d{2}$', v)]
+    # Typical mapping: index 0 -> Sr No, index 1 -> Start Time, index 2 -> End Time
+    if len(time_indices) >= 2:
+        start_col = time_indices[0]
+        end_col = time_indices[1]
+    elif len(time_indices) == 1:
+        # If only one time exists, pick it as start_col and assume next column (if exists) is end
+        start_col = time_indices[0]
+        end_col = start_col + 1 if start_col + 1 < len(last_row_cells) else start_col
+    else:
+        # fallback to common defaults
+        start_col = 1 if len(last_row_cells) > 1 else 0
+        end_col = 2 if len(last_row_cells) > 2 else start_col
+
+    logger.info(f"Determined start_col={start_col}, end_col={end_col}")
+
+    # Compute start_time and end_time
+    now = datetime.now()
+    if last_end_dt:
+        # ensure we compare datetimes on same date
+        base_day = datetime.combine(now.date(), last_end_dt.time())
+        if base_day < now - timedelta(days=1):
+            # guard (shouldn't usually happen) - add a day if parsed date older than today
+            base_day = base_day + timedelta(days=1)
+        new_start_dt = base_day + timedelta(minutes=1)
+    else:
+        # fallback: today at 17:00 plus random minutes
+        new_start_dt = datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17, minutes=random.randint(0, 59))
+
+    start_time = new_start_dt.strftime("%H:%M:%S")
+    end_time = (new_start_dt + timedelta(minutes=10)).strftime("%H:%M:%S")
+    logger.info(f"Filling new row with Start={start_time} (col {start_col}), End={end_time} (col {end_col})")
+
+    # Set values
+    try:
+        set_cell_value(last_row_cells[start_col], start_time)
+        set_cell_value(last_row_cells[end_col], end_time)
+    except Exception as e:
+        logger.exception(f"Failed to set start/end in new row: {e}")
+        raise
+
+    # Save
+    safe_click(peak_margin_win, title="Save", control_type="Button")
+    time.sleep(1.8)
+
+    # handle confirmation popup if present
+    try:
+        popup = app.window(best_match="Risk Management System")
+        popup.wait("visible", timeout=8)
+        safe_click(popup, auto_id="2", control_type="Button")
+    except Exception:
+        logger.info("No confirmation popup or failed to handle it (proceeding).")
+
+    logger.info("New peak margin row added successfully.")
+    return start_time
+
+# ------------------- Peak Margin Reject (rash1) -------------------
+def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=30, poll_interval=1):
     logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
@@ -240,19 +401,18 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
             if len(row_values) < 6:
                 continue
 
-            start_time_val = row_values[1]
-            status_val = row_values[5]
+            start_time_val = row_values[1] if len(row_values) > 1 else ""
+            status_val = row_values[5] if len(row_values) > 5 else ""
 
             if start_time_val == target_start_time and status_val.upper() == "PENDING":
                 logger.info(f"✅ Found row {r_idx}: Start={start_time_val}, Status={status_val}")
 
-                # Step 1: Select checkbox
                 checkbox_cell = row_cells[-1]
                 checkbox_cell.click_input()
                 logger.info("☑️ Checkbox selected.")
-                time.sleep(1)  # Wait for UI update
+                time.sleep(0.8)  # wait UI to reflect editable state
 
-                # Step 2: Re-read grid after checkbox selection
+                # Re-read the grid (fresh objects) to avoid stale cell objects
                 rows_after_click = dump_peak_margin_grid(peak_margin_win)
                 if r_idx >= len(rows_after_click):
                     logger.error(f"Row index {r_idx} not found after checkbox click, retrying...")
@@ -260,53 +420,60 @@ def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wa
                     continue
 
                 row_cells_after, row_values_after = rows_after_click[r_idx]
-                logger.debug(f"Row after checkbox: cells={len(row_cells_after)}, values={row_values_after}")
+                logger.debug(f"Row after checkbox: values={row_values_after}")
 
-                # Step 3: Find column index for PENDING dynamically
+                # find the column index that currently contains 'PENDING'
                 try:
-                    status_col_index = row_values_after.index("PENDING")
-                except ValueError:
+                    status_col_index = next(i for i, v in enumerate(row_values_after) if v.upper() == "PENDING")
+                except StopIteration:
                     logger.error("PENDING status not found after checkbox selection, retrying...")
                     time.sleep(poll_interval)
                     continue
 
                 pending_cell = row_cells_after[status_col_index]
-                logger.info(f"🖱️ About to double-click fresh PENDING cell: Value={row_values_after[status_col_index]}")
+                logger.info(f"🖱️ Double-clicking on PENDING cell (col {status_col_index})...")
+                try:
+                    # double click to open editor
+                    pending_cell.double_click_input()
+                    time.sleep(0.4)
+                except Exception as e:
+                    logger.warning(f"Double click on pending failed: {e}. Trying click + keyboard fallback.")
+                    try:
+                        pending_cell.click_input()
+                        time.sleep(0.2)
+                        send_keys("%{DOWN}")  # Alt+Down
+                        time.sleep(0.2)
+                    except Exception:
+                        logger.exception("Failed to open pending editor by fallback.")
 
-                # Step 4: Double-click to open dropdown
-                pending_cell.double_click_input()
-                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
-                time.sleep(0.5)
-
-                # Step 5: Open dropdown and choose REJECT
-                send_keys("%{DOWN}")  # Alt+Down to open combo
+                # Open dropdown and choose REJECT
+                send_keys("%{DOWN}")
                 time.sleep(0.3)
                 send_keys("REJECT{ENTER}")
                 logger.info("✅ Selected REJECT via keyboard.")
                 time.sleep(0.5)
 
-                # Step 6: Save changes
+                # Save changes
                 safe_click(peak_margin_win, title="Save", control_type="Button")
-                logger.info("💾 Clicked Save button.")
-                time.sleep(1)
+                time.sleep(1.5)
 
-                # Step 7: Handle confirmation popup if any
+                # Handle confirmation popup if any
                 try:
                     popup = app.window(best_match="Risk Management System")
-                    popup.wait("visible", timeout=5)
+                    popup.wait("visible", timeout=8)
                     safe_click(popup, auto_id="2", control_type="Button")
                     logger.info("Clicked OK on confirmation popup.")
                 except Exception:
-                    logger.warning("No confirmation popup after save.")
+                    logger.warning("No confirmation popup after save (or failed to detect).")
 
-                return  # ✅ Success - exit function
+                return  # done
 
         logger.debug("Row not matched yet, retrying...")
         time.sleep(poll_interval)
 
     raise RuntimeError(f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s")
-   
-# ------------------- Login -------------------
+
+# ------------------- Login & Runner -------------------
 def login_user(app, username, password, environment="UAT"):
     dlg = app.window(title_re=".*Risk Management System - Login")
     dlg.wait("visible", timeout=30)
@@ -321,7 +488,7 @@ def login_user(app, username, password, environment="UAT"):
 
     main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
     main_win.wait("visible", timeout=40)
-    time.sleep(15)
+    time.sleep(10)
     handle_post_login_popups(app, main_win)
     return main_win
 
@@ -338,7 +505,6 @@ def close_rms_if_running():
         except Exception:
             pass
 
-# ------------------- Workflow Runner -------------------
 def run_workflow_for_user(username, password, is_rash1=False, start_time_value=None):
     close_rms_if_running()
     logger.info(f"Starting RMS for user: {username}")
