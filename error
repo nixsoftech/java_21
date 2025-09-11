@@ -1,35 +1,4 @@
- bash repo_sync.sh
-🔍 Starting dry-run check for selected distributions...
-===================================================
+failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
+failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
+failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-updates/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Failed to fetch http://10.13.0.88:8080/ubuntu/dists/jammy-security/main/binary-i386/Packages  404  Not Found [IP: 10.13.0.88 8080]\nE: Some index files failed to download. They have been ignored, or old ones used instead.'"}
 
-🔎 Checking bionic ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking bionic-updates ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking bionic-security ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking focal ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking focal-updates ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking focal-security ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking jammy ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking jammy-updates ...
-HTTP request sent, awaiting response... 404 Not Found
-
-🔎 Checking jammy-security ...
-HTTP request sent, awaiting response... 404 Not Found
-
-✅ Dry-run check completed. Review 404 errors above.
-Do you want to download missing files now? (y/n): n
-
-❌ Download skipped by user.
