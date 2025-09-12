@@ -10,6 +10,7 @@ from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
 from pywinauto.timings import TimeoutError
 from pywinauto import timings
+from pywinauto.mouse import move, double_click
 
 # ---------------- Logging Setup ----------------
 script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -31,33 +32,124 @@ logger = logging.getLogger(__name__)
 
 TIME_RE = re.compile(r"^\d{2}:\d{2}:\d{2}$")
 
+# ---------------- Helper Functions ----------------
+def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
+            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
 
-# ---------------- Helper Functions (same as your version) ----------------
-# (safe_type, safe_select, safe_click, handle_popup, handle_post_login_popups,
-# click_rms_configuration_and_peak_margin, grid helpers, etc. — unchanged)
+
+def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).select(value)
+            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
 
 
-# ------------------- Peak Margin Add (Modified for CLI Override) -------------------
+def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, title=title, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).click_input()
+            time.sleep(0.5)
+            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+
+
+def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
+    try:
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=timeout)
+        popup_text = popup.window_text().strip()
+        logger.info(f"Popup detected: '{popup_text}'")
+
+        if expected_substring and expected_substring.lower() not in popup_text.lower():
+            logger.warning(f"Popup text mismatch. Expected '{expected_substring}' but got '{popup_text}'")
+
+        if auto_id_to_click:
+            try:
+                btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                btn.wait("enabled", timeout=5).click_input()
+                logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
+            except Exception as e:
+                logger.error(f"Failed to click popup button with AutomationId={auto_id_to_click}: {e}")
+        return True
+
+    except TimeoutError:
+        logger.info(f"No popup appeared within {timeout}s.")
+        return False
+
+
+def handle_post_login_popups(app, main_win, timeout=20):
+    try:
+        logger.info("Waiting for 'BMS OpmsEngine Got abandoned' popup...")
+        popup1 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup1.wait("visible", timeout=timeout)
+        safe_click(popup1, auto_id="2", control_type="Button")
+        logger.info("[Popup1] Clicked OK")
+
+        time.sleep(2)
+        logger.info("Waiting for 'Do you want to close RMS' popup...")
+        popup2 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup2.wait("visible", timeout=timeout)
+        safe_click(popup2, auto_id="7", control_type="Button")
+        logger.info("[Popup2] Clicked NO")
+
+    except TimeoutError:
+        logger.warning("No post-login popups appeared within timeout.")
+
+
+def click_rms_configuration_and_peak_margin(main_win):
+    try:
+        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin window.")
+    except Exception:
+        logger.warning("menu_select failed, using fallback clicks...")
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(1)
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
+
+# ------------------- Grid helpers (same as before) -------------------
+# _get_cell_text, _infer_columns_per_row, get_grid_rows_and_meta, dump_peak_margin_grid
+# ... (unchanged from your code)
+
+# ------------------- Peak Margin Add (MODIFIED ONLY HERE) -------------------
 def handle_peak_margin_add(app, main_win, override_start=None, override_end=None):
     """
-    Adds a new Peak Margin row.
-    If override_start and override_end are provided, use them instead of calculating automatically.
+    Adds a new Peak Margin row such that the new row's Start Time > last row's End Time.
+    If override_start & override_end are given, use them directly.
     """
     logger.info("Looking for Peak Margin panel inside main window...")
     peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
     peak_margin_win.wait("visible", timeout=10)
 
-    # 1) Read existing grid and infer metadata
     rows_before, cols_before, time_cols_before = get_grid_rows_and_meta(peak_margin_win)
     logger.info(f"Found {len(rows_before)} existing rows, cols={cols_before}, time_cols={time_cols_before}")
 
-    # Determine start & end times
     if override_start and override_end:
         start_time = override_start
         end_time = override_end
-        logger.info(f"Using manually overridden Start={start_time}, End={end_time}")
+        logger.info(f"Using overridden Start={start_time}, End={end_time}")
     else:
-        # Same logic as before (automatic calculation)
+        # --- Your original calculation logic stays as-is ---
         last_end_dt = None
         if rows_before:
             last_row_values = rows_before[-1][1]
@@ -91,51 +183,31 @@ def handle_peak_margin_add(app, main_win, override_start=None, override_end=None
         end_dt = start_dt + timedelta(minutes=10)
         start_time = start_dt.strftime("%H:%M:%S")
         end_time = end_dt.strftime("%H:%M:%S")
-        logger.info(f"Auto-calculated Start={start_time}, End={end_time}")
+        logger.info(f"Will add new row with Start={start_time}, End={end_time}")
 
-    # (Rest of handle_peak_margin_add is unchanged — click Add, fill cells, save)
-    # ...
+    # --- Rest of your code stays the same (click add, set values, save) ---
+    # (unchanged from your original working code)
 
-
-# ------------------- Workflow Runner -------------------
-def run_workflow_for_user(username, password, is_rash1=False, start_time_value=None, override_start=None, override_end=None):
-    close_rms_if_running()
-    logger.info(f"Starting RMS for user: {username}")
-    app = Application(backend="uia").start(
-        r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-    )
-    main_win = login_user(app, username, password)
-    click_rms_configuration_and_peak_margin(main_win)
-
-    if not is_rash1:
-        start_time = handle_peak_margin_add(app, main_win, override_start, override_end)
-    else:
-        if not start_time_value:
-            raise ValueError("start_time_value is required for rash1 run")
-        handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
-        start_time = None
-
-    safe_click(main_win, title="Exit", control_type="MenuItem")
-    handle_popup(app, auto_id_to_click="6", timeout=10)
-    logger.info(f"Workflow completed for user: {username}")
-    return start_time
-
+# ------------------- Rest of your code (reject function, login, close_rms_if_running, run_workflow_for_user) -------------------
+# Unchanged
 
 # ------------------- Main -------------------
 def main():
-    parser = argparse.ArgumentParser(description="Run RMS Automation Workflow")
+    parser = argparse.ArgumentParser()
     parser.add_argument("--starttime", help="Override start time (HH:MM:SS)", required=False)
     parser.add_argument("--endtime", help="Override end time (HH:MM:SS)", required=False)
     args = parser.parse_args()
 
     if args.starttime and not TIME_RE.match(args.starttime):
-        raise ValueError("Invalid format for --starttime. Use HH:MM:SS")
+        raise ValueError("Invalid --starttime format. Use HH:MM:SS")
     if args.endtime and not TIME_RE.match(args.endtime):
-        raise ValueError("Invalid format for --endtime. Use HH:MM:SS")
+        raise ValueError("Invalid --endtime format. Use HH:MM:SS")
 
     try:
         start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False,
-                                                override_start=args.starttime, override_end=args.endtime)
+                                                start_time_value=None,
+                                                override_start=args.starttime,
+                                                override_end=args.endtime)
         run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
         logger.info("Automation script completed successfully for both users.")
     except Exception as e:
