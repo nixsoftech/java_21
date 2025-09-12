@@ -1,254 +1,545 @@
----
-- name: Upgrade Ubuntu 18.04 to 22.04 with private repository
-  hosts: all
-  become: yes
-  vars:
-    reboot_wait_timeout: 1800  # 30 minutes
-    script_execution_timeout: 14400  # 4 hours
-    repo_url: "http://10.13.0.88:8080/ubuntu"
 
-  pre_tasks:
-    - name: Ensure python3-apt is installed (for apt_repository module)
-      ansible.builtin.raw: |
-        if ! dpkg -s python3-apt >/dev/null 2>&1; then
-          apt-get update -y && apt-get install -y python3-apt || true
-        fi
-      changed_when: false
+import re
+import time
+import os
+import random
+import logging
+import psutil
+from datetime import datetime, timedelta
+from pywinauto.application import Application
+from pywinauto.keyboard import send_keys
+from pywinauto.timings import TimeoutError
+from pywinauto import timings
+from pywinauto.mouse import move, double_click
 
-    - name: Disable i386 architecture (avoid 404 for binary-i386)
-      ansible.builtin.command: dpkg --remove-architecture i386
-      register: remove_i386
-      failed_when: false
-      changed_when: remove_i386.rc == 0
+# ---------------- Logging Setup ----------------
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+log_dir = os.path.join(os.getcwd(), "logs")
+os.makedirs(log_dir, exist_ok=True)
 
-  tasks:
-    # Phase 1: Upgrade from 18.04 to 20.04
-    - name: Check if reboot is required before 18.04 to 20.04 upgrade
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_initial
-      failed_when: false
-      changed_when: false
+timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
 
-    - name: Reboot server if required before 18.04 to 20.04 upgrade
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_initial.rc == 0
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
-    - name: Add private Ubuntu repository for bionic
-      ansible.builtin.apt_repository:
-        repo: "{{ item }}"
-        state: present
-        update_cache: no
-      loop:
-        - "deb [arch=amd64] {{ repo_url }} bionic main universe"
-        - "deb [arch=amd64] {{ repo_url }} bionic-updates main universe"
-        - "deb [arch=amd64] {{ repo_url }} bionic-security main universe"
-      register: repo_added_bionic
+TIME_RE = re.compile(r"^\d{2}:\d{2}:\d{2}$")
 
-    - name: Update apt cache after adding bionic repository
-      ansible.builtin.apt:
-        update_cache: yes
-      when: repo_added_bionic.changed
 
-    - name: Remove lxd package
-      ansible.builtin.apt:
-        name: lxd
-        state: absent
-        purge: yes
-        update_cache: no
+# ---------------- Helper Functions ----------------
+def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
+            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
 
-    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          set -e
-          export DEBIAN_FRONTEND=noninteractive
-          echo "Updating package list..."
-          apt-get update -yq
-          echo "Performing standard upgrades..."
-          apt-get upgrade -yq
-          echo "Performing dist-upgrade..."
-          apt-get dist-upgrade -yq
-          echo "Cleaning up unnecessary packages..."
-          apt-get autoremove -yq
-          echo "Installing update-manager-core if needed..."
-          apt-get install -yq update-manager-core
-          echo "Package upgrade phase completed successfully."
-        dest: /tmp/auto-upgrade1.sh
-        mode: '0755'
 
-    - name: Execute auto-upgrade1.sh script for 18.04 to 20.04
-      ansible.builtin.shell: /tmp/auto-upgrade1.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: auto_upgrade1_result
-      ignore_errors: yes
+def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).select(value)
+            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
 
-    - name: Check if reboot is required after auto-upgrade1.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_upgrade1
-      failed_when: false
-      changed_when: false
 
-    - name: Reboot server if required after auto-upgrade1.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_upgrade1.rc == 0
+def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
+    for attempt in range(1, retries + 1):
+        try:
+            ctrl = window.child_window(auto_id=auto_id, title=title, control_type=control_type)
+            ctrl.wait("enabled", timeout=5).click_input()
+            time.sleep(0.5)
+            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
+            return True
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
+            time.sleep(delay)
+    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
 
-    - name: Copy do-release1.sh script for 18.04 to 20.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-          apt-get autoremove -yq
-          apt-get clean
-          systemctl restart sshd
-        dest: /tmp/do-release1.sh
-        mode: '0755'
 
-    - name: Execute do-release1.sh script for 18.04 to 20.04
-      ansible.builtin.shell: /tmp/do-release1.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: do_release1_result
-      ignore_errors: yes
+def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
+    try:
+        popup = app.window(title_re=".*")
+        popup.wait("visible", timeout=timeout)
+        popup_text = popup.window_text().strip()
+        logger.info(f"Popup detected: '{popup_text}'")
 
-    - name: Check if reboot is required after do-release1.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_release1
-      failed_when: false
-      changed_when: false
+        if expected_substring and expected_substring.lower() not in popup_text.lower():
+            logger.warning(f"Popup text mismatch. Expected '{expected_substring}' but got '{popup_text}'")
 
-    - name: Reboot server if required after do-release1.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_release1.rc == 0
+        if auto_id_to_click:
+            try:
+                btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
+                btn.wait("enabled", timeout=5).click_input()
+                logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
+            except Exception as e:
+                logger.error(f"Failed to click popup button with AutomationId={auto_id_to_click}: {e}")
+        return True
 
-    # Phase 2: Upgrade from 20.04 to 22.04
-    - name: Update private Ubuntu repository for focal
-      ansible.builtin.apt_repository:
-        repo: "{{ item }}"
-        state: present
-        update_cache: no
-      loop:
-        - "deb [arch=amd64] {{ repo_url }} focal main universe"
-        - "deb [arch=amd64] {{ repo_url }} focal-updates main universe"
-        - "deb [arch=amd64] {{ repo_url }} focal-security main universe"
-      register: repo_added_focal
+    except TimeoutError:
+        logger.info(f"No popup appeared within {timeout}s.")
+        return False
 
-    - name: Update apt cache after adding focal repository
-      ansible.builtin.apt:
-        update_cache: yes
-      when: repo_added_focal.changed
 
-    - name: Check if reboot is required before 20.04 to 22.04 upgrade
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_pre_upgrade2
-      failed_when: false
-      changed_when: false
+def handle_post_login_popups(app, main_win, timeout=20):
+    try:
+        logger.info("Waiting for 'BMS OpmsEngine Got abandoned' popup...")
+        popup1 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup1.wait("visible", timeout=timeout)
+        safe_click(popup1, auto_id="2", control_type="Button")
+        logger.info("[Popup1] Clicked OK")
 
-    - name: Reboot server if required before 20.04 to 22.04 upgrade
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_pre_upgrade2.rc == 0
+        time.sleep(2)
+        logger.info("Waiting for 'Do you want to close RMS' popup...")
+        popup2 = main_win.child_window(title="Risk Management System", control_type="Window")
+        popup2.wait("visible", timeout=timeout)
+        safe_click(popup2, auto_id="7", control_type="Button")
+        logger.info("[Popup2] Clicked NO")
 
-    - name: Copy auto-upgrade2.sh script for 20.04 to 22.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          set -e
-          export DEBIAN_FRONTEND=noninteractive
-          echo "Updating package list..."
-          apt-get update -yq
-          echo "Performing standard upgrades..."
-          apt-get upgrade -yq
-          echo "Performing dist-upgrade..."
-          apt-get dist-upgrade -yq
-          echo "Cleaning up unnecessary packages..."
-          apt-get autoremove -yq
-          echo "Installing update-manager-core if needed..."
-          apt-get install -yq update-manager-core
-          echo "Package upgrade phase completed successfully."
-        dest: /tmp/auto-upgrade2.sh
-        mode: '0755'
+    except TimeoutError:
+        logger.warning("No post-login popups appeared within timeout.")
 
-    - name: Execute auto-upgrade2.sh script for 20.04 to 22.04
-      ansible.builtin.shell: /tmp/auto-upgrade2.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: auto_upgrade2_result
-      ignore_errors: yes
 
-    - name: Check if reboot is required after auto-upgrade2.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_upgrade2
-      failed_when: false
-      changed_when: false
+def click_rms_configuration_and_peak_margin(main_win):
+    try:
+        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
+        main_win.menu_select("RMS Configuration->Peak Margin")
+        logger.info("Successfully opened Peak Margin window.")
+    except Exception:
+        logger.warning("menu_select failed, using fallback clicks...")
+        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
+        time.sleep(1)
+        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
 
-    - name: Reboot server if required after auto-upgrade2.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_upgrade2.rc == 0
 
-    - name: Update private Ubuntu repository for jammy
-      ansible.builtin.apt_repository:
-        repo: "{{ item }}"
-        state: present
-        update_cache: no
-      loop:
-        - "deb [arch=amd64] {{ repo_url }} jammy main universe"
-        - "deb [arch=amd64] {{ repo_url }} jammy-updates main universe"
-        - "deb [arch=amd64] {{ repo_url }} jammy-security main universe"
-      register: repo_added_jammy
+# ------------------- Grid helpers (robust) -------------------
+def _get_cell_text(cell):
+    """Robustly get displayed text/value for a grid cell control."""
+    try:
+        # Many WinForm cells expose Value via legacy properties
+        lp = getattr(cell, "legacy_properties", None)
+        if callable(lp):
+            v = lp().get("Value", "")
+            if v:
+                return str(v).strip()
+    except Exception:
+        pass
+    try:
+        # Try get_value (some controls)
+        v = cell.get_value()
+        if v is not None:
+            return str(v).strip()
+    except Exception:
+        pass
+    try:
+        return cell.window_text().strip()
+    except Exception:
+        return ""
 
-    - name: Update apt cache after adding jammy repository
-      ansible.builtin.apt:
-        update_cache: yes
-      when: repo_added_jammy.changed
 
-    - name: Copy do-release2.sh script for 20.04 to 22.04
-      ansible.builtin.copy:
-        content: |
-          #!/bin/bash
-          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-          apt-get autoremove -yq
-          apt-get clean
-          systemctl restart sshd
-        dest: /tmp/do-release2.sh
-        mode: '0755'
+def _infer_columns_per_row(all_texts):
+    """
+    Try to infer number of columns by looking for a consistent boolean-like value
+    (last column tends to be 'True'/'False') across rows. Return the best guessed columns count.
+    """
+    total = len(all_texts)
+    # try plausible column counts
+    candidates = list(range(6, 13))  # try 6..12
+    best = None
+    best_score = -1
+    for cols in candidates:
+        if cols <= 0 or total % cols != 0:
+            continue
+        rows_count = total // cols
+        score = 0
+        for r in range(rows_count):
+            idx = r * cols + (cols - 1)
+            if idx < total:
+                txt = all_texts[idx].strip().lower()
+                if txt in ("true", "false"):
+                    score += 1
+        if score > best_score:
+            best_score = score
+            best = cols
+    if best and best_score >= 1:  # at least some confidence
+        logger.debug(f"Inferred columns_per_row={best} (score={best_score})")
+        return best
+    # fallback guesses
+    for fallback in (9, 8, 7):
+        if total % fallback == 0:
+            logger.debug(f"Fallback columns_per_row={fallback}")
+            return fallback
+    # as last resort
+    return 9
 
-    - name: Execute do-release2.sh script for 20.04 to 22.04
-      ansible.builtin.shell: /tmp/do-release2.sh
-      async: "{{ script_execution_timeout }}"
-      poll: 10
-      register: do_release2_result
-      ignore_errors: yes
 
-    - name: Check if reboot is required after do-release2.sh
-      ansible.builtin.command: test -f /var/run/reboot-required
-      register: reboot_required_post_release2
-      failed_when: false
-      changed_when: false
+def get_grid_rows_and_meta(peak_margin_win):
+    """
+    Return (rows, columns_per_row, time_col_indices)
+    rows -> list of tuples (row_cells, row_values)
+    """
+    tables = peak_margin_win.descendants(control_type="Table") + peak_margin_win.descendants(control_type="List")
+    if not tables:
+        logger.warning("No tables/list views found in Peak Margin window for dumping")
+        return [], 0, []
 
-    - name: Reboot server if required after do-release2.sh
-      ansible.builtin.reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: reboot_required_post_release2.rc == 0
+    grid = tables[0]
+    all_data_items = grid.descendants(control_type="DataItem")
+    if not all_data_items:
+        return [], 0, []
 
-    - name: Check OS release
-      ansible.builtin.command: lsb_release -a
-      register: os_release
-      changed_when: false
+    texts = [_get_cell_text(c) for c in all_data_items]
+    columns_per_row = _infer_columns_per_row(texts)
+    rows_cells = [all_data_items[i:i + columns_per_row] for i in range(0, len(all_data_items), columns_per_row)]
 
-    - name: Print OS release information
-      ansible.builtin.debug:
-        msg: "{{ os_release.stdout_lines }}"
+    rows = []
+    for r_idx, row_cells in enumerate(rows_cells):
+        row_values = []
+        for cell in row_cells:
+            v = _get_cell_text(cell)
+            row_values.append(v)
+        rows.append((row_cells, row_values))
 
-    - name: Final upgrade result
-      ansible.builtin.debug:
-        msg: >
-          {% if 'Jammy' in os_release.stdout or '22.04' in os_release.stdout %}
-          ✅ Upgrade completed successfully! You are now on Ubuntu 22.04.
-          {% else %}
-          ❌ Upgrade might have failed. Please check logs.
-          {% endif %}
+    # determine which column indices look like time columns (hh:mm:ss)
+    time_col_counts = {}
+    for col in range(columns_per_row):
+        cnt = 0
+        for _, rv in rows:
+            if col < len(rv) and TIME_RE.match(rv[col]):
+                cnt += 1
+        time_col_counts[col] = cnt
+
+    # pick columns with highest counts (likely start, end, exec times). Sort by col index.
+    probable_time_cols = [c for c, cnt in sorted(time_col_counts.items(), key=lambda x: (-x[1], x[0])) if cnt > 0]
+    probable_time_cols.sort()
+    logger.debug(f"Detected time columns: {probable_time_cols} (counts: {time_col_counts})")
+
+    return rows, columns_per_row, probable_time_cols
+
+
+def dump_peak_margin_grid(peak_margin_win):
+    """Backward-compatible: return rows only (keeps old signature), uses robust meta helper."""
+    rows, cols, time_cols = get_grid_rows_and_meta(peak_margin_win)
+    logger.info(f"Dumping {len(rows)} rows from Peak Margin grid:")
+    for r_idx, (_, row_values) in enumerate(rows):
+        logger.info(f"Row {r_idx}: {row_values}")
+    return rows
+
+
+# ------------------- Peak Margin Add (QA1) -------------------
+def set_cell_value(cell, value, max_attempts=3):
+    """Safely sets a value in a grid cell with retries."""
+    for attempt in range(1, max_attempts + 1):
+        try:
+            cell.click_input(double=False)
+            # Use F2 edit mode (kept as it worked for you). If this ever fails, we can switch to an alternate approach.
+            cell.type_keys("{F2}")
+            time.sleep(0.25)
+            send_keys("^a{BACKSPACE}", pause=0.05)
+            send_keys(value, pause=0.05)
+            send_keys("{ENTER}", pause=0.05)
+            time.sleep(0.25)
+            return
+        except Exception as e:
+            logger.warning(f"Attempt {attempt} failed to set value '{value}': {e}")
+            time.sleep(0.5)
+    raise TimeoutError(f"Failed to set value '{value}' after {max_attempts} attempts")
+
+
+def handle_peak_margin_add(app, main_win):
+    """
+    Adds a new Peak Margin row such that the new row's Start Time > last row's End Time.
+    """
+    logger.info("Looking for Peak Margin panel inside main window...")
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
+
+    # 1) Read existing grid and infer metadata
+    rows_before, cols_before, time_cols_before = get_grid_rows_and_meta(peak_margin_win)
+    logger.info(f"Found {len(rows_before)} existing rows, cols={cols_before}, time_cols={time_cols_before}")
+
+    # find last end time from the last non-empty row (prefer second time column if present)
+    last_end_dt = None
+    if rows_before:
+        last_row_values = rows_before[-1][1]
+        # find time-like tokens in that last row in order
+        times_in_row = [v for v in last_row_values if TIME_RE.match(v)]
+        if len(times_in_row) >= 2:
+            last_end_str = times_in_row[1]  # pick second time as End Time (Start, End, Exec)
+        elif len(times_in_row) == 1:
+            last_end_str = times_in_row[0]
+        else:
+            last_end_str = None
+
+        if last_end_str:
+            today = datetime.now().date()
+            try:
+                last_end_dt = datetime.combine(today, datetime.strptime(last_end_str, "%H:%M:%S").time())
+                logger.info(f"Detected last end time from grid: {last_end_str}")
+            except Exception as e:
+                logger.warning(f"Failed parse last_end_str='{last_end_str}': {e}")
+                last_end_dt = None
+    else:
+        logger.info("No rows found before Add; will use default start time base.")
+
+    # 2) Prepare start_time such that it is strictly greater than last_end_dt
+    now = datetime.now()
+    if last_end_dt:
+        # ensure new start is at least 1 minute after last_end
+        base_dt = last_end_dt + timedelta(minutes=1)
+        # add a small random offset of 0-3 minutes to reduce collisions
+        base_dt += timedelta(minutes=random.randint(0, 3))
+        # if base_dt went past midnight (unlikely), wrap into today
+        start_dt = base_dt
+        logger.info(f"Calculated start_dt based on last_end: {start_dt.time().strftime('%H:%M:%S')}")
+    else:
+        # fallback: choose hour 17 with random minutes (like earlier behavior)
+        start_dt = datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17, minutes=random.randint(0, 59))
+        logger.info(f"No last_end found. Using default start_dt: {start_dt.time().strftime('%H:%M:%S')}")
+
+    # ensure start_dt is not earlier than now (optional)
+    # if start_dt <= now: start_dt = now + 1 minute  (but not required by user)
+    # compute end_time = start + 10 minutes
+    end_dt = start_dt + timedelta(minutes=10)
+
+    start_time = start_dt.strftime("%H:%M:%S")
+    end_time = end_dt.strftime("%H:%M:%S")
+    logger.info(f"Will add new row with Start={start_time}, End={end_time}")
+
+    # 3) Click Add and wait for new row to appear
+    logger.info("Clicking Add...")
+    safe_click(peak_margin_win, title="Add", control_type="Button")
+    time.sleep(1.0)
+
+    # wait for grid to expand (use columns per row we inferred earlier)
+    attempts = 0
+    max_wait = 8
+    while attempts < max_wait:
+        rows_after_add, cols_after, time_cols_after = get_grid_rows_and_meta(peak_margin_win)
+        if rows_after_add and len(rows_after_add) >= len(rows_before) + 1:
+            break
+        attempts += 1
+        time.sleep(0.8)
+
+    rows_after_add, cols_after, time_cols_after = get_grid_rows_and_meta(peak_margin_win)
+    logger.info(f"After Add: found {len(rows_after_add)} rows, cols={cols_after}, time_cols={time_cols_after}")
+
+    if not rows_after_add:
+        raise RuntimeError("No rows visible after clicking Add")
+
+    # pick the last row (the newly added one)
+    last_row_cells = rows_after_add[-1][0]
+    last_row_values = rows_after_add[-1][1]
+    logger.info(f"Last row cell count: {len(last_row_cells)}; last row values (pre-fill): {last_row_values}")
+
+    # 4) Determine which column indices correspond to start and end times
+    # prefer time columns detected previously; else default to [1,2]
+    if time_cols_after and len(time_cols_after) >= 2:
+        start_col_index = time_cols_after[0]
+        end_col_index = time_cols_after[1]
+        logger.info(f"Using detected time columns start_col={start_col_index}, end_col={end_col_index}")
+    else:
+        # fallback common positions
+        start_col_index = 1
+        end_col_index = 2
+        logger.info(f"Falling back to start_col={start_col_index}, end_col={end_col_index}")
+
+    # ensure the indices exist in last_row_cells
+    if start_col_index >= len(last_row_cells) or end_col_index >= len(last_row_cells):
+        # try some alternative common mapping if columns mismatch
+        if len(last_row_cells) >= 3:
+            start_col_index = 1
+            end_col_index = 2
+            logger.warning("Adjusted to fallback start/end column indices (1,2)")
+        else:
+            raise RuntimeError("Unexpected column layout for last row — cannot set start/end values")
+
+    # 5) Fill start and end cells
+    try:
+        set_cell_value(last_row_cells[start_col_index], start_time)
+        set_cell_value(last_row_cells[end_col_index], end_time)
+    except Exception as e:
+        logger.exception(f"Failed to set cell values: {e}")
+        raise
+
+    # 6) Save
+    safe_click(peak_margin_win, title="Save", control_type="Button")
+    time.sleep(1.0)
+
+    # handle ok popup if any
+    try:
+        popup = app.window(best_match="Risk Management System")
+        popup.wait("visible", timeout=8)
+        safe_click(popup, auto_id="2", control_type="Button")
+        logger.info("Clicked OK on confirmation popup.")
+    except Exception:
+        logger.warning("No confirmation popup after save (or failed to click it)")
+
+    return start_time
+
+
+# ------------------- Peak Margin Reject (rash1) -------------------
+def handle_peak_margin_reject_for_rash1(app, main_win, target_start_time, max_wait_seconds=20, poll_interval=1):
+    logger.info(f"Looking for Peak Margin panel for rash1 to reject Start Time={target_start_time}...")
+    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
+    peak_margin_win.wait("visible", timeout=10)
+
+    end_time_ts = time.time() + max_wait_seconds
+    while time.time() < end_time_ts:
+        rows = dump_peak_margin_grid(peak_margin_win)
+        for r_idx, (row_cells, row_values) in enumerate(rows):
+            if len(row_values) < 6:
+                continue
+            start_time_val = row_values[1]
+            status_val = row_values[5]
+            if start_time_val == target_start_time and status_val.upper() == "PENDING":
+                logger.info(f"✅ Found row {r_idx}: Start={start_time_val}, Status={status_val}")
+
+                # Step 1: Select checkbox
+                checkbox_cell = row_cells[-1]
+                checkbox_cell.click_input()
+                logger.info("☑️ Checkbox selected.")
+                time.sleep(1)  # Wait for UI update
+
+                # Step 2: Re-read grid after checkbox selection
+                rows_after_click, cols_after, time_cols_after = get_grid_rows_and_meta(peak_margin_win)
+                if r_idx >= len(rows_after_click):
+                    logger.error(f"Row index {r_idx} not found after checkbox click, retrying...")
+                    time.sleep(poll_interval)
+                    continue
+
+                row_cells_after, row_values_after = rows_after_click[r_idx]
+                logger.debug(f"Row after checkbox: cells={len(row_cells_after)}, values={row_values_after}")
+
+                # Step 3: Find column index for PENDING dynamically (prefer detected time columns not relevant here)
+                try:
+                    status_col_index = row_values_after.index("PENDING")
+                except ValueError:
+                    logger.error("PENDING status not found after checkbox selection, retrying...")
+                    time.sleep(poll_interval)
+                    continue
+
+                pending_cell = row_cells_after[status_col_index]
+                logger.info(f"🖱️ About to double-click fresh PENDING cell: Value={row_values_after[status_col_index]}")
+
+                # Step 4: Double-click to open dropdown
+                pending_cell.double_click_input()
+                logger.info("🖱️ Double-clicked on PENDING cell to open dropdown.")
+                time.sleep(0.5)
+
+                # Step 5: Open dropdown and choose REJECT
+                send_keys("%{DOWN}")  # Alt+Down to open combo
+                time.sleep(0.3)
+                send_keys("APPROVE{ENTER}")
+                logger.info("✅ Selected REJECT via keyboard.")
+                time.sleep(0.5)
+
+                # Step 6: Save changes
+                safe_click(peak_margin_win, title="Save", control_type="Button")
+                logger.info("💾 Clicked Save button.")
+                time.sleep(1)
+
+                # Step 7: Handle confirmation popup if any
+                try:
+                    popup = app.window(best_match="Risk Management System")
+                    popup.wait("visible", timeout=5)
+                    safe_click(popup, auto_id="2", control_type="Button")
+                    logger.info("Clicked OK on confirmation popup.")
+                except Exception:
+                    logger.warning("No confirmation popup after save.")
+
+                return  # ✅ Success - exit function
+
+        logger.debug("Row not matched yet, retrying...")
+        time.sleep(poll_interval)
+
+    raise RuntimeError(f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s")
+
+
+# ------------------- Login -------------------
+def login_user(app, username, password, environment="UAT"):
+    dlg = app.window(title_re=".*Risk Management System - Login")
+    dlg.wait("visible", timeout=30)
+
+    safe_type(dlg, "txt_UserId", "Edit", username)
+    safe_type(dlg, "txt_Password", "Edit", password)
+    safe_select(dlg, "cmb_Envionrnment", "ComboBox", environment)
+    safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
+    safe_click(dlg, auto_id="btn_Submit", control_type="Button")
+
+    handle_popup(app, expected_substring="login to test/mock environment", auto_id_to_click="6", timeout=10)
+
+    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
+    main_win.wait("visible", timeout=40)
+    time.sleep(15)
+    handle_post_login_popups(app, main_win)
+    return main_win
+
+
+def close_rms_if_running():
+    for proc in psutil.process_iter(['name']):
+        try:
+            if proc.info['name'] and "RMS FE.exe" in proc.info['name']:
+                logger.info("Closing existing RMS FE.exe process...")
+                proc.terminate()
+                try:
+                    proc.wait(timeout=10)
+                except psutil.TimeoutExpired:
+                    proc.kill()
+        except Exception:
+            pass
+
+
+# ------------------- Workflow Runner -------------------
+def run_workflow_for_user(username, password, is_rash1=False, start_time_value=None):
+    close_rms_if_running()
+    logger.info(f"Starting RMS for user: {username}")
+    app = Application(backend="uia").start(
+        r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
+    )
+    main_win = login_user(app, username, password)
+    click_rms_configuration_and_peak_margin(main_win)
+
+    if not is_rash1:
+        start_time = handle_peak_margin_add(app, main_win)
+    else:
+        if not start_time_value:
+            raise ValueError("start_time_value is required for rash1 run")
+        handle_peak_margin_reject_for_rash1(app, main_win, start_time_value)
+        start_time = None
+
+    safe_click(main_win, title="Exit", control_type="MenuItem")
+    handle_popup(app, auto_id_to_click="6", timeout=10)
+    logger.info(f"Workflow completed for user: {username}")
+    return start_time
+
+
+# ------------------- Main -------------------
+def main():
+    try:
+        start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False)
+        run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
+        logger.info("Automation script completed successfully for both users.")
+    except Exception as e:
+        logger.exception(f"Automation failed: {e}")
+
+
+if __name__ == "__main__":
+    main()
