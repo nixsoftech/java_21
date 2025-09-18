@@ -1,1 +1,11 @@
-echo '/dev/data-vg/data-lv /data ext4 defaults 0 0' >> /etc/fstab
+tee /ubuntu_packages/ubuntu/var/postmirror.sh > /dev/null << EOF
+#!/bin/bash
+cd /ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy*/
+for d in */; do
+  for comp in main universe restricted; do
+    if [ -d "\$d/$comp/binary-amd64" ] && [ ! -d "\$d/$comp/binary-i386" ]; then
+      ln -s binary-amd64 "\$d/$comp/binary-i386"
+    fi
+  done
+done
+EOF
