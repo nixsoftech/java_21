@@ -1,6 +1,1 @@
-pvcreate /dev/sdb /dev/sdc /dev/sdd
-  Can't initialize physical volume "/dev/sdc" of volume group "vg0" without -ff
-  /dev/sdc: physical volume not initialized.
-  Can't initialize physical volume "/dev/sdd" of volume group "vg0" without -ff
-  /dev/sdd: physical volume not initialized.
-  Physical volume "/dev/sdb" successfully created.
+echo '/dev/data-vg/data-lv /data ext4 defaults 0 0' >> /etc/fstab
