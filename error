@@ -1,46 +1,6 @@
-root@zu750:/home/linuxadmin# lsblk
-NAME        MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINTS
-loop0         7:0    0     4K  1 loop  /snap/bare/5
-loop1         7:1    0  55.4M  1 loop  /snap/core18/2855
-loop2         7:2    0  73.9M  1 loop  /snap/core22/1908
-loop3         7:3    0   242M  1 loop  /snap/firefox/6019
-loop4         7:4    0 218.4M  1 loop  /snap/gnome-3-34-1804/93
-loop5         7:5    0  91.7M  1 loop  /snap/gtk-common-themes/1535
-loop6         7:6    0  44.4M  1 loop  /snap/snapd/23771
-sda           8:0    0 447.1G  0 disk
-├─sda1        8:1    0   128M  0 part
-├─sda2        8:2    0 423.8G  0 part
-├─md125       9:125  0 424.8G  0 raid1
-│ ├─md125p1 259:0    0   128M  0 part  /boot/efi
-│ └─md125p2 259:1    0 423.8G  0 part  /mnt
-└─md127       9:127  0     0B  0 md
-sdb           8:16   0 447.1G  0 disk
-├─sdb1        8:17   0   128M  0 part
-├─sdb2        8:18   0 423.8G  0 part
-├─md125       9:125  0 424.8G  0 raid1
-│ ├─md125p1 259:0    0   128M  0 part  /boot/efi
-│ └─md125p2 259:1    0 423.8G  0 part  /mnt
-└─md127       9:127  0     0B  0 md
-sdc           8:32   0 447.1G  0 disk
-├─sdc1        8:33   0   9.3G  0 part
-├─sdc2        8:34   0   9.3G  0 part
-├─sdc3        8:35   0  29.8G  0 part
-├─sdc4        8:36   0 376.3G  0 part
-├─md124       9:124  0 424.8G  0 raid1
-│ ├─md124p1 259:2    0   9.3G  0 part
-│ ├─md124p2 259:3    0   9.3G  0 part  /boot
-│ ├─md124p3 259:4    0  29.8G  0 part  [SWAP]
-│ └─md124p4 259:5    0 376.3G  0 part  /
-└─md126       9:126  0     0B  0 md
-sdd           8:48   0 447.1G  0 disk
-├─sdd1        8:49   0   9.3G  0 part
-├─sdd2        8:50   0   9.3G  0 part
-├─sdd3        8:51   0  29.8G  0 part
-├─sdd4        8:52   0 376.3G  0 part
-├─md124       9:124  0 424.8G  0 raid1
-│ ├─md124p1 259:2    0   9.3G  0 part
-│ ├─md124p2 259:3    0   9.3G  0 part  /boot
-│ ├─md124p3 259:4    0  29.8G  0 part  [SWAP]
-│ └─md124p4 259:5    0 376.3G  0 part  /
-└─md126       9:126  0     0B  0 md
-root@zu750:/home/linuxadmin#
+pvcreate /dev/sdb /dev/sdc /dev/sdd
+  Can't initialize physical volume "/dev/sdc" of volume group "vg0" without -ff
+  /dev/sdc: physical volume not initialized.
+  Can't initialize physical volume "/dev/sdd" of volume group "vg0" without -ff
+  /dev/sdd: physical volume not initialized.
+  Physical volume "/dev/sdb" successfully created.
