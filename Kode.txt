@@ -1,218 +1,72 @@
-import re
-import time
-import os
-import random
-import logging
-import psutil
-import argparse
-from datetime import datetime, timedelta
-from pywinauto.application import Application
-from pywinauto.keyboard import send_keys
-from pywinauto.timings import TimeoutError
-from pywinauto import timings
-from pywinauto.mouse import move, double_click
-
-# ---------------- Logging Setup ----------------
-script_name = os.path.splitext(os.path.basename(__file__))[0]
-log_dir = os.path.join(os.getcwd(), "logs")
-os.makedirs(log_dir, exist_ok=True)
-
-timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
-TIME_RE = re.compile(r"^\d{2}:\d{2}:\d{2}$")
-
-# ---------------- Helper Functions ----------------
-def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
-            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
+lsblk
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+loop0                       7:0    0  63.9M  1 loop /snap/core20/2318
+loop1                       7:1    0    87M  1 loop /snap/lxd/29351
+loop2                       7:2    0  38.8M  1 loop /snap/snapd/21759
+sda                         8:0    0 447.1G  0 disk
+├─sda1                      8:1    0     1M  0 part
+├─sda2                      8:2    0     2G  0 part /boot
+└─sda3                      8:3    0 445.1G  0 part
+  └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /
+sdb                         8:16   0 447.1G  0 disk
+sdc                         8:32   0 447.1G  0 disk
+sdd                         8:48   0 447.1G  0 disk
+sr0                        11:0    1  1024M  0 rom
+root@patchserver:/home/linuxadmin# fdisk -l
+Disk /dev/loop0: 63.95 MiB, 67051520 bytes, 130960 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
 
 
-def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).select(value)
-            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
+Disk /dev/loop1: 87.04 MiB, 91267072 bytes, 178256 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
 
 
-def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, title=title, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).click_input()
-            time.sleep(0.5)
-            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+Disk /dev/loop2: 38.83 MiB, 40714240 bytes, 79520 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
 
 
-def handle_popup(app, expected_substring=None, auto_id_to_click=None, timeout=15):
-    try:
-        popup = app.window(title_re=".*")
-        popup.wait("visible", timeout=timeout)
-        popup_text = popup.window_text().strip()
-        logger.info(f"Popup detected: '{popup_text}'")
+Disk /dev/sda: 447.13 GiB, 480103981056 bytes, 937703088 sectors
+Disk model: SAMSUNG MZ7L3480
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: gpt
+Disk identifier: 022C4E9C-B17B-4E1E-BA85-73FB7F4D5892
 
-        if expected_substring and expected_substring.lower() not in popup_text.lower():
-            logger.warning(f"Popup text mismatch. Expected '{expected_substring}' but got '{popup_text}'")
-
-        if auto_id_to_click:
-            try:
-                btn = popup.child_window(auto_id=auto_id_to_click, control_type="Button")
-                btn.wait("enabled", timeout=5).click_input()
-                logger.info(f"Clicked popup button with AutomationId={auto_id_to_click}")
-            except Exception as e:
-                logger.error(f"Failed to click popup button with AutomationId={auto_id_to_click}: {e}")
-        return True
-
-    except TimeoutError:
-        logger.info(f"No popup appeared within {timeout}s.")
-        return False
+Device       Start       End   Sectors   Size Type
+/dev/sda1     2048      4095      2048     1M BIOS boot
+/dev/sda2     4096   4198399   4194304     2G Linux filesystem
+/dev/sda3  4198400 937699327 933500928 445.1G Linux filesystem
 
 
-def handle_post_login_popups(app, main_win, timeout=20):
-    try:
-        logger.info("Waiting for 'BMS OpmsEngine Got abandoned' popup...")
-        popup1 = main_win.child_window(title="Risk Management System", control_type="Window")
-        popup1.wait("visible", timeout=timeout)
-        safe_click(popup1, auto_id="2", control_type="Button")
-        logger.info("[Popup1] Clicked OK")
-
-        time.sleep(2)
-        logger.info("Waiting for 'Do you want to close RMS' popup...")
-        popup2 = main_win.child_window(title="Risk Management System", control_type="Window")
-        popup2.wait("visible", timeout=timeout)
-        safe_click(popup2, auto_id="7", control_type="Button")
-        logger.info("[Popup2] Clicked NO")
-
-    except TimeoutError:
-        logger.warning("No post-login popups appeared within timeout.")
+Disk /dev/sdc: 447.13 GiB, 480103981056 bytes, 937703088 sectors
+Disk model: SAMSUNG MZ7L3480
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
 
 
-def click_rms_configuration_and_peak_margin(main_win):
-    try:
-        logger.info("Navigating to RMS Configuration -> Peak Margin via menu_select...")
-        main_win.menu_select("RMS Configuration->Peak Margin")
-        logger.info("Successfully opened Peak Margin window.")
-    except Exception:
-        logger.warning("menu_select failed, using fallback clicks...")
-        safe_click(main_win, title="RMS Configuration", control_type="MenuItem")
-        time.sleep(1)
-        safe_click(main_win, title="Peak Margin", control_type="MenuItem")
-
-# ------------------- Grid helpers (same as before) -------------------
-# _get_cell_text, _infer_columns_per_row, get_grid_rows_and_meta, dump_peak_margin_grid
-# ... (unchanged from your code)
-
-# ------------------- Peak Margin Add (MODIFIED ONLY HERE) -------------------
-def handle_peak_margin_add(app, main_win, override_start=None, override_end=None):
-    """
-    Adds a new Peak Margin row such that the new row's Start Time > last row's End Time.
-    If override_start & override_end are given, use them directly.
-    """
-    logger.info("Looking for Peak Margin panel inside main window...")
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
-
-    rows_before, cols_before, time_cols_before = get_grid_rows_and_meta(peak_margin_win)
-    logger.info(f"Found {len(rows_before)} existing rows, cols={cols_before}, time_cols={time_cols_before}")
-
-    if override_start and override_end:
-        start_time = override_start
-        end_time = override_end
-        logger.info(f"Using overridden Start={start_time}, End={end_time}")
-    else:
-        # --- Your original calculation logic stays as-is ---
-        last_end_dt = None
-        if rows_before:
-            last_row_values = rows_before[-1][1]
-            times_in_row = [v for v in last_row_values if TIME_RE.match(v)]
-            if len(times_in_row) >= 2:
-                last_end_str = times_in_row[1]
-            elif len(times_in_row) == 1:
-                last_end_str = times_in_row[0]
-            else:
-                last_end_str = None
-
-            if last_end_str:
-                today = datetime.now().date()
-                try:
-                    last_end_dt = datetime.combine(today, datetime.strptime(last_end_str, "%H:%M:%S").time())
-                    logger.info(f"Detected last end time from grid: {last_end_str}")
-                except Exception as e:
-                    logger.warning(f"Failed parse last_end_str='{last_end_str}': {e}")
-                    last_end_dt = None
-        else:
-            logger.info("No rows found before Add; will use default start time base.")
-
-        now = datetime.now()
-        if last_end_dt:
-            base_dt = last_end_dt + timedelta(minutes=1)
-            base_dt += timedelta(minutes=random.randint(0, 3))
-            start_dt = base_dt
-        else:
-            start_dt = datetime.combine(now.date(), datetime.min.time()) + timedelta(hours=17, minutes=random.randint(0, 59))
-
-        end_dt = start_dt + timedelta(minutes=10)
-        start_time = start_dt.strftime("%H:%M:%S")
-        end_time = end_dt.strftime("%H:%M:%S")
-        logger.info(f"Will add new row with Start={start_time}, End={end_time}")
-
-    # --- Rest of your code stays the same (click add, set values, save) ---
-    # (unchanged from your original working code)
-
-# ------------------- Rest of your code (reject function, login, close_rms_if_running, run_workflow_for_user) -------------------
-# Unchanged
-
-# ------------------- Main -------------------
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--starttime", help="Override start time (HH:MM:SS)", required=False)
-    parser.add_argument("--endtime", help="Override end time (HH:MM:SS)", required=False)
-    args = parser.parse_args()
-
-    if args.starttime and not TIME_RE.match(args.starttime):
-        raise ValueError("Invalid --starttime format. Use HH:MM:SS")
-    if args.endtime and not TIME_RE.match(args.endtime):
-        raise ValueError("Invalid --endtime format. Use HH:MM:SS")
-
-    try:
-        start_time_value = run_workflow_for_user("QA1", "change@1212", is_rash1=False,
-                                                start_time_value=None,
-                                                override_start=args.starttime,
-                                                override_end=args.endtime)
-        run_workflow_for_user("rash1", "change@1212", is_rash1=True, start_time_value=start_time_value)
-        logger.info("Automation script completed successfully for both users.")
-    except Exception as e:
-        logger.exception(f"Automation failed: {e}")
+Disk /dev/sdb: 447.13 GiB, 480103981056 bytes, 937703088 sectors
+Disk model: SAMSUNG MZ7L3480
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
 
 
-if __name__ == "__main__":
-    main()
+Disk /dev/sdd: 447.13 GiB, 480103981056 bytes, 937703088 sectors
+Disk model: SAMSUNG MZ7L3480
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+
+
+Disk /dev/mapper/ubuntu--vg-ubuntu--lv: 100 GiB, 107374182400 bytes, 209715200 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
