@@ -1,11 +1,55 @@
-tee /ubuntu_packages/ubuntu/var/postmirror.sh > /dev/null << EOF
+ cat /ubuntu-package-i386/ubuntu/var/postmirror.sh
 #!/bin/bash
-cd /ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy*/
+cd //ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy*/
 for d in */; do
   for comp in main universe restricted; do
-    if [ -d "\$d/$comp/binary-amd64" ] && [ ! -d "\$d/$comp/binary-i386" ]; then
-      ln -s binary-amd64 "\$d/$comp/binary-i386"
+    if [ -d "$d//binary-amd64" ] && [ ! -d "$d//binary-i386" ]; then
+      ln -s binary-amd64 "$d//binary-i386"
     fi
   done
 done
-EOF
+==================================================
+ cat nohup.out
+Downloading 360 index files using 20 threads...
+Begin time: Thu Sep 18 12:24:51 2025
+[20]... [19]... [18]... [17]... [16]... [15]... [14]... [13]... [12]... [11]... [10]... [9]... [8]... [7]... [6]... [5]... [4]... [3]... [2]... [1]... [0]...
+End time: Thu Sep 18 12:44:05 2025
+
+Processing translation indexes: [TTTTTTTTTTTTTTTTTT]
+
+Downloading 1332 translation files using 20 threads...
+Begin time: Thu Sep 18 12:44:05 2025
+[20]... [19]... [18]... [17]... [16]... [15]... [14]... [13]... [12]... [11]... [10]... [9]... [8]... [7]... [6]... [5]... [4]... [3]... [2]... [1]... [0]...
+End time: Thu Sep 18 12:51:29 2025
+
+Processing DEP-11 indexes: [DDDDDDDDDDDDDDDDDD]
+
+Downloading 198 dep11 files using 20 threads...
+Begin time: Thu Sep 18 12:51:29 2025
+[20]... [19]... [18]... [17]... [16]... [15]... [14]... [13]... [12]... [11]... [10]... [9]... [8]... [7]... [6]... [5]... [4]... [3]... [2]... [1]... [0]...
+End time: Thu Sep 18 12:52:13 2025
+
+Processing cnf indexes: [CCCCCCCCCCCCCCCCCC]
+
+Downloading 48 cnf files using 20 threads...
+Begin time: Thu Sep 18 12:52:13 2025
+[20]... [19]... [18]... [17]... [16]... [15]... [14]... [13]... [12]... [11]... [10]... [9]... [8]... [7]... [6]... [5]... [4]... [3]... [2]... [1]... [0]...
+End time: Thu Sep 18 12:52:15 2025
+
+Processing indexes: [PPPPPPPPPPPPPPPPPP]
+
+1103.7 GiB will be downloaded into archive.
+Downloading 213357 archive files using 20 threads...
+Begin time: Thu Sep 18 12:52:25 2025
+[20]... [19]... [18]... [17]... [16]... [15]... [14]... [13]... [12]... [11]... [10]... [9]... [8]... [7]... [6]... [5]... [4]... [3]... [2]... [1]... [0]...
+End time: Wed Sep 24 09:05:23 2025
+
+0 bytes in 0 files and 0 directories can be freed.
+Run /ubuntu-package-i386/ubuntu/var/clean.sh for this purpose.
+
+Running the Post Mirror script ...
+(/ubuntu-package-i386/ubuntu/var/postmirror.sh)
+
+/ubuntu-package-i386/ubuntu/var/postmirror.sh: line 2: cd: too many arguments
+
+Post Mirror script has completed. See above output for any possible errors.
