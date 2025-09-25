@@ -1,1 +1,24 @@
 http://10.13.0.90/ubuntu/ubuntu/dists/
+
+cd /ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/
+root@patchserver:/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com# ls -ltr
+total 4
+drwxr-xr-x 4 root root 4096 Sep 24 09:05 ubuntu
+root@patchserver:/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com# cd ubuntu/
+root@patchserver:/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu# ls -ltr
+total 8
+drwxr-xr-x  5 root root 4096 Sep 18 12:52 pool
+drwxr-xr-x 11 root root 4096 Sep 24 09:05 dists
+root@patchserver:/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu# cd dists/
+root@patchserver:/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists# ls -ltr
+total 36
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 bionic-security
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 bionic-updates
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 bionic
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 focal-security
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 focal-updates
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 focal
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 jammy-security
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 jammy-updates
+drwxr-xr-x 5 root root 4096 Sep 24 09:05 jammy
+root@patchserver:/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists#
