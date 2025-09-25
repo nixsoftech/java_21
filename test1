@@ -1,127 +1,253 @@
-import time
-import os
-import logging
-from datetime import datetime
-from pywinauto.application import Application
-from pywinauto.timings import TimeoutError
+---
+- name: Upgrade Ubuntu 18.04 to 22.04 with private repository
+  hosts: all
+  become: yes
+  vars:
+    reboot_wait_timeout: 1800  # 30 minutes in seconds
+    script_execution_timeout: 14400  # 4 hours in seconds
+    existing_repo_url: "http://10.13.0.88:8080/ubuntu"  # New server (i386 and amd64 restricted)
+    repo_url: "http://10.13.0.90/ubuntu"  # Another repository URL
+    ubuntu_version: "bionic"  # Replace with "focal", "jammy", etc., based on the target version
 
-# ---------------- Logging Setup ----------------
-script_name = os.path.splitext(os.path.basename(__file__))[0]
-log_dir = os.path.join(os.getcwd(), "logs")
-os.makedirs(log_dir, exist_ok=True)
+    # Repository content for the specified Ubuntu version (can be bionic, focal, jammy, etc.)
+    repo_content: |
+      # Private Repository for Ubuntu {{ ubuntu_version }}
+      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }} main universe
+      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-updates main universe
+      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-security main universe
+      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }} restricted
+      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-updates restricted
+      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-security restricted
+      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }} main universe restricted
+      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-updates main universe restricted
+      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-security main universe restricted
 
-timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-log_file = os.path.join(log_dir, f"{script_name}_{timestamp}.log")
+  tasks:
+    # Phase 1: Upgrade from 18.04 to 20.04
+    - name: Check if reboot is required before 18.04 to 20.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_initial
+      failed_when: false
+      changed_when: false
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler(log_file, mode="w", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+    - name: Reboot server if required before 18.04 to 20.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_initial.rc == 0
 
+    - name: Replace /etc/apt/sources.list with new repositories for bionic
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list  # Specify destination path
+        content: "{{ repo_content }}"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes  # Backup original sources.list
 
-# ---------------- Helper Functions ----------------
-def safe_type(window, auto_id, control_type, text, retries=5, delay=2):
-    """Retry typing text into a control until success or retries exhausted."""
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).type_keys(text, with_spaces=True)
-            logger.info(f"Typed '{text}' into {auto_id} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to type into {auto_id} after {retries} attempts")
+    - name: Update apt cache after replacing sources.list
+      ansible.builtin.apt:
+        update_cache: yes
 
+    - name: Remove lxd package
+      ansible.builtin.apt:
+        name: lxd
+        state: absent
+        purge: yes
+        update_cache: no
 
-def safe_select(window, auto_id, control_type, value, retries=5, delay=2):
-    """Retry selecting a value in a ComboBox until success or retries exhausted."""
-    for attempt in range(1, retries + 1):
-        try:
-            ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            ctrl.wait("enabled", timeout=5).select(value)
-            logger.info(f"Selected '{value}' in {auto_id} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to select {value} in {auto_id} after {retries} attempts")
+    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
 
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
 
-def safe_click(window, auto_id=None, title=None, control_type="Button", retries=5, delay=2):
-    """Retry clicking a button until success or retries exhausted."""
-    for attempt in range(1, retries + 1):
-        try:
-            if auto_id:
-                ctrl = window.child_window(auto_id=auto_id, control_type=control_type)
-            else:
-                ctrl = window.child_window(title=title, control_type=control_type)
+          echo "Updating package list..."
+          apt-get update -yq
 
-            ctrl.wait("enabled", timeout=5).click_input()
-            logger.info(f"Clicked {auto_id or title} (attempt {attempt})")
-            return True
-        except Exception as e:
-            logger.warning(f"Attempt {attempt} failed for {auto_id or title}: {e}")
-            time.sleep(delay)
-    raise TimeoutError(f"Failed to click {auto_id or title} after {retries} attempts")
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
 
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
 
-# ---------------- Main Script ----------------
-try:
-    logger.info("Starting RMS Application...")
-    app = Application(backend="uia").start(
-        r"D:\Program Files (x86)\NCCL Ltd\RMSSetup\RMS FE.exe"
-    )
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
 
-    # Wait for Login window
-    dlg = app.window(title_re=".*Risk Management System - Login")
-    dlg.wait("visible", timeout=30)
-    logger.info("Login window found.")
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
 
-    # Fill login fields with retries
-    safe_type(dlg, "txt_UserId", "Edit", "QA1")
-    safe_type(dlg, "txt_Password", "Edit", "change@1212")
-    safe_select(dlg, "cmb_Envionrnment", "ComboBox", "UAT")
-    safe_select(dlg, "cmb_loginMethod", "ComboBox", "RMS")
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade1.sh
+        mode: '0755'
 
-    # Click Submit
-    safe_click(dlg, auto_id="btn_Submit", control_type="Button")
-    logger.info("Clicked Submit.")
+    - name: Execute auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/auto-upgrade1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade1_result
+      ignore_errors: yes
 
-    # Handle login popup (Yes/No) with retry
-    try:
-        popup = app.window(title_re=".*")
-        popup.wait("visible", timeout=15)
-        safe_click(popup, title="Yes", control_type="Button")
-        logger.info("Clicked Yes on environment popup.")
-    except TimeoutError:
-        logger.warning("No login popup appeared.")
+    - name: Check if reboot is required after auto-upgrade1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade1
+      failed_when: false
+      changed_when: false
 
-    # Wait for Main Window
-    main_win = app.window(title_re=".*NCDEX RISK MANAGEMENT SYSTEM.*")
-    main_win.wait("visible", timeout=40)
-    logger.info("Main RMS window is loaded")
+    - name: Reboot server if required after auto-upgrade1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade1.rc == 0
 
-    # -------- EXIT FLOW --------
-    # Click Exit menu item
-    safe_click(main_win, title="Exit", control_type="MenuItem")
-    logger.info("Clicked Exit menu item.")
+    - name: Copy do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release1.sh
+        mode: '0755'
 
-    # Handle Exit confirmation popup
-    try:
-        exit_popup = app.window(title_re=".*")
-        exit_popup.wait("visible", timeout=15)
-        safe_click(exit_popup, title="Yes", control_type="Button")
-        logger.info("Clicked Yes on Exit confirmation popup")
-    except TimeoutError:
-        logger.warning("No exit confirmation popup appeared.")
+    - name: Execute do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/do-release1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release1_result
+      ignore_errors: yes
 
-    logger.info("Automation script completed successfully.")
+    - name: Check if reboot is required after do-release1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release1
+      failed_when: false
+      changed_when: false
 
-except Exception as e:
-    logger.exception(f"Automation failed: {e}")
+    - name: Reboot server if required after do-release1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release1.rc == 0
+
+    # Phase 2: Upgrade from 20.04 to 22.04
+    - name: Replace /etc/apt/sources.list with new repositories for focal
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list  # Specify destination path
+        content: "{{ repo_content | replace(ubuntu_version, 'focal') }}"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes  # Backup original sources.list
+
+    - name: Update apt cache after replacing sources.list for focal
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Check if reboot is required before 20.04 to 22.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_pre_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required before 20.04 to 22.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_pre_upgrade2.rc == 0
+
+    - name: Copy auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
+
+          echo "Updating package list..."
+          apt-get update -yq
+
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
+
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
+
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
+
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
+
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade2.sh
+        mode: '0755'
+
+    - name: Execute auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/auto-upgrade2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after auto-upgrade2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after auto-upgrade2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade2.rc == 0
+
+    - name: Replace /etc/apt/sources.list with new repositories for jammy
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list  # Specify destination path
+        content: "{{ repo_content | replace(ubuntu_version, 'jammy') }}"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes  # Backup original sources.list
+
+    - name: Update apt cache after replacing sources.list for jammy
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Copy do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release2.sh
+        mode: '0755'
+
+    - name: Execute do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/do-release2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after do-release2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after do-release2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release2.rc == 0
+
+    - name: Check OS release
+      ansible.builtin.command: lsb_release -a
+      register: os_release
+      changed_when: false
+
+    - name: Print OS release information
+      ansible.builtin.debug:
+        msg: "{{ os_release.stdout_lines }}"
