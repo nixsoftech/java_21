@@ -1,10 +1,267 @@
- cd /ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security/
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security# ls -ltr
-total 222932
-drwxr-xr-x 5 root root      4096 Apr 15 09:49 main
-drwxr-xr-x 5 root root      4096 Apr 24 01:30 universe
--rw-r--r-- 1 root root 228059931 Jul 14 22:01 Contents-amd64.gz
--rw-r--r-- 1 root root       833 Sep  9 10:25 Release.gpg
--rw-r--r-- 1 root root    100891 Sep  9 10:25 Release
--rw-r--r-- 1 root root    101773 Sep  9 10:25 InRelease
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security#
+cat ubuntu-upgrade.yml
+---
+- name: Upgrade Ubuntu 18.04 to 22.04 with private repository
+  hosts: all
+  become: yes
+  vars:
+    reboot_wait_timeout: 1800  # 30 minutes in seconds
+    script_execution_timeout: 14400  # 4 hours in seconds
+    existing_repo_url: "http://10.13.0.88:8080/ubuntu"  # New server (i386 and amd64 restricted)
+    repo_url: "http://10.13.0.90/ubuntu"
+
+  tasks:
+    # Phase 1: Upgrade from 18.04 to 20.04
+    - name: Check if reboot is required before 18.04 to 20.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_initial
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required before 18.04 to 20.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_initial.rc == 0
+
+    - name: Add private Ubuntu repository for bionic
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: no
+      loop:
+        - "deb [arch=amd64] {{ existing_repo_url }} bionic main universe"
+        - "deb [arch=amd64] {{ existing_repo_url }} bionic-updates main universe"
+        - "deb [arch=amd64] {{ existing_repo_url }} bionic-security main universe"
+        - "deb [arch=amd64] {{ repo_url }} bionic restricted"
+        - "deb [arch=amd64] {{ repo_url }} bionic-updates restricted"
+        - "deb [arch=amd64] {{ repo_url }} bionic-security restricted"
+        - "deb [arch=i386] {{ repo_url }} bionic main universe restricted"
+        - "deb [arch=i386] {{ repo_url }} bionic-updates main universe restricted"
+        - "deb [arch=i386] {{ repo_url }} bionic-security main universe restricted"
+      register: repo_added_bionic
+
+    - name: Update apt cache after adding bionic repository
+      ansible.builtin.apt:
+        update_cache: yes
+      when: repo_added_bionic.changed
+
+    - name: Remove lxd package
+      ansible.builtin.apt:
+        name: lxd
+        state: absent
+        purge: yes
+        update_cache: no
+
+    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
+
+          echo "Updating package list..."
+          apt-get update -yq
+
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
+
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
+
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
+
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
+
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade1.sh
+        mode: '0755'
+
+    - name: Execute auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/auto-upgrade1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade1_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after auto-upgrade1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade1
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after auto-upgrade1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade1.rc == 0
+
+    - name: Copy do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release1.sh
+        mode: '0755'
+
+    - name: Execute do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/do-release1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release1_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after do-release1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release1
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after do-release1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release1.rc == 0
+
+    # Phase 2: Upgrade from 20.04 to 22.04
+    - name: Update private Ubuntu repository for focal
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: no
+      loop:
+        - "deb [arch=amd64] {{ existing_repo_url }} focal main universe"
+        - "deb [arch=amd64] {{ existing_repo_url }} focal-updates main universe"
+        - "deb [arch=amd64] {{ existing_repo_url }} focal-security main universe"
+        - "deb [arch=amd64] {{ repo_url }} focal restricted"
+        - "deb [arch=amd64] {{ repo_url }} focal-updates restricted"
+        - "deb [arch=amd64] {{ repo_url }} focal-security restricted"
+        - "deb [arch=i386] {{ repo_url }} focal main universe restricted"
+        - "deb [arch=i386] {{ repo_url }} focal-updates main universe restricted"
+        - "deb [arch=i386] {{ repo_url }} focal-security main universe restricted"
+      register: repo_added_focal
+
+    - name: Update apt cache after adding focal repository
+      ansible.builtin.apt:
+        update_cache: yes
+      when: repo_added_focal.changed
+
+    - name: Check if reboot is required before 20.04 to 22.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_pre_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required before 20.04 to 22.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_pre_upgrade2.rc == 0
+
+    - name: Copy auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
+
+          echo "Updating package list..."
+          apt-get update -yq
+
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
+
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
+
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
+
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
+
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade2.sh
+        mode: '0755'
+
+    - name: Execute auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/auto-upgrade2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after auto-upgrade2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after auto-upgrade2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade2.rc == 0
+
+    - name: Update private Ubuntu repository for jammy
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: no
+      loop:
+        - "deb [arch=amd64] {{ existing_repo_url }} jammy main universe"
+        - "deb [arch=amd64] {{ existing_repo_url }} jammy-updates main universe"
+        - "deb [arch=amd64] {{ existing_repo_url }} jammy-security main universe"
+        - "deb [arch=amd64] {{ repo_url }} jammy restricted"
+        - "deb [arch=amd64] {{ repo_url }} jammy-updates restricted"
+        - "deb [arch=amd64] {{ repo_url }} jammy-security restricted"
+        - "deb [arch=i386] {{ repo_url }} jammy main universe restricted"
+        - "deb [arch=i386] {{ repo_url }} jammy-updates main universe restricted"
+        - "deb [arch=i386] {{ repo_url }} jammy-security main universe restricted"
+      register: repo_added_jammy
+
+    - name: Update apt cache after adding jammy repository
+      ansible.builtin.apt:
+        update_cache: yes
+      when: repo_added_jammy.changed
+
+    - name: Copy do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release2.sh
+        mode: '0755'
+
+    - name: Execute do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/do-release2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after do-release2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after do-release2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release2.rc == 0
+
+    - name: Check OS release
+      ansible.builtin.command: lsb_release -a
+      register: os_release
+      changed_when: false
+
+    - name: Print OS release information
+      ansible.builtin.debug:
+        msg: "{{ os_release.stdout_lines }}"
