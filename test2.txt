@@ -1,60 +1,256 @@
-def handle_peak_margin(main_win):
-    """Handles Peak Margin screen directly inside the main window."""
-    try:
-        logger.info("Looking for Peak Margin section inside main RMS window...")
-        
-        # Step 1: Wait for Add button (proves that Peak Margin is loaded)
-        add_btn = main_win.child_window(title="Add", auto_id="cmdAdd", control_type="Button")
-        add_btn.wait("exists enabled visible", timeout=20)
-        add_btn.click_input()
-        logger.info("Clicked Add button in Peak Margin.")
+---
+- name: Upgrade Ubuntu 18.04 to 22.04 with private repository
+  hosts: all
+  become: yes
+  vars:
+    reboot_wait_timeout: 1800  # 30 minutes in seconds
+    script_execution_timeout: 14400  # 4 hours in seconds
+    existing_repo_url: "http://10.13.0.88:8080/ubuntu"  # New server (i386 and amd64 restricted)
+    repo_url: "http://10.13.0.90/ubuntu/ubuntu"  # Another repository URL
+    ubuntu_version: "bionic"  # Replace with "focal", "jammy", etc., based on the target version
 
-        # Step 2: Focus on the grid (we assume new row is created at last)
-        grid = main_win.child_window(control_type="Table", found_index=0)  # DataGridView
-        grid.wait("exists enabled visible", timeout=10)
-        grid.set_focus()
-        logger.info("Focused on Peak Margin grid.")
+    # Repository content for the specified Ubuntu version (can be bionic, focal, jammy, etc.)
+    repo_content: |
+      # Private Repository for Ubuntu {{ ubuntu_version }}
+      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }} main universe
+      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-updates main universe
+      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-security main universe
+      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }} restricted
+      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-updates restricted
+      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-security restricted
+      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }} main universe
+      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-updates main universe
+      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-security main universe
 
-        # Step 3: Navigate to new row and type data
-        # Assuming last row is empty, navigate there
-        send_keys("{DOWN}")  # move to next row
-        send_keys("{HOME}")  # move to first cell (Sr. No)
-        send_keys("{TAB}")   # move to Start Time cell
+  tasks:
+    # Phase 1: Upgrade from 18.04 to 20.04
+    - name: Check if reboot is required before 18.04 to 20.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_initial
+      failed_when: false
+      changed_when: false
 
-        # Generate random start/end times after 17:00 with 15 min gap
-        start_hour = 17
-        start_minute = random.choice([0, 15, 30, 45])
-        end_minute = (start_minute + 15) % 60
-        end_hour = start_hour + ((start_minute + 15) // 60)
+    - name: Reboot server if required before 18.04 to 20.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_initial.rc == 0
 
-        start_time = f"{start_hour:02d}:{start_minute:02d}:00"
-        end_time = f"{end_hour:02d}:{end_minute:02d}:00"
+    - name: Replace /etc/apt/sources.list with new repositories for bionic
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list
+        content: "{{ repo_content }}"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
 
-        send_keys(start_time)
-        send_keys("{TAB}")
-        send_keys(end_time)
-        send_keys("{TAB}")
-        send_keys(end_time)  # executable time same as end time
-        send_keys("{TAB}")
-        send_keys("Y")
-        send_keys("{TAB}")
-        send_keys("NORMAL")
-        send_keys("{TAB}")
-        send_keys("Automated Entry")
-        logger.info(f"Filled row with Start={start_time}, End={end_time}")
+    - name: Update apt cache after replacing sources.list
+      ansible.builtin.apt:
+        update_cache: yes
+      ignore_errors: true
 
-        # Step 4: Click Save
-        save_btn = main_win.child_window(title="Save", auto_id="cmdSave", control_type="Button")
-        save_btn.wait("enabled", timeout=10).click_input()
-        logger.info("Clicked Save button.")
+    - name: Remove lxd package
+      ansible.builtin.apt:
+        name: lxd
+        state: absent
+        purge: yes
+        update_cache: no
 
-        # Step 5: Verify Status column contains 'PENDING'
-        time.sleep(2)
-        grid_text = grid.window_text()
-        if "PENDING" in grid_text.upper():
-            logger.info("Status column shows PENDING ✅")
-        else:
-            logger.warning("Status column does not show PENDING ❌")
+    - name: Copy auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
 
-    except Exception as e:
-        logger.exception(f"Failed while handling Peak Margin: {e}")
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
+
+          echo "Updating package list..."
+          apt-get update -yq || true
+
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
+
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
+
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
+
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
+
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade1.sh
+        mode: '0755'
+
+    - name: Execute auto-upgrade1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/auto-upgrade1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade1_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after auto-upgrade1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade1
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after auto-upgrade1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade1.rc == 0
+
+    - name: Copy do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release1.sh
+        mode: '0755'
+
+    - name: Execute do-release1.sh script for 18.04 to 20.04
+      ansible.builtin.shell: /tmp/do-release1.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release1_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after do-release1.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release1
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after do-release1.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release1.rc == 0
+
+    # Phase 2: Upgrade from 20.04 to 22.04
+    - name: Replace /etc/apt/sources.list with new repositories for focal
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list
+        content: "{{ repo_content | replace(ubuntu_version, 'focal') }}"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+
+    - name: Update apt cache after replacing sources.list for focal
+      ansible.builtin.apt:
+        update_cache: yes
+      ignore_errors: true
+
+    - name: Check if reboot is required before 20.04 to 22.04 upgrade
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_pre_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required before 20.04 to 22.04 upgrade
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_pre_upgrade2.rc == 0
+
+    - name: Copy auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Set environment to non-interactive
+          export DEBIAN_FRONTEND=noninteractive
+
+          echo "Updating package list..."
+          apt-get update -yq || true
+
+          echo "Performing standard upgrades..."
+          apt-get upgrade -yq
+
+          echo "Performing dist-upgrade (recommended for Ubuntu upgrades)..."
+          apt-get dist-upgrade -yq
+
+          echo "Cleaning up unnecessary packages..."
+          apt-get autoremove -yq
+
+          echo "Installing update-manager-core if needed..."
+          apt-get install -yq update-manager-core
+
+          echo "Package upgrade phase completed successfully."
+        dest: /tmp/auto-upgrade2.sh
+        mode: '0755'
+
+    - name: Execute auto-upgrade2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/auto-upgrade2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: auto_upgrade2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after auto-upgrade2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_upgrade2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after auto-upgrade2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_upgrade2.rc == 0
+
+    - name: Replace /etc/apt/sources.list with new repositories for jammy
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list
+        content: "{{ repo_content | replace(ubuntu_version, 'jammy') }}"
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+
+    - name: Update apt cache after replacing sources.list for jammy
+      ansible.builtin.apt:
+        update_cache: yes
+      ignore_errors: true
+
+    - name: Copy do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+          yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
+          apt-get autoremove -yq
+          apt-get clean
+          systemctl restart sshd
+        dest: /tmp/do-release2.sh
+        mode: '0755'
+
+    - name: Execute do-release2.sh script for 20.04 to 22.04
+      ansible.builtin.shell: /tmp/do-release2.sh
+      async: "{{ script_execution_timeout }}"
+      poll: 10
+      register: do_release2_result
+      ignore_errors: yes
+
+    - name: Check if reboot is required after do-release2.sh
+      ansible.builtin.command: test -f /var/run/reboot-required
+      register: reboot_required_post_release2
+      failed_when: false
+      changed_when: false
+
+    - name: Reboot server if required after do-release2.sh
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: reboot_required_post_release2.rc == 0
+
+    - name: Check OS release
+      ansible.builtin.command: lsb_release -a
+      register: os_release
+      changed_when: false
+
+    - name: Print OS release information
+      ansible.builtin.debug:
+        msg: "{{ os_release.stdout_lines }}"
