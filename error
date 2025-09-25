@@ -1,11 +1,18 @@
- apt update
-Hit:1 http://10.13.0.88:8080/ubuntu bionic InRelease
-Hit:2 http://10.13.0.88:8080/ubuntu bionic-updates InRelease
-Ign:3 http://10.13.0.88:8080/ubuntu-security bionic-security InRelease
-Err:4 http://10.13.0.88:8080/ubuntu-security bionic-security Release
-  404  Not Found [IP: 10.13.0.88 8080]
-Hit:5 https://packages.microsoft.com/ubuntu/18.04/prod bionic InRelease
-Reading package lists... Done
-E: The repository 'http://10.13.0.88:8080/ubuntu-security bionic-security Release' does not have a Release file.
-N: Updating from such a repository can't be done securely, and is therefore disabled by default.
-N: See apt-secure(8) manpage for repository creation and user configuration details.
+ ansible-playbook -i 10.13.0.54, ubuntu-upgrade1.yml
+
+PLAY [Upgrade Ubuntu 18.04 to 22.04 with private repository] ***********************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************************************
+ok: [10.13.0.54]
+
+TASK [Check if reboot is required before 18.04 to 20.04 upgrade] *******************************************************************************************************
+ok: [10.13.0.54]
+
+TASK [Reboot server if required before 18.04 to 20.04 upgrade] *********************************************************************************************************
+skipping: [10.13.0.54]
+
+TASK [Replace /etc/apt/sources.list with new repositories for bionic] **************************************************************************************************
+fatal: [10.13.0.54]: FAILED! => {"changed": false, "msg": "dest is required"}
+
+PLAY RECAP *************************************************************************************************************************************************************
+10.13.0.54                 : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0
