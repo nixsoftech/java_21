@@ -1,60 +1,40 @@
-def handle_peak_margin_reject_for_rash1_fixed(app, main_win, target_start_time, max_wait_seconds=30, poll_interval=1):
-    logger.info(f"Looking for Peak Margin row to reject Start Time={target_start_time}...")
+cat /etc/apt/mirror.list
+############# config ##################
+set base_path    /ubuntu-package-i386/ubuntu
+set mirror_path  $base_path/mirror
+set skel_path    $base_path/skel
+set var_path     $base_path/var
+set cleanscript $var_path/clean.sh
+set defaultarch  amd64
+set nthreads     20
+set _tilde 0
+set postmirror_script $var_path/postmirror.sh
+set run_postmirror 1
+############# end config ##############
 
-    peak_margin_win = main_win.child_window(title="Peak Margin", control_type="Window")
-    peak_margin_win.wait("visible", timeout=10)
+# Ubuntu 18.04 BIONIC
+deb-amd64 http://archive.ubuntu.com/ubuntu bionic restricted
+deb-amd64 http://archive.ubuntu.com/ubuntu bionic-security restricted
+deb-amd64 http://archive.ubuntu.com/ubuntu bionic-updates restricted
+deb-i386 http://archive.ubuntu.com/ubuntu bionic main universe restricted
+deb-i386 http://archive.ubuntu.com/ubuntu bionic-security main universe restricted
+deb-i386 http://archive.ubuntu.com/ubuntu bionic-updates main universe restricted
 
-    end_time = time.time() + max_wait_seconds
-    last_exception = None
+# Ubuntu 20.04 FOCAL
+deb-amd64 http://archive.ubuntu.com/ubuntu focal restricted
+deb-amd64 http://archive.ubuntu.com/ubuntu focal-security restricted
+deb-amd64 http://archive.ubuntu.com/ubuntu focal-updates restricted
+deb-i386 http://archive.ubuntu.com/ubuntu focal main universe restricted
+deb-i386 http://archive.ubuntu.com/ubuntu focal-security main universe restricted
+deb-i386 http://archive.ubuntu.com/ubuntu focal-updates main universe restricted
 
-    while time.time() < end_time:
-        try:
-            rows = dump_peak_margin_grid(peak_margin_win)  # your working dump
-            for r_idx, (row_cells, row_values) in enumerate(rows):
-                if len(row_values) < 6:
-                    continue
-                start_time_val = row_values[1].strip()
-                status_val = row_values[5].strip().upper()
+# Ubuntu 22.04 JAMMY
+deb-amd64 http://archive.ubuntu.com/ubuntu jammy restricted
+deb-amd64 http://archive.ubuntu.com/ubuntu jammy-security restricted
+deb-amd64 http://archive.ubuntu.com/ubuntu jammy-updates restricted
+deb-i386 http://archive.ubuntu.com/ubuntu jammy main universe restricted
+deb-i386 http://archive.ubuntu.com/ubuntu jammy-security main universe restricted
+deb-i386 http://archive.ubuntu.com/ubuntu jammy-updates main universe restricted
 
-                if start_time_val == target_start_time and status_val == "PENDING":
-                    logger.info(f"✅ Matched row {r_idx} with Start Time={start_time_val}, Status={status_val}")
-
-                    # Click checkbox (last cell)
-                    row_cells[-1].click_input()
-                    time.sleep(0.3)
-
-                    # Update Status to REJECT
-                    status_cell = row_cells[5]
-                    status_cell.click_input()
-                    time.sleep(0.3)
-                    send_keys("{F2}")
-                    time.sleep(0.2)
-                    send_keys("REJECT{ENTER}")
-                    logger.info("Changed Status to REJECT.")
-
-                    # Save changes
-                    safe_click(peak_margin_win, title="Save", control_type="Button")
-                    time.sleep(1.5)
-
-                    # Handle popup if appears
-                    try:
-                        popup = app.window(best_match="Risk Management System")
-                        popup.wait("visible", timeout=8)
-                        safe_click(popup, auto_id="2", control_type="Button")
-                        logger.info("Clicked OK on confirmation popup.")
-                    except Exception:
-                        logger.warning("No confirmation popup after save.")
-
-                    return  # done
-
-            time.sleep(poll_interval)
-
-        except Exception as e:
-            last_exception = e
-            time.sleep(poll_interval)
-
-    msg = f"No row found with Start Time={target_start_time} & Status=PENDING within {max_wait_seconds}s"
-    logger.error(msg)
-    if last_exception:
-        logger.debug(f"Last exception: {last_exception}")
-    raise RuntimeError(msg)
+clean http://archive.ubuntu.com/ubuntu
+clean http://security.ubuntu.com/ubuntu
