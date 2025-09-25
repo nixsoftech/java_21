@@ -1,38 +1,171 @@
- cd /ubuntu_packages/
-root@ubuntucentralpatch:/ubuntu_packages# ls -ltr
-total 28
-drwx------ 2 root root 16384 Mar 11  2025 lost+found
-drwxr-xr-x 3 root root  4096 Mar 17  2025 lib
-drwxr-xr-x 3 root root  4096 Mar 17  2025 log
-drwxr-xr-x 5 root root  4096 Apr 18 05:16 ubuntu
-root@ubuntucentralpatch:/ubuntu_packages# cd ubuntu/
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu# ls -ltr
-total 24
-drwxr-xr-x 3 root root  4096 Apr 15 09:07 skel
--rw------- 1 root root  2003 Apr 15 09:49 nohup.out
-drwxr-xr-x 4 root root  4096 Sep  9 12:07 mirror
-drwxr-xr-x 2 root root 12288 Sep  9 12:19 var
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu# cd mirror/
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror# ls -ltr
-total 8
-drwxr-xr-x 3 root root 4096 Apr 15 09:09 archive.ubuntu.com
-drwxr-xr-x 2 root root 4096 Sep  9 12:19 security.ubuntu.com
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror# cd archive.ubuntu.com/
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com# ls -ltr
-total 4
-drwxr-xr-x 13 root root 4096 Sep 10 16:13 ubuntu
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com# cd ubuntu/
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu# ls -ltr
-total 44
-drwxr-xr-x 11 root root 4096 Apr 21 07:00 dists
-drwxr-xr-x  4 root root 4096 Apr 22 13:06 pool
-drwxr-xr-x  7 root root 4096 Sep 10 11:51 bionic
-drwxr-xr-x  7 root root 4096 Sep 10 12:23 bionic-updates
-drwxr-xr-x  7 root root 4096 Sep 10 13:04 bionic-security
-drwxr-xr-x  7 root root 4096 Sep 10 13:35 focal
-drwxr-xr-x  7 root root 4096 Sep 10 14:12 focal-updates
-drwxr-xr-x  7 root root 4096 Sep 10 14:49 focal-security
-drwxr-xr-x  7 root root 4096 Sep 10 15:21 jammy
-drwxr-xr-x  7 root root 4096 Sep 10 15:55 jammy-updates
-drwxr-xr-x  7 root root 4096 Sep 10 16:15 jammy-security
-root@ubuntucentralpatch:/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu#
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-updates/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-updates/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-security/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-security/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-security/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-updates/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-updates/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-updates/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-security/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic-security/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/bionic/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/focal-security/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-updates/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-updates/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-security/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-security/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-security/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-security/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-updates/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy/universe/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/multiverse/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/multiverse/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/multiverse/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/restricted/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/restricted/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/restricted/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/main/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/main/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/main/binary-i386/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/universe/binary-amd64/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/universe/source/Release
+/ubuntu_packages/ubuntu/mirror/archive.ubuntu.com/ubuntu/jammy-updates/universe/binary-i386/Release
