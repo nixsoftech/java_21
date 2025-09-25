@@ -1,12 +1,11 @@
-TASK [Add private Ubuntu repository for bionic] ************************************************************************************************************************
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.90/ubuntu bionic restricted) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.90/ubuntu bionic restricted", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.90/ubuntu bionic-updates restricted) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.90/ubuntu bionic-updates restricted", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=amd64] http://10.13.0.90/ubuntu bionic-security restricted) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=amd64] http://10.13.0.90/ubuntu bionic-security restricted", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=i386] http://10.13.0.90/ubuntu bionic main universe restricted) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=i386] http://10.13.0.90/ubuntu bionic main universe restricted", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=i386] http://10.13.0.90/ubuntu bionic-updates main universe restricted) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=i386] http://10.13.0.90/ubuntu bionic-updates main universe restricted", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-failed: [10.13.0.54] (item=deb [arch=i386] http://10.13.0.90/ubuntu bionic-security main universe restricted) => {"ansible_loop_var": "item", "changed": false, "item": "deb [arch=i386] http://10.13.0.90/ubuntu bionic-security main universe restricted", "msg": "Failed to auto-install python-apt. Error was: 'E: The repository 'http://10.13.0.88/ubuntu-security bionic-security Release' does not have a Release file.'"}
-
-PLAY RECAP *********************************************************************************************************
+ apt update
+Hit:1 http://10.13.0.88:8080/ubuntu bionic InRelease
+Hit:2 http://10.13.0.88:8080/ubuntu bionic-updates InRelease
+Ign:3 http://10.13.0.88:8080/ubuntu-security bionic-security InRelease
+Err:4 http://10.13.0.88:8080/ubuntu-security bionic-security Release
+  404  Not Found [IP: 10.13.0.88 8080]
+Hit:5 https://packages.microsoft.com/ubuntu/18.04/prod bionic InRelease
+Reading package lists... Done
+E: The repository 'http://10.13.0.88:8080/ubuntu-security bionic-security Release' does not have a Release file.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
