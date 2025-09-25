@@ -1,12 +1,24 @@
-Err:20 http://10.13.0.90/ubuntu/ubuntu bionic-updates/main amd64 DEP-11 Metadata
-  404  Not Found [IP: 10.13.0.90 80]
-Ign:25 http://10.13.0.90/ubuntu/ubuntu bionic-updates/universe amd64 DEP-11 Metadata
-Err:30 http://10.13.0.90/ubuntu/ubuntu bionic-security/main amd64 DEP-11 Metadata
-  404  Not Found [IP: 10.13.0.90 80]
-Ign:35 http://10.13.0.90/ubuntu/ubuntu bionic-security/universe amd64 DEP-11 Metadata
-Fetched 35.2 MB in 1s (29.2 MB/s)
-Reading package lists... Done
-E: Failed to fetch http://10.13.0.90/ubuntu/ubuntu/dists/bionic/main/dep11/Components-amd64.yml  404  Not Found [IP: 10.13.0.90 80]
-E: Failed to fetch http://10.13.0.90/ubuntu/ubuntu/dists/bionic-updates/main/dep11/Components-amd64.yml  404  Not Found [IP: 10.13.0.90 80]
-E: Failed to fetch http://10.13.0.90/ubuntu/ubuntu/dists/bionic-security/main/dep11/Components-amd64.yml  404  Not Found [IP: 10.13.0.90 80]
-E: Some index files failed to download. They have been ignored, or old ones used instead.
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-updates/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-updates/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-security/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-security/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-security/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-security/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-updates/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/focal-updates/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-security/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/bionic-security/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-updates/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/skel/archive.ubuntu.com/ubuntu/dists/jammy-updates/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-updates/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-updates/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-security/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-security/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-security/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-security/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-updates/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/focal-updates/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/bionic-security/restricted/dep11/Components-amd64.yml.gz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-updates/restricted/dep11/Components-amd64.yml.xz
+/ubuntu-package-i386/ubuntu/mirror/archive.ubuntu.com/ubuntu/dists/jammy-updates/restricted/dep11/Components-amd64.yml.gz
