@@ -1,7 +1,6 @@
----
 - name: Upgrade Ubuntu 18.04 to 22.04 with private repository (with logging)
   hosts: all
-  become: yes
+  become: true
   vars:
     reboot_wait_timeout: 1800
     script_execution_timeout: 14400
@@ -9,7 +8,6 @@
     repo_url: "http://10.13.0.90/ubuntu/ubuntu"
     ubuntu_version: "bionic"
     log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
-
     repo_content: |
       # Private Repository for Ubuntu {{ ubuntu_version }}
       deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }} main universe
@@ -37,12 +35,12 @@
         owner: root
         group: root
         mode: '0644'
-        backup: yes
+        backup: true
 
     - name: Update apt cache (bionic)
       ansible.builtin.shell: "apt-get update -yq || true"
       register: apt_update_bionic
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Save and fetch apt update log (bionic)
       block:
@@ -53,13 +51,13 @@
         - ansible.builtin.fetch:
             src: /var/log/apt-update-bionic.log
             dest: "{{ log_dir }}/apt-update-bionic.log"
-            flat: yes
+            flat: true
 
     - name: Remove lxd package
       ansible.builtin.apt:
         name: lxd
         state: absent
-        purge: yes
+        purge: true
 
     - name: Phase 1: Upgrade from 18.04 to 20.04
       block:
@@ -82,13 +80,13 @@
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: auto_upgrade1_result
-          ignore_errors: yes
+          ignore_errors: true
 
         - name: Fetch auto-upgrade1 log
           ansible.builtin.fetch:
             src: /var/log/auto-upgrade1.log
             dest: "{{ log_dir }}/auto-upgrade1.log"
-            flat: yes
+            flat: true
 
         - name: Copy and run do-release1.sh
           ansible.builtin.copy:
@@ -106,13 +104,13 @@
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: do_release1_result
-          ignore_errors: yes
+          ignore_errors: true
 
         - name: Fetch do-release1 log
           ansible.builtin.fetch:
             src: /var/log/do-release1.log
             dest: "{{ log_dir }}/do-release1.log"
-            flat: yes
+            flat: true
       rescue:
         - name: Fetch journal logs on failure (phase 1)
           ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase1-failure.log
@@ -120,7 +118,7 @@
           ansible.builtin.fetch:
             src: /var/log/upgrade-phase1-failure.log
             dest: "{{ log_dir }}/upgrade-phase1-failure.log"
-            flat: yes
+            flat: true
         - name: Fail with message
           ansible.builtin.fail:
             msg: "Phase 1 upgrade failed, check logs in {{ log_dir }}"
@@ -130,12 +128,12 @@
         dest: /etc/apt/sources.list
         content: "{{ repo_content | replace(ubuntu_version, 'focal') }}"
         mode: '0644'
-        backup: yes
+        backup: true
 
     - name: Update apt cache (focal)
       ansible.builtin.shell: "apt-get update -yq || true"
       register: apt_update_focal
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Save and fetch apt update log (focal)
       block:
@@ -146,7 +144,7 @@
         - ansible.builtin.fetch:
             src: /var/log/apt-update-focal.log
             dest: "{{ log_dir }}/apt-update-focal.log"
-            flat: yes
+            flat: true
 
     - name: Phase 2: Upgrade from 20.04 to 22.04
       block:
@@ -169,20 +167,20 @@
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: auto_upgrade2_result
-          ignore_errors: yes
+          ignore_errors: true
 
         - name: Fetch auto-upgrade2 log
           ansible.builtin.fetch:
             src: /var/log/auto-upgrade2.log
             dest: "{{ log_dir }}/auto-upgrade2.log"
-            flat: yes
+            flat: true
 
         - name: Replace sources.list for jammy
           ansible.builtin.copy:
             dest: /etc/apt/sources.list
             content: "{{ repo_content | replace(ubuntu_version, 'jammy') }}"
             mode: '0644'
-            backup: yes
+            backup: true
 
         - name: Copy and run do-release2.sh
           ansible.builtin.copy:
@@ -200,13 +198,13 @@
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: do_release2_result
-          ignore_errors: yes
+          ignore_errors: true
 
         - name: Fetch do-release2 log
           ansible.builtin.fetch:
             src: /var/log/do-release2.log
             dest: "{{ log_dir }}/do-release2.log"
-            flat: yes
+            flat: true
       rescue:
         - name: Fetch journal logs on failure (phase 2)
           ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase2-failure.log
@@ -214,7 +212,7 @@
           ansible.builtin.fetch:
             src: /var/log/upgrade-phase2-failure.log
             dest: "{{ log_dir }}/upgrade-phase2-failure.log"
-            flat: yes
+            flat: true
         - name: Fail with message
           ansible.builtin.fail:
             msg: "Phase 2 upgrade failed, check logs in {{ log_dir }}"
