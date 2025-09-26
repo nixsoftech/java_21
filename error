@@ -1,3 +1,4 @@
+ansible-playbook --syntax-check play1.yml
 ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
 JSON: Expecting value: line 2 column 1 (char 1)
 
