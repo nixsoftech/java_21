@@ -1,20 +1,5 @@
-yamllint play1.yml
-play1.yml
-  1:1       error    too many blank lines (1 > 0)  (empty-lines)
-  5:11      warning  truthy value should be one of [false, true]  (truthy)
-  16:81     error    line too long (81 > 80 characters)  (line-length)
-  17:81     error    line too long (89 > 80 characters)  (line-length)
-  18:81     error    line too long (90 > 80 characters)  (line-length)
-  41:17     warning  truthy value should be one of [false, true]  (truthy)
-  46:22     warning  truthy value should be one of [false, true]  (truthy)
-  52:81     error    line too long (85 > 80 characters)  (line-length)
-  57:19     warning  truthy value should be one of [false, true]  (truthy)
-  63:16     warning  truthy value should be one of [false, true]  (truthy)
-  65:20     error    syntax error: mapping values are not allowed here (syntax)
-  82:81     error    line too long (88 > 80 characters)  (line-length)
-  106:81    error    line too long (84 > 80 characters)  (line-length)
-  119:81    error    line too long (85 > 80 characters)  (line-length)
-  145:81    error    line too long (83 > 80 characters)  (line-length)
-  169:81    error    line too long (88 > 80 characters)  (line-length)
-  200:81    error    line too long (84 > 80 characters)  (line-length)
-  213:81    error    line too long (85 > 80 characters)  (line-length)
+Checking for a new Ubuntu release
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+There is no development version of an LTS available.
+To upgrade to the latest non-LTS develoment release
+set Prompt=normal in /etc/update-manager/release-upgrades.
