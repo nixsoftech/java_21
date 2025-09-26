@@ -76,12 +76,14 @@
               apt-get dist-upgrade -yq
               apt-get autoremove -yq
               apt-get install -yq update-manager-core
+
         - name: Run auto-upgrade1.sh
           ansible.builtin.shell: /tmp/auto-upgrade1.sh > /var/log/auto-upgrade1.log 2>&1
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: auto_upgrade1_result
           ignore_errors: yes
+
         - name: Fetch auto-upgrade1 log
           ansible.builtin.fetch:
             src: /var/log/auto-upgrade1.log
@@ -98,12 +100,16 @@
               apt-get autoremove -yq
               apt-get clean
               systemctl restart sshd
-        - ansible.builtin.shell: /tmp/do-release1.sh > /var/log/do-release1.log 2>&1
+
+        - name: Run do-release1.sh
+          ansible.builtin.shell: /tmp/do-release1.sh > /var/log/do-release1.log 2>&1
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: do_release1_result
           ignore_errors: yes
-        - ansible.builtin.fetch:
+
+        - name: Fetch do-release1 log
+          ansible.builtin.fetch:
             src: /var/log/do-release1.log
             dest: "{{ log_dir }}/do-release1.log"
             flat: yes
@@ -156,12 +162,14 @@
               apt-get dist-upgrade -yq
               apt-get autoremove -yq
               apt-get install -yq update-manager-core
+
         - name: Run auto-upgrade2.sh
           ansible.builtin.shell: /tmp/auto-upgrade2.sh > /var/log/auto-upgrade2.log 2>&1
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: auto_upgrade2_result
           ignore_errors: yes
+
         - name: Fetch auto-upgrade2 log
           ansible.builtin.fetch:
             src: /var/log/auto-upgrade2.log
@@ -185,12 +193,16 @@
               apt-get autoremove -yq
               apt-get clean
               systemctl restart sshd
-        - ansible.builtin.shell: /tmp/do-release2.sh > /var/log/do-release2.log 2>&1
+
+        - name: Run do-release2.sh
+          ansible.builtin.shell: /tmp/do-release2.sh > /var/log/do-release2.log 2>&1
           async: "{{ script_execution_timeout }}"
           poll: 10
           register: do_release2_result
           ignore_errors: yes
-        - ansible.builtin.fetch:
+
+        - name: Fetch do-release2 log
+          ansible.builtin.fetch:
             src: /var/log/do-release2.log
             dest: "{{ log_dir }}/do-release2.log"
             flat: yes
