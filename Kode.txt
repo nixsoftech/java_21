@@ -1,5 +1,17 @@
+[Release]
+Dist: focal
+Name: Focal Fossa
+Version: 20.04.6 LTS
+Supported: 1
+Description: Ubuntu 20.04.6 LTS
+UpgradeTool: http://10.13.0.88:8080/ubuntu/dist-upgrader-all/current/focal.tar.gz
+UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dist-upgrader-all/current/focal.tar.gz.gpg
 
-https://archive.ubuntu.com/ubuntu/dists/jammy-updates/main/dist-upgrader-all/current/jammy.tar.gz.gpg
-https://archive.ubuntu.com/ubuntu/dists/jammy-updates/main/dist-upgrader-all/current/jammy.tar.gz
-https://archive.ubuntu.com/ubuntu/dists/focal-updates/main/dist-upgrader-all/current/focal.tar.gz.gpg
-https://archive.ubuntu.com/ubuntu/dists/focal-updates/main/dist-upgrader-all/current/focal.tar.gz
+[Release]
+Dist: jammy
+Name: Jammy Jellyfish
+Version: 22.04.5 LTS
+Supported: 1
+Description: Ubuntu 22.04.5 LTS
+UpgradeTool: http://10.13.0.88:8080/ubuntu/dist-upgrader-all/current/jammy.tar.gz
+UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dist-upgrader-all/current/jammy.tar.gz.gpg
