@@ -1,17 +1,45 @@
-[Release]
-Dist: focal
-Name: Focal Fossa
-Version: 20.04.6 LTS
-Supported: 1
-Description: Ubuntu 20.04.6 LTS
-UpgradeTool: http://10.13.0.88:8080/ubuntu/dists/focal.tar.gz
-UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dists/focal.tar.gz.gpg
+#!/bin/bash
+set -e
 
-[Release]
-Dist: jammy
-Name: Jammy Jellyfish
-Version: 22.04.5 LTS
-Supported: 1
-Description: Ubuntu 22.04.5 LTS
-UpgradeTool: http://10.13.0.88:8080/ubuntu/dists/jammy.tar.gz
-UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dists/jammy.tar.gz.gpg
+# Non-interactive flags
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export APT_LISTCHANGES_FRONTEND=none
+
+##############################################
+# Step 2: Upgrade 20.04 (focal) -> 22.04 (jammy)
+##############################################
+echo "=== Step 1: Writing jammy repositories ==="
+cat > /etc/apt/sources.list <<EOF
+# jammy repositories (amd64)
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
+
+# jammy repositories (i386)
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
+
+# restricted packages (amd64)
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
+EOF
+
+echo "=== Step 2: Updating and upgrading to jammy ==="
+apt-get update -o Acquire::Check-Valid-Until=false -yq || true
+apt-get upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
+
+apt-get dist-upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
+
+apt-get autoremove -yq || true
+apt-get autoclean -yq || true
+
+echo "=== Step 3: Rebooting system ==="
+sleep 10
+reboot
