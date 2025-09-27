@@ -1,2 +1,17 @@
-[Sources]
-MetaReleaseURI=https://changelogs.ubuntu.com/meta-release-lts
+cat ubuntu-mirror
+server {
+        listen 8080;
+        server_name 10.13.0.86;
+
+        root /var/www/html;
+
+        location /ubuntu/ {
+                autoindex on ;
+                alias /var/www/html/ubuntu/;
+        }
+
+        location / {
+                return 404;
+        }
+}
+
