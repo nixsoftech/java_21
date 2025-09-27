@@ -1,2 +1,1 @@
-sudo dpkg --remove --force-remove-reinstreq lxd
-sudo dpkg --remove --force-remove-reinstreq lxd-client
+fatal: [10.13.0.89]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: kex_exchange_identification: read: Connection reset by peer\r\nConnection reset by 10.13.0.89 port 22", "unreachable": true}
