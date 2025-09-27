@@ -1,11 +1,33 @@
-cat /etc/apt/sources.list
-# Private Repository
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic-updates restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic-security restricted
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic-updates main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic-security main universe
+#!/bin/bash
+set -e
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export APT_LISTCHANGES_FRONTEND=none
+
+LOGFILE="/var/log/manual-upgrade-bionic-to-focal.log"
+exec > >(tee -a $LOGFILE) 2>&1
+
+echo "=== Step 1: Writing focal repositories to /etc/apt/sources.list ==="
+cat <<'EOF' > /etc/apt/sources.list
+# Your Focal Repositories here
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal-security main universe
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal-security restricted
+deb [arch=i386]  http://10.13.0.90/ubuntu/ubuntu focal main universe
+deb [arch=i386]  http://10.13.0.90/ubuntu/ubuntu focal-updates main universe
+deb [arch=i386]  http://10.13.0.90/ubuntu/ubuntu focal-security main universe
+EOF
+
+echo "=== Step 2: Updating and upgrading to focal ==="
+apt-get update -yq
+apt-get upgrade -yq
+apt-get dist-upgrade -yq
+apt-get autoremove -yq
+apt-get autoclean -yq
+
+echo "=== Step 3: Rebooting after focal upgrade ==="
+sleep 5
+reboot
