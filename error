@@ -1,25 +1,28 @@
-root@ubuntu:/tmp# cd /etc/update-manager/
-root@ubuntu:/etc/update-manager# ls -ltr
-total 12
-drwxr-xr-x 2 root root 4096 Jan 17  2019 release-upgrades.d
--rw-r--r-- 1 root root  244 Mar 19 22:59 meta-release
--rw-r--r-- 1 root root  807 Mar 19 23:02 release-upgrades
-root@ubuntu:/etc/update-manager# mv meta-release meta-release-lts
-root@ubuntu:/etc/update-manager# ls -ltr
-total 12
-drwxr-xr-x 2 root root 4096 Jan 17  2019 release-upgrades.d
--rw-r--r-- 1 root root  244 Mar 19 22:59 meta-release-lts
--rw-r--r-- 1 root root  807 Mar 19 23:02 release-upgrades
-root@ubuntu:/etc/update-manager# do-release-upgrade -f DistUpgradeViewNonInteractive --data-dir=/etc/update-manager/
-Checking for a new Ubuntu release
-Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
-There is no development version of an LTS available.
-To upgrade to the latest non-LTS develoment release
-set Prompt=normal in /etc/update-manager/release-upgrades.
-root@ubuntu:/etc/update-manager# pwd
-/etc/update-manager
-root@ubuntu:/etc/update-manager# ls -ltr
-total 12
-drwxr-xr-x 2 root root 4096 Jan 17  2019 release-upgrades.d
--rw-r--r-- 1 root root  244 Mar 19 22:59 meta-release-lts
--rw-r--r-- 1 root root  807 Mar 19 23:02 release-upgrades
+bash focal.sh
+=== Step 1: Writing focal repositories to /etc/apt/sources.list ===
+=== Step 2: Updating and upgrading to focal ===
+Hit:1 http://10.13.0.88:8080/ubuntu focal InRelease
+Get:2 http://10.13.0.88:8080/ubuntu focal-updates InRelease [128 kB]
+Get:6 http://10.13.0.88:8080/ubuntu focal-security InRelease [128 kB]
+Get:3 http://10.13.0.90/ubuntu/ubuntu focal InRelease [265 kB]
+Get:4 http://10.13.0.90/ubuntu/ubuntu focal-updates InRelease [128 kB]
+Get:5 http://10.13.0.90/ubuntu/ubuntu focal-security InRelease [128 kB]
+Get:7 http://10.13.0.90/ubuntu/ubuntu focal/restricted amd64 Packages [22.0 kB]
+Get:8 http://10.13.0.90/ubuntu/ubuntu focal/restricted Translation-en [6,212 B]
+Get:9 http://10.13.0.90/ubuntu/ubuntu focal/restricted amd64 c-n-f Metadata [392 B]
+Get:10 http://10.13.0.90/ubuntu/ubuntu focal/main i386 Packages [718 kB]
+Get:11 http://10.13.0.90/ubuntu/ubuntu focal/main Translation-en [506 kB]
+Get:12 http://10.13.0.90/ubuntu/ubuntu focal/main amd64 c-n-f Metadata [29.5 kB]
+Get:12 http://10.13.0.90/ubuntu/ubuntu focal/main amd64 c-n-f Metadata [29.5 kB]
+Ign:12 http://10.13.0.90/ubuntu/ubuntu focal/main amd64 c-n-f Metadata
+Ign:15 http://10.13.0.90/ubuntu/ubuntu focal/universe amd64 c-n-f Metadata
+Ign:12 http://10.13.0.90/ubuntu/ubuntu focal/main amd64 c-n-f Metadata
+Ign:15 http://10.13.0.90/ubuntu/ubuntu focal/universe amd64 c-n-f Metadata
+Err:12 http://10.13.0.90/ubuntu/ubuntu focal/main amd64 c-n-f Metadata
+  404  Not Found [IP: 10.13.0.90 80]
+Ign:15 http://10.13.0.90/ubuntu/ubuntu focal/universe amd64 c-n-f Metadata
+Reading package lists...
+E: Release file for http://10.13.0.88:8080/ubuntu/dists/focal-updates/InRelease is not valid yet (invalid for another 538d 14h 42min 17s). Updates for this repository will not be applied.
+E: Release file for http://10.13.0.88:8080/ubuntu/dists/focal-security/InRelease is not valid yet (invalid for another 538d 14h 37min 38s). Updates for this repository will not be applied.
+E: Release file for http://10.13.0.90/ubuntu/ubuntu/dists/focal-updates/InRelease is not valid yet (invalid for another 547d 15h 32min 38s). Updates for this repository will not be applied.
+E: Release file for http://10.13.0.90/ubuntu/ubuntu/dists/focal-security/InRelease is not valid yet (invalid for another 547d 15h 26min 43s). Updates for this repository will not be applied.
