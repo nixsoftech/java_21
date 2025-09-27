@@ -1,11 +1,17 @@
- cat sources.list
-# Private Repository for Ubuntu bionic
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic-updates restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic-security restricted
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic main universe restricted
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic-updates main universe restricted
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic-security main universe restricted
+[Release]
+Dist: focal
+Name: Focal Fossa
+Version: 20.04.6 LTS
+Supported: 1
+Description: Ubuntu 20.04.6 LTS
+UpgradeTool: http://10.13.0.88:8080/ubuntu/dists/focal.tar.gz
+UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dists/focal.tar.gz.gpg
+
+[Release]
+Dist: jammy
+Name: Jammy Jellyfish
+Version: 22.04.5 LTS
+Supported: 1
+Description: Ubuntu 22.04.5 LTS
+UpgradeTool: http://10.13.0.88:8080/ubuntu/dists/jammy.tar.gz
+UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dists/jammy.tar.gz.gpg
