@@ -1,20 +1,25 @@
-sh do-release1.sh
-Checking for a new Ubuntu release
-ERROR: failed to read '/etc/update-manager/meta-release':
-While reading from '/etc/update-manager/meta-release' [line 11]: section 'Release' already exists
-
-
-
+root@ubuntu:/tmp# cd /etc/update-manager/
+root@ubuntu:/etc/update-manager# ls -ltr
+total 12
+drwxr-xr-x 2 root root 4096 Jan 17  2019 release-upgrades.d
+-rw-r--r-- 1 root root  244 Mar 19 22:59 meta-release
+-rw-r--r-- 1 root root  807 Mar 19 23:02 release-upgrades
+root@ubuntu:/etc/update-manager# mv meta-release meta-release-lts
+root@ubuntu:/etc/update-manager# ls -ltr
+total 12
+drwxr-xr-x 2 root root 4096 Jan 17  2019 release-upgrades.d
+-rw-r--r-- 1 root root  244 Mar 19 22:59 meta-release-lts
+-rw-r--r-- 1 root root  807 Mar 19 23:02 release-upgrades
+root@ubuntu:/etc/update-manager# do-release-upgrade -f DistUpgradeViewNonInteractive --data-dir=/etc/update-manager/
 Checking for a new Ubuntu release
 Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
 There is no development version of an LTS available.
 To upgrade to the latest non-LTS develoment release
 set Prompt=normal in /etc/update-manager/release-upgrades.
-
-do-release-upgrade -f DistUpgradeViewNonInteractive --data-dir=/etc/update-manager/
-Checking for a new Ubuntu release
-Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
-There is no development version of an LTS available.
-To upgrade to the latest non-LTS develoment release
-set Prompt=normal in /etc/update-manager/release-upgrades.
-
+root@ubuntu:/etc/update-manager# pwd
+/etc/update-manager
+root@ubuntu:/etc/update-manager# ls -ltr
+total 12
+drwxr-xr-x 2 root root 4096 Jan 17  2019 release-upgrades.d
+-rw-r--r-- 1 root root  244 Mar 19 22:59 meta-release-lts
+-rw-r--r-- 1 root root  807 Mar 19 23:02 release-upgrades
