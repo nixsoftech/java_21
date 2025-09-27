@@ -1,19 +1,10 @@
-cat /etc/update-manager/meta-release
-
-[Release]
-Dist: focal
-Name: Focal Fossa
-Version: 20.04.6 LTS
-Supported: 1
-Description: Ubuntu 20.04.6 LTS
-UpgradeTool: http://10.13.0.88:8080/ubuntu/dists/focal.tar.gz
-UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dists/focal.tar.gz.gpg
-
-[Release]
-Dist: jammy
-Name: Jammy Jellyfish
-Version: 22.04.5 LTS
-Supported: 1
-Description: Ubuntu 22.04.5 LTS
-UpgradeTool: http://10.13.0.88:8080/ubuntu/dists/jammy.tar.gz
-UpgradeToolSignature: http://10.13.0.88:8080/ubuntu/dists/jammy.tar.gz.gpg
+Configuration file '/etc/update-manager/release-upgrades'
+ ==> Modified (by you or by a script) since installation.
+ ==> Package distributor has shipped an updated version.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainer's version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a shell to examine the situation
+ The default action is to keep your current version.
+*** release-upgrades (Y/I/N/O/D/Z) [default=N] ?
