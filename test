@@ -1,10 +1,45 @@
-Configuration file '/etc/update-manager/release-upgrades'
- ==> Modified (by you or by a script) since installation.
- ==> Package distributor has shipped an updated version.
-   What would you like to do about it ?  Your options are:
-    Y or I  : install the package maintainer's version
-    N or O  : keep your currently-installed version
-      D     : show the differences between the versions
-      Z     : start a shell to examine the situation
- The default action is to keep your current version.
-*** release-upgrades (Y/I/N/O/D/Z) [default=N] ?
+#!/bin/bash
+set -e
+
+# Non-interactive flags
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export APT_LISTCHANGES_FRONTEND=none
+
+##############################################
+# Step 2: Upgrade 20.04 (focal) -> 22.04 (jammy)
+##############################################
+echo "=== Step 1: Writing jammy repositories ==="
+cat > /etc/apt/sources.list <<EOF
+# jammy repositories (amd64)
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
+
+# jammy repositories (i386)
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
+
+# restricted packages (amd64)
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
+EOF
+
+echo "=== Step 2: Updating and upgrading to jammy ==="
+apt-get update -o Acquire::Check-Valid-Until=false -yq || true
+apt-get upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
+
+apt-get dist-upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
+
+apt-get autoremove -yq || true
+apt-get autoclean -yq || true
+
+echo "=== Step 3: Rebooting system ==="
+sleep 10
+reboot
