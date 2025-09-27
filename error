@@ -1,1 +1,4 @@
--o Acquire::Check-Valid-Until=false -yq
+Preparing to unpack .../5-lxd_1%3a0.9_all.deb ...
+=> Installing the LXD snap
+==> Checking connectivity with the snap store
+===> Unable to contact the store, trying every minute for the next 30 minutes
