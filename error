@@ -1,6 +1,4 @@
-TASK [Ensure update-manager-core and openssh-server are installed] *******************************************************
-fatal: [10.13.0.85]: FAILED! => {"changed": false, "msg": "Failed to update apt cache: E:Release file for http://10.13.0.88:8080/ubuntu/dists/bionic-updates/InRelease is not valid yet (invalid for another 539d 12h 11min 7s). Updates for this repository will not be applied., E:Release file for http://10.13.0.88:8080/ubuntu/dists/bionic-security/InRelease is not valid yet (invalid for another 539d 12h 7min 46s). Updates for this repository will not be applied., E:Release file for http://10.13.0.90/ubuntu/ubuntu/dists/bionic-updates/InRelease is not valid yet (invalid for another 548d 13h 3min 43s). Updates for this repository will not be applied., E:Release file for http://10.13.0.90/ubuntu/ubuntu/dists/bionic-security/InRelease is not valid yet (invalid for another 548d 12h 59min 48s). Updates for this repository will not be applied."}
-...ignoring
-
-TASK [Verify focal dist-upgrader tarball exists on mirror (HEAD request)] ************************************************
-fatal: [10.13.0.85]: FAILED! => {"changed": false, "connection": "close", "content_length": "162", "content_type": "text/html", "date": "Fri, 26 Sep 2025 11:10:31 GMT", "elapsed": 0, "msg": "Status code was 404 and not [200]: HTTP Error 404: Not Found", "redirected": false, "server": "nginx/1.18.0 (Ubuntu)", "status": 404, "url": "http://10.13.0.88:8080/ubuntu/dist-upgrader-all/current/focal.tar.gz"}
+sh do-release1.sh
+Checking for a new Ubuntu release
+ERROR: failed to read '/etc/update-manager/meta-release':
+While reading from '/etc/update-manager/meta-release' [line 11]: section 'Release' already exists
