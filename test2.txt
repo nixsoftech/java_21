@@ -1,1 +1,11 @@
-wget http://10.13.0.88/ubuntu/changelogs/meta-release-lts
+cat /etc/apt/sources.list
+# Private Repository
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu bionic-security main universe
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu bionic-security restricted
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic-updates main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu bionic-security main universe
