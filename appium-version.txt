@@ -1,320 +1,52 @@
-cat play5.yml
----
-- name: Offline upgrade bionic -> focal -> jammy using private mirrors (with meta-release)
-  hosts: all
-  become: true
-  vars:
-    reboot_wait_timeout: 5400          # 90 minutes wait for slow reboots (adjust if needed)
-    script_execution_timeout: 14400    # 4 hours for long-running upgrade commands
-    log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
+#!/bin/bash
+set -e
 
-    # Mirrors (you provided these)
-    mirror_amd64: "http://10.13.0.88:8080/ubuntu"
-    mirror_i386: "http://10.13.0.90/ubuntu/ubuntu"
+# Non-interactive flags
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export APT_LISTCHANGES_FRONTEND=none
 
-    # Ubuntu versions
-    ubuntu_current: "bionic"
-    ubuntu_next1: "focal"
-    ubuntu_next2: "jammy"
+# Redirect all output to log
+exec > /tmp/jammy_upgrade.log 2>&1
 
-    # repo template (you provided)
-    repo_content: |
-      # Private Repository
-      deb [arch=amd64] {{ mirror_amd64 }} {{ ubuntu_current }} main universe
-      deb [arch=amd64] {{ mirror_amd64 }} {{ ubuntu_current }}-updates main universe
-      deb [arch=amd64] {{ mirror_amd64 }} {{ ubuntu_current }}-security main universe
-      deb [arch=amd64] {{ mirror_i386 }} {{ ubuntu_current }} restricted
-      deb [arch=amd64] {{ mirror_i386 }} {{ ubuntu_current }}-updates restricted
-      deb [arch=amd64] {{ mirror_i386 }} {{ ubuntu_current }}-security restricted
-      deb [arch=i386] {{ mirror_i386 }} {{ ubuntu_current }} main universe
-      deb [arch=i386] {{ mirror_i386 }} {{ ubuntu_current }}-updates main universe
-      deb [arch=i386] {{ mirror_i386 }} {{ ubuntu_current }}-security main universe
+echo "=== Step 0: Starting jammy upgrade ==="
 
-    # meta-release URL (where you host the file)
-    meta_release_url: "http://10.13.0.88:8080/ubuntu/meta-release-lts"
+##############################################
+# Step 2: Upgrade 20.04 (focal) -> 22.04 (jammy)
+##############################################
+echo "=== Step 1: Writing jammy repositories ==="
+cat > /etc/apt/sources.list <<EOF
+# jammy repositories (amd64)
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
 
-  tasks:
+# jammy repositories (i386)
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
 
-    - name: Ensure log directory exists on control node
-      delegate_to: localhost
-      ansible.builtin.file:
-        path: "{{ log_dir }}"
-        state: directory
-        mode: '0755'
+# restricted packages (amd64)
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
+EOF
 
-    - name: Detect current Ubuntu codename (lsb_release -sc)
-      ansible.builtin.command: lsb_release -sc
-      register: current_release
-      changed_when: false
+echo "=== Step 2: Updating and upgrading to jammy ==="
+apt-get update -o Acquire::Check-Valid-Until=false -yq || true
+apt-get upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
 
-    - name: Show current release
-      ansible.builtin.debug:
-        msg: "Current release: {{ current_release.stdout }}"
+apt-get dist-upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
 
-    - name: Copy custom meta-release-lts to target
-      ansible.builtin.copy:
-        src: files/meta-release-lts
-        dest: /etc/update-manager/meta-release
-        owner: root
-        group: root
-        mode: '0644'
+apt-get autoremove -yq || true
+apt-get autoclean -yq || true
 
-    - name: Ensure release-upgrades prompt is set to LTS
-      ansible.builtin.lineinfile:
-        path: /etc/update-manager/release-upgrades
-        regexp: '^Prompt='
-        line: 'Prompt=lts'
-        create: yes
+# Restart SSH so Ansible can reconnect
+echo "=== Step 3: Restarting SSH service ==="
+systemctl restart ssh || systemctl restart sshd || true
 
-    - name: Write initial /etc/apt/sources.list using repo_content (bionic)
-      ansible.builtin.copy:
-        dest: /etc/apt/sources.list
-        content: "{{ repo_content }}"
-        owner: root
-        group: root
-        mode: '0644'
-        backup: yes
-
-    - name: Run apt-get update (initial) and ignore transient errors
-      ansible.builtin.shell: "apt-get update -yq || true"
-      register: apt_update_initial
-      ignore_errors: true
-
-    - name: Save apt update initial log and fetch it
-      block:
-        - name: Write remote apt update initial log
-          ansible.builtin.copy:
-            dest: /var/log/apt-update-initial.log
-            content: "{{ apt_update_initial.stdout }}\n{{ apt_update_initial.stderr }}"
-            mode: '0644'
-        - name: Fetch apt update initial log to controller
-          ansible.builtin.fetch:
-            src: /var/log/apt-update-initial.log
-            dest: "{{ log_dir }}/apt-update-initial.log"
-            flat: true
-
-    - name: Ensure update-manager-core and openssh-server are installed
-      ansible.builtin.apt:
-        name:
-          - update-manager-core
-          - openssh-server
-        state: present
-        update_cache: yes
-      ignore_errors: true
-
-    - name: Verify focal dist-upgrader tarball exists on mirror (HEAD request)
-      ansible.builtin.uri:
-        url: "{{ mirror_amd64 }}/dists/focal.tar.gz"
-        method: HEAD
-        return_content: no
-        status_code: 200
-      register: focal_tar_check
-
-    - name: Verify focal tarball signature exists on mirror
-      ansible.builtin.uri:
-        url: "{{ mirror_amd64 }}/dists/focal.tar.gz.gpg"
-        method: HEAD
-        return_content: no
-        status_code: 200
-      register: focal_sig_check
-
-    - name: Verify jammy dist-upgrader tarball exists on mirror (HEAD request)
-      ansible.builtin.uri:
-        url: "{{ mirror_amd64 }}/dists/jammy.tar.gz"
-        method: HEAD
-        return_content: no
-        status_code: 200
-      register: jammy_tar_check
-
-    - name: Verify jammy tarball signature exists on mirror
-      ansible.builtin.uri:
-        url: "{{ mirror_amd64 }}/dists/jammy.tar.gz.gpg"
-        method: HEAD
-        return_content: no
-        status_code: 200
-      register: jammy_sig_check
-
-    - name: Fail early if focal dist-upgrader tarball missing
-      ansible.builtin.fail:
-        msg: "focal.tar.gz or its signature not accessible at {{ mirror_amd64 }}/dist-upgrader-all/current/"
-      when: focal_tar_check.status != 200 or focal_sig_check.status != 200
-
-    - name: Fail early if jammy dist-upgrader tarball missing
-      ansible.builtin.fail:
-        msg: "jammy.tar.gz or its signature not accessible at {{ mirror_amd64 }}/dist-upgrader-all/current/"
-      when: jammy_tar_check.status != 200 or jammy_sig_check.status != 200
-
-    ####################################################################
-    # Phase A: If host is bionic => run do-release-upgrade to focal
-    ####################################################################
-    - name: Prepare and run do-release-upgrade (bionic -> focal)
-      block:
-        - name: Create do-release1.sh (bionic->focal)
-          ansible.builtin.copy:
-            dest: /tmp/do-release1.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              # ensure LTS prompt
-              sed -i 's/^Prompt=.*/Prompt=lts/' /etc/update-manager/release-upgrades || true
-              # run non-interactive upgrader (meta-release points to private file)
-              yes '' | do-release-upgrade -f DistUpgradeViewNonInteractive
-              apt-get autoremove -yq || true
-              apt-get clean || true
-              # attempt to restart sshd after upgrade (safe if service exists)
-              systemctl try-restart sshd || true
-
-        - name: Run do-release1.sh in background (bionic->focal)
-          ansible.builtin.shell: /tmp/do-release1.sh > /var/log/do-release1.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 0
-          register: do_release1_job
-          when: current_release.stdout == "bionic"
-          ignore_errors: true
-
-        - name: Wait for do-release1.sh to finish (poll async_status) (bionic->focal)
-          ansible.builtin.async_status:
-            jid: "{{ do_release1_job.ansible_job_id }}"
-          register: do_release1_status
-          until: do_release1_status.finished
-          retries: 360
-          delay: 60
-          when: current_release.stdout == "bionic"
-          ignore_errors: true
-
-        - name: Wait for SSH to come back (after bionic->focal)
-          ansible.builtin.wait_for_connection:
-            delay: 10
-            timeout: "{{ reboot_wait_timeout }}"
-          when: current_release.stdout == "bionic"
-
-        - name: Fetch do-release1 log (bionic->focal)
-          ansible.builtin.fetch:
-            src: /var/log/do-release1.log
-            dest: "{{ log_dir }}/do-release1.log"
-            flat: true
-          when: current_release.stdout == "bionic"
-
-      rescue:
-        - name: Capture journal logs on failure (phase bionic->focal)
-          ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase1-failure.log
-        - name: Fetch failure log (phase bionic->focal)
-          ansible.builtin.fetch:
-            src: /var/log/upgrade-phase1-failure.log
-            dest: "{{ log_dir }}/upgrade-phase1-failure.log"
-            flat: true
-        - name: Fail task (phase bionic->focal)
-          ansible.builtin.fail:
-            msg: "Phase bionic->focal failed: check logs under {{ log_dir }} on control node"
-
-    ####################################################################
-    # Refresh current_release after first step (in case it upgraded)
-    ####################################################################
-    - name: Re-detect current Ubuntu codename after possible first upgrade
-      ansible.builtin.command: lsb_release -sc
-      register: current_release_after_first
-      changed_when: false
-
-    - name: Show release after possible first upgrade
-      ansible.builtin.debug:
-        msg: "Release now: {{ current_release_after_first.stdout }}"
-
-    ####################################################################
-    # Phase B: If host is focal (originally or after step A) => upgrade to jammy
-    ####################################################################
-    - name: Prepare and run do-release-upgrade (focal -> jammy)
-      block:
-        - name: Replace /etc/apt/sources.list content to jammy repo template (so apt uses jammy mirrors)
-          ansible.builtin.copy:
-            dest: /etc/apt/sources.list
-            content: "{{ repo_content | replace(ubuntu_current, ubuntu_next2) }}"
-            owner: root
-            group: root
-            mode: '0644'
-            backup: yes
-
-        - name: apt-get update before focal->jammy (ignore errors)
-          ansible.builtin.shell: "apt-get update -yq || true"
-          register: apt_update_before_jammy
-          ignore_errors: true
-
-        - name: Save and fetch apt update log (before jammy)
-          block:
-            - name: Write remote apt update log for jammy phase
-              ansible.builtin.copy:
-                dest: /var/log/apt-update-before-jammy.log
-                content: "{{ apt_update_before_jammy.stdout }}\n{{ apt_update_before_jammy.stderr }}"
-                mode: '0644'
-            - name: Fetch apt update before jammy log
-              ansible.builtin.fetch:
-                src: /var/log/apt-update-before-jammy.log
-                dest: "{{ log_dir }}/apt-update-before-jammy.log"
-                flat: true
-
-        - name: Create do-release2.sh (focal->jammy)
-          ansible.builtin.copy:
-            dest: /tmp/do-release2.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              sed -i 's/^Prompt=.*/Prompt=lts/' /etc/update-manager/release-upgrades || true
-              yes '' | do-release-upgrade -f DistUpgradeViewNonInteractive
-              apt-get autoremove -yq || true
-              apt-get clean || true
-              systemctl try-restart sshd || true
-
-        - name: Run do-release2.sh in background (focal->jammy)
-          ansible.builtin.shell: /tmp/do-release2.sh > /var/log/do-release2.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 0
-          register: do_release2_job
-          when: (current_release.stdout == "focal") or (current_release_after_first.stdout == "focal")
-          ignore_errors: true
-
-        - name: Wait for do-release2.sh to finish (poll async_status) (focal->jammy)
-          ansible.builtin.async_status:
-            jid: "{{ do_release2_job.ansible_job_id }}"
-          register: do_release2_status
-          until: do_release2_status.finished
-          retries: 360
-          delay: 60
-          when: (current_release.stdout == "focal") or (current_release_after_first.stdout == "focal")
-          ignore_errors: true
-
-        - name: Wait for SSH to come back (after focal->jammy)
-          ansible.builtin.wait_for_connection:
-            delay: 10
-            timeout: "{{ reboot_wait_timeout }}"
-          when: (current_release.stdout == "focal") or (current_release_after_first.stdout == "focal")
-
-        - name: Fetch do-release2 log (focal->jammy)
-          ansible.builtin.fetch:
-            src: /var/log/do-release2.log
-            dest: "{{ log_dir }}/do-release2.log"
-            flat: true
-          when: (current_release.stdout == "focal") or (current_release_after_first.stdout == "focal")
-
-      rescue:
-        - name: Capture journal logs on failure (phase focal->jammy)
-          ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase2-failure.log
-        - name: Fetch failure log (phase focal->jammy)
-          ansible.builtin.fetch:
-            src: /var/log/upgrade-phase2-failure.log
-            dest: "{{ log_dir }}/upgrade-phase2-failure.log"
-            flat: true
-        - name: Fail task (phase focal->jammy)
-          ansible.builtin.fail:
-            msg: "Phase focal->jammy failed: check logs under {{ log_dir }} on control node"
-
-    - name: Final check - print OS release
-      ansible.builtin.command: lsb_release -a
-      register: final_release
-      changed_when: false
-
-    - name: Show final release output
-      ansible.builtin.debug:
-        var: final_release.stdout_lines
+echo "=== Step 4: Jammy upgrade completed. Reboot can be triggered manually by Ansible. ==="
