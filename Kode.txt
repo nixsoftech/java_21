@@ -57,8 +57,4 @@ apt-get dist-upgrade -yq \
 apt-get autoremove -yq || true
 apt-get autoclean -yq || true
 
-# Restart SSH so Ansible can reconnect
-echo "=== Step 3: Restarting SSH service ==="
-systemctl restart ssh || systemctl restart sshd || true
-
 echo "Step 4: Focal upgrade completed."
