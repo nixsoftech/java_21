@@ -15,16 +15,23 @@
         state: directory
         mode: '0755'
 
-    - name: Copy focal.sh to /opt/ on target
+    - name: Backup /etc to /etc_bkp before upgrade
+      shell: |
+        if [ ! -d /etc_bkp ]; then
+          cp -a /etc /etc_bkp
+        fi
+      changed_when: false
+
+    - name: Copy focal.sh to /tmp/ on target
       copy:
         src: focal.sh
-        dest: /opt/focal.sh
+        dest: /tmp/focal.sh
         mode: '0755'
 
-    - name: Copy jammy.sh to /opt/ on target
+    - name: Copy jammy.sh to /tmp/ on target
       copy:
         src: jammy.sh
-        dest: /opt/jammy.sh
+        dest: /tmp/jammy.sh
         mode: '0755'
 
     - name: Detect current Ubuntu version
@@ -37,7 +44,7 @@
         msg: "Current release: {{ current_release.stdout }}"
 
     - name: Run focal.sh if OS is 18.04 (bionic)
-      shell: /opt/focal.sh
+      shell: "/tmp/focal.sh > /tmp/focal_upgrade.log 2>&1"
       async: 7200
       poll: 0
       when: current_release.stdout == "bionic"
@@ -58,6 +65,13 @@
         timeout: "{{ reboot_wait_timeout }}"
       when: current_release.stdout == "bionic"
 
+    - name: Fetch focal upgrade log to control node
+      fetch:
+        src: /tmp/focal_upgrade.log
+        dest: "{{ log_dir }}/focal_upgrade.log"
+        flat: yes
+      when: current_release.stdout == "bionic"
+
     - name: Detect Ubuntu version after first upgrade
       command: lsb_release -sc
       register: release_after_first
@@ -68,7 +82,7 @@
         msg: "Release after first upgrade: {{ release_after_first.stdout }}"
 
     - name: Run jammy.sh if OS is 20.04 (focal)
-      shell: /opt/jammy.sh
+      shell: "/tmp/jammy.sh > /tmp/jammy_upgrade.log 2>&1"
       async: 7200
       poll: 0
       when: release_after_first.stdout == "focal" or current_release.stdout == "focal"
@@ -87,6 +101,13 @@
       wait_for_connection:
         delay: 10
         timeout: "{{ reboot_wait_timeout }}"
+      when: release_after_first.stdout == "focal" or current_release.stdout == "focal"
+
+    - name: Fetch jammy upgrade log to control node
+      fetch:
+        src: /tmp/jammy_upgrade.log
+        dest: "{{ log_dir }}/jammy_upgrade.log"
+        flat: yes
       when: release_after_first.stdout == "focal" or current_release.stdout == "focal"
 
     - name: Confirm final Ubuntu version is 22.04 (jammy)
