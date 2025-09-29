@@ -1,18 +1,132 @@
-TASK [Run jammy.sh if OS is 20.04] ***************************************************************************************
-changed: [10.13.0.95]
+---
+- name: Offline Ubuntu LTS upgrade 18.04 -> 20.04 -> 22.04
+  hosts: all
+  become: true
+  vars:
+    reboot_wait_timeout: 3600   # 60 minutes
+    log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
+    etc_backup: "/etc_bkp_{{ ansible_date_time.iso8601 }}"
 
-TASK [Check jammy.sh execution status] ***********************************************************************************
-changed: [10.13.0.95]
+  tasks:
 
-TASK [Fail if jammy.sh execution failed] *********************************************************************************
-skipping: [10.13.0.95]
+    # -------------------------------
+    # Setup
+    # -------------------------------
+    - name: Ensure log directory exists on control node
+      delegate_to: localhost
+      file:
+        path: "{{ log_dir }}"
+        state: directory
+        mode: '0755'
 
-TASK [Debug jammy.sh result] *********************************************************************************************
-ok: [10.13.0.95] => {
-    "msg": "jammy.sh result: rc=0, job_id=88478203610.2610"
-}
+    - name: Backup /etc directory
+      command: "cp -a /etc {{ etc_backup }}"
+      register: etc_backup_result
 
-TASK [Fetch jammy.sh log] ************************************************************************************************
-changed: [10.13.0.95]
+    - name: Show backup path
+      debug:
+        msg: "Backup of /etc completed at {{ etc_backup }}"
 
-TASK [Reboot after jammy.sh] *******************************************************************************************
+    - name: Copy focal.sh to /tmp/ on target
+      copy:
+        src: focal.sh
+        dest: /tmp/focal.sh
+        mode: '0755'
+
+    - name: Copy jammy.sh to /tmp/ on target
+      copy:
+        src: jammy.sh
+        dest: /tmp/jammy.sh
+        mode: '0755'
+
+    - name: Detect current Ubuntu version
+      command: lsb_release -cs
+      register: current_release
+      changed_when: false
+
+    - name: Show current release
+      debug:
+        msg: "Current release: {{ current_release.stdout }}"
+
+    # -------------------------------
+    # Upgrade 18.04 -> 20.04 (focal)
+    # -------------------------------
+    - name: Run focal.sh if OS is 18.04
+      shell: "bash /tmp/focal.sh"
+      async: 7200
+      poll: 0
+      register: focal_job
+      when: current_release.stdout == "bionic"
+
+    - name: Wait for focal.sh job to finish
+      async_status:
+        jid: "{{ focal_job.ansible_job_id }}"
+      register: focal_status
+      until: focal_status.finished
+      retries: 120
+      delay: 60
+      when: current_release.stdout == "bionic"
+
+    - name: Reboot after focal.sh
+      reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: current_release.stdout == "bionic"
+
+    - name: Wait for SSH after focal reboot
+      wait_for_connection:
+        delay: 10
+        timeout: "{{ reboot_wait_timeout }}"
+      when: current_release.stdout == "bionic"
+
+    - name: Detect Ubuntu version after focal upgrade
+      command: lsb_release -cs
+      register: release_after_focal
+      changed_when: false
+      when: current_release.stdout == "bionic"
+
+    - name: Show release after focal upgrade
+      debug:
+        msg: "Release after focal upgrade: {{ release_after_focal.stdout | default('') }}"
+      when: current_release.stdout == "bionic"
+
+    # -------------------------------
+    # Upgrade 20.04 -> 22.04 (jammy)
+    # -------------------------------
+    - name: Run jammy.sh if OS is 20.04
+      shell: "bash /tmp/jammy.sh"
+      async: 7200
+      poll: 0
+      register: jammy_job
+      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
+
+    - name: Wait for jammy.sh job to finish
+      async_status:
+        jid: "{{ jammy_job.ansible_job_id }}"
+      register: jammy_status
+      until: jammy_status.finished
+      retries: 120
+      delay: 60
+      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
+
+    - name: Reboot after jammy.sh
+      reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
+
+    - name: Wait for SSH after jammy reboot
+      wait_for_connection:
+        delay: 10
+        timeout: "{{ reboot_wait_timeout }}"
+      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
+
+    # -------------------------------
+    # Final OS check
+    # -------------------------------
+    - name: Detect Ubuntu version after jammy upgrade
+      command: lsb_release -cs
+      register: final_release
+      changed_when: false
+
+    - name: Show final release
+      debug:
+        msg: "Final Ubuntu release: {{ final_release.stdout }}"
