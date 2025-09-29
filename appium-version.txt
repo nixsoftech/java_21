@@ -1,48 +1,197 @@
-#!/bin/bash
-set -e
+---
+- name: Offline Ubuntu LTS upgrade 18.04 -> 20.04 -> 22.04
+  hosts: all
+  become: true
+  vars:
+    reboot_wait_timeout: 3600   # 60 minutes
+    log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
+    etc_backup: "/etc_bkp_{{ ansible_date_time.iso8601 }}"
 
-# Non-interactive flags
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
-export APT_LISTCHANGES_FRONTEND=none
+  tasks:
+    - name: Ensure log directory exists on control node
+      delegate_to: localhost
+      file:
+        path: "{{ log_dir }}"
+        state: directory
+        mode: '0755'
 
-# Redirect all output to log
-exec > /tmp/jammy_upgrade.log 2>&1
+    - name: Check if focal.sh exists on control node
+      delegate_to: localhost
+      stat:
+        path: "{{ playbook_dir }}/focal.sh"
+      register: focal_script_local
+      run_once: true
 
-echo "=== Step 0: Starting jammy upgrade ==="
+    - name: Fail if focal.sh is missing
+      delegate_to: localhost
+      fail:
+        msg: "focal.sh not found in playbook directory"
+      when: not focal_script_local.stat.exists
+      run_once: true
 
-##############################################
-# Step 2: Upgrade 20.04 (focal) -> 22.04 (jammy)
-##############################################
-echo "=== Step 1: Writing jammy repositories ==="
-cat > /etc/apt/sources.list <<EOF
-# jammy repositories (amd64)
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
+    - name: Check if jammy.sh exists on control node
+      delegate_to: localhost
+      stat:
+        path: "{{ playbook_dir }}/jammy.sh"
+      register: jammy_script_local
+      run_once: true
 
-# jammy repositories (i386)
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
+    - name: Fail if jammy.sh is missing
+      delegate_to: localhost
+      fail:
+        msg: "jammy.sh not found in playbook directory"
+      when: not jammy_script_local.stat.exists
+      run_once: true
 
-# restricted packages (amd64)
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
-EOF
+    - name: Backup /etc directory
+      command: "cp -a /etc {{ etc_backup }}"
+      register: etc_backup_result
 
-echo "=== Step 2: Updating and upgrading to jammy ==="
-apt-get update -o Acquire::Check-Valid-Until=false -yq || true
-apt-get upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
+    - name: Show backup path
+      debug:
+        msg: "Backup of /etc completed at {{ etc_backup }}"
 
-apt-get dist-upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
+    - name: Copy focal.sh to /tmp/ on target
+      copy:
+        src: focal.sh
+        dest: /tmp/focal.sh
+        mode: '0755'
 
-apt-get autoremove -yq || true
-apt-get autoclean -yq || true
+    - name: Copy jammy.sh to /tmp/ on target
+      copy:
+        src: jammy.sh
+        dest: /tmp/jammy.sh
+        mode: '0755'
 
-echo "=== Step 4: Jammy upgrade completed. Reboot can be triggered manually by Ansible. ==="
+    - name: Detect current Ubuntu version
+      command: lsb_release -cs
+      register: current_release
+      changed_when: false
+
+    - name: Show current release
+      debug:
+        msg: "Current release: {{ current_release.stdout }}"
+
+    # -------------------------------
+    # Run focal.sh if OS is 18.04
+    # -------------------------------
+    - name: Run focal.sh if OS is 18.04
+      shell: "bash /tmp/focal.sh > /tmp/focal.log 2>&1"
+      async: 7200
+      poll: 10
+      register: focal_result
+      when: current_release.stdout == "bionic"
+
+    - name: Check focal.sh execution status
+      async_status:
+        jid: "{{ focal_result.ansible_job_id }}"
+      register: focal_async_result
+      until: focal_async_result.finished
+      retries: 720  # Retry for up to 7200 seconds (matches async duration)
+      delay: 10
+      when: focal_result.ansible_job_id is defined
+
+    - name: Fail if focal.sh execution failed
+      fail:
+        msg: "focal.sh failed with return code {{ focal_async_result.rc }}. Check /tmp/focal.log for details."
+      when: >
+        focal_async_result.ansible_job_id is defined and
+        focal_async_result.rc is defined and
+        focal_async_result.rc != 0
+
+    - name: Debug focal.sh result
+      debug:
+        msg: "focal.sh result: rc={{ focal_async_result.rc | default('unknown') }}, job_id={{ focal_async_result.ansible_job_id | default('unknown') }}"
+      when: focal_result.ansible_job_id is defined
+
+    - name: Fetch focal.sh log
+      fetch:
+        src: /tmp/focal.log
+        dest: "{{ log_dir }}/focal.log"
+        flat: yes
+      when: focal_result.ansible_job_id is defined
+
+    - name: Reboot after focal.sh
+      reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: >
+        focal_async_result.ansible_job_id is defined and
+        focal_async_result.rc is defined and
+        focal_async_result.rc == 0
+
+    - name: Detect Ubuntu version after focal upgrade
+      command: lsb_release -cs
+      register: release_after_focal
+      changed_when: false
+      when: current_release.stdout == "bionic"
+
+    - name: Show release after focal upgrade
+      debug:
+        msg: "Release after focal upgrade: {{ release_after_focal.stdout | default('not checked') }}"
+      when: current_release.stdout == "bionic"
+
+    # -------------------------------
+    # Run jammy.sh if OS is 20.04
+    # -------------------------------
+    - name: Run jammy.sh if OS is 20.04
+      shell: "bash /tmp/jammy.sh > /tmp/jammy.log 2>&1"
+      async: 7200
+      poll: 10
+      register: jammy_result
+      when: >
+        current_release.stdout == "focal" or
+        (release_after_focal is defined and release_after_focal.stdout == "focal")
+
+    - name: Check jammy.sh execution status
+      async_status:
+        jid: "{{ jammy_result.ansible_job_id }}"
+      register: jammy_async_result
+      until: jammy_async_result.finished
+      retries: 720  # Retry for up to 7200 seconds (matches async duration)
+      delay: 10
+      when: jammy_result.ansible_job_id is defined
+
+    - name: Fail if jammy.sh execution failed
+      fail:
+        msg: "jammy.sh failed with return code {{ jammy_async_result.rc }}. Check /tmp/jammy.log for details."
+      when: >
+        jammy_async_result.ansible_job_id is defined and
+        jammy_async_result.rc is defined and
+        jammy_async_result.rc != 0
+
+    - name: Debug jammy.sh result
+      debug:
+        msg: "jammy.sh result: rc={{ jammy_async_result.rc | default('unknown') }}, job_id={{ jammy_async_result.ansible_job_id | default('unknown') }}"
+      when: jammy_result.ansible_job_id is defined
+
+    - name: Fetch jammy.sh log
+      fetch:
+        src: /tmp/jammy.log
+        dest: "{{ log_dir }}/jammy.log"
+        flat: yes
+      when: jammy_result.ansible_job_id is defined
+
+    - name: Restart SSH after jammy.sh
+      shell: systemctl restart ssh || systemctl restart sshd
+      register: ssh_restart_result
+      when: >
+        jammy_async_result.ansible_job_id is defined and
+        jammy_async_result.rc is defined and
+        jammy_async_result.rc == 0
+
+    - name: Reboot after jammy.sh
+      reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: >
+        jammy_async_result.ansible_job_id is defined and
+        jammy_async_result.rc is defined and
+        jammy_async_result.rc == 0
+
+    - name: Detect Ubuntu version after jammy upgrade
+      command: lsb_release -cs
+      register: final_release
+      changed_when: false
+
+    - name: Show final release
+      debug:
+        msg: "Final Ubuntu release: {{ final_release.stdout }}"
