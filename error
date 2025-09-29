@@ -1,1 +1,12 @@
+TASK [Wait for focal.sh to complete and host to come back online] ********************************************************
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (120 retries left).
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (119 retries left).
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (118 retries left).
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (117 retries left).
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (116 retries left).
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (115 retries left).
+FAILED - RETRYING: Wait for focal.sh to complete and host to come back online (114 retries left).
 fatal: [10.13.0.89]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: kex_exchange_identification: read: Connection reset by peer\r\nConnection reset by 10.13.0.89 port 22", "unreachable": true}
+
+PLAY RECAP ***************************************************************************************************************
+10.13.0.89                 : ok=8    changed=4    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0
