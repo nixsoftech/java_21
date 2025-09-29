@@ -1,12 +1,5 @@
-TASK [Show release after focal upgrade] **********************************************************************************
-ok: [10.13.0.95] => {
-    "msg": "Release after focal upgrade: focal"
-}
-
 TASK [Run jammy.sh if OS is 20.04] ***************************************************************************************
-changed: [10.13.0.95]
+fatal: [10.13.0.95]: FAILED! => {"msg": "The conditional check 'release_after_focal.stdout == \"focal\" or current_release.stdout == \"focal\"' failed. The error was: error while evaluating conditional (release_after_focal.stdout == \"focal\" or current_release.stdout == \"focal\"): 'dict object' has no attribute 'stdout'\n\nThe error appears to be in '/opt/playbook/play4.yml': line 81, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n    # -------------------------------\n    - name: Run jammy.sh if OS is 20.04\n      ^ here\n"}
 
-TASK [Restart SSH after jammy.sh] ****************************************************************************************
-changed: [10.13.0.95]
-
-TASK [Reboot after jammy.sh] ********************************************************************************************
+PLAY RECAP ***************************************************************************************************************
+10.13.0.95                 : ok=8    changed=3    unreachable=0    failed=1    skipped=5    rescued=0    ignored=0
