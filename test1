@@ -1,57 +1,105 @@
-#!/bin/bash
-set -e
+---
+- name: Offline Ubuntu LTS upgrade 18.04 -> 20.04 -> 22.04
+  hosts: all
+  become: true
+  vars:
+    reboot_wait_timeout: 3600   # 60 minutes
+    log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
+    etc_backup: "/etc_bkp_{{ ansible_date_time.iso8601 }}"
 
-# Non-interactive flags
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
-export APT_LISTCHANGES_FRONTEND=none
+  tasks:
 
-# Try removing LXD and LXD-client via apt
-echo "Attempting to remove lxd and lxd-client via apt..."
-if ! apt-get remove --purge -y lxd lxd-client; then
-    echo "apt remove failed. Forcing removal with dpkg..."
-    dpkg --remove --force-remove-reinstreq lxd || true
-    dpkg --remove --force-remove-reinstreq lxd-client || true
-fi
+    - name: Ensure log directory exists on control node
+      delegate_to: localhost
+      file:
+        path: "{{ log_dir }}"
+        state: directory
+        mode: '0755'
 
-# Clean leftover files
-rm -rf /var/lib/lxd /etc/lxd || true
-apt-get clean || true
+    - name: Backup /etc directory
+      command: "cp -a /etc {{ etc_backup }}"
+      register: etc_backup_result
 
-##############################################
-# Step 1: Upgrade 18.04 (bionic) -> 20.04 (focal)
-##############################################
-echo "=== Step 1: Writing focal repositories ==="
-cat > /etc/apt/sources.list <<EOF
-# focal repositories (amd64)
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal-updates main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal-security main universe
+    - name: Show backup path
+      debug:
+        msg: "Backup of /etc completed at {{ etc_backup }}"
 
-# focal repositories (i386)
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu focal main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu focal-updates main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu focal-security main universe
+    - name: Copy focal.sh to /tmp/ on target
+      copy:
+        src: focal.sh
+        dest: /tmp/focal.sh
+        mode: '0755'
 
-# restricted packages (amd64)
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal-updates restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal-security restricted
-EOF
+    - name: Copy jammy.sh to /tmp/ on target
+      copy:
+        src: jammy.sh
+        dest: /tmp/jammy.sh
+        mode: '0755'
 
-echo "=== Step 2: Updating and upgrading to focal ==="
-apt-get update -o Acquire::Check-Valid-Until=false -yq || true
-apt-get upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
+    - name: Detect current Ubuntu version
+      command: lsb_release -cs
+      register: current_release
+      changed_when: false
 
-apt-get dist-upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
+    - name: Show current release
+      debug:
+        msg: "Current release: {{ current_release.stdout }}"
 
-apt-get autoremove -yq || true
-apt-get autoclean -yq || true
+    # -------------------------------
+    # Run focal.sh if OS is 18.04
+    # -------------------------------
+    - name: Run focal.sh if OS is 18.04
+      shell: "bash /tmp/focal.sh > /tmp/focal.log 2>&1"
+      async: 7200
+      poll: 10
+      register: focal_result
+      when: current_release.stdout == "bionic"
 
-echo "=== Step 3: Rebooting system ==="
-sleep 10
-reboot
+    - name: Restart SSH after focal.sh
+      shell: systemctl restart ssh || systemctl restart sshd
+      ignore_errors: yes
+      when: current_release.stdout == "bionic"
+
+    - name: Reboot after focal.sh
+      reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: current_release.stdout == "bionic"
+
+    - name: Detect Ubuntu version after focal upgrade
+      command: lsb_release -cs
+      register: release_after_focal
+      when: current_release.stdout == "bionic"
+
+    - name: Show release after focal upgrade
+      debug:
+        msg: "Release after focal upgrade: {{ release_after_focal.stdout }}"
+      when: current_release.stdout == "bionic"
+
+    # -------------------------------
+    # Run jammy.sh if OS is 20.04
+    # -------------------------------
+    - name: Run jammy.sh if OS is 20.04
+      shell: "bash /tmp/jammy.sh > /tmp/jammy.log 2>&1"
+      async: 7200
+      poll: 10
+      register: jammy_result
+      when: release_after_focal.stdout == "focal" or current_release.stdout == "focal"
+
+    - name: Restart SSH after jammy.sh
+      shell: systemctl restart ssh || systemctl restart sshd
+      ignore_errors: yes
+      when: release_after_focal.stdout == "focal" or current_release.stdout == "focal"
+
+    - name: Reboot after jammy.sh
+      reboot:
+        reboot_timeout: "{{ reboot_wait_timeout }}"
+      when: release_after_focal.stdout == "focal" or current_release.stdout == "focal"
+
+    - name: Detect Ubuntu version after jammy upgrade
+      command: lsb_release -cs
+      register: final_release
+      changed_when: false
+
+    - name: Show final release
+      debug:
+        msg: "Final Ubuntu release: {{ final_release.stdout }}"
