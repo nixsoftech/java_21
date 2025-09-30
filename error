@@ -1,1 +1,50 @@
-when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
+ansible-playbook -i 10.13.0.95, play5.yml --ask-become-pass
+BECOME password:
+
+PLAY [Offline Ubuntu LTS upgrade 18.04 -> 20.04 -> 22.04] ****************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************
+ok: [10.13.0.95]
+
+TASK [Ensure log directory exists on control node] ***********************************************************************
+ok: [10.13.0.95]
+
+TASK [Backup /etc directory] *********************************************************************************************
+changed: [10.13.0.95]
+
+TASK [Show backup path] **************************************************************************************************
+ok: [10.13.0.95] => {
+    "msg": "Backup of /etc completed at /etc_bkp_2025-09-30T10:36:19Z"
+}
+
+TASK [Copy focal.sh to /tmp/ on target] **********************************************************************************
+changed: [10.13.0.95]
+
+TASK [Copy jammy.sh to /tmp/ on target] **********************************************************************************
+changed: [10.13.0.95]
+
+TASK [Detect current Ubuntu version] *************************************************************************************
+ok: [10.13.0.95]
+
+TASK [Show current release] **********************************************************************************************
+ok: [10.13.0.95] => {
+    "msg": "Current release: bionic"
+}
+
+TASK [Run focal.sh if OS is 18.04] ***************************************************************************************
+changed: [10.13.0.95]
+
+TASK [Wait for SSH to return after focal upgrade start] ******************************************************************
+ok: [10.13.0.95]
+
+TASK [Wait for focal.sh upgrade to finish] *******************************************************************************
+FAILED - RETRYING: Wait for focal.sh upgrade to finish (120 retries left).
+FAILED - RETRYING: Wait for focal.sh upgrade to finish (119 retries left).
+FAILED - RETRYING: Wait for focal.sh upgrade to finish (118 retries left).
+FAILED - RETRYING: Wait for focal.sh upgrade to finish (117 retries left).
+FAILED - RETRYING: Wait for focal.sh upgrade to finish (116 retries left).
+FAILED - RETRYING: Wait for focal.sh upgrade to finish (115 retries left).
+fatal: [10.13.0.95]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: kex_exchange_identification: read: Connection reset by peer\r\nConnection reset by 10.13.0.95 port 22", "unreachable": true}
+
+PLAY RECAP ***************************************************************************************************************
+10.13.0.95                 : ok=10   changed=4    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0
