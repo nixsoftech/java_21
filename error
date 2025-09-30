@@ -1,1 +1,1 @@
-/etc/apt/apt.conf.d/50appstream.disabled
+when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
