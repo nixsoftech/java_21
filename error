@@ -1,3 +1,12 @@
-apt-get full-upgrade -yq -t jammy -o APT::Architectures="amd64" \
-    -o Dpkg::Options::="--force-confdef" \
-    -o Dpkg::Options::="--force-confold"
+# Stop any running apt processes
+sudo fuser -vki /var/lib/dpkg/lock
+
+# Remove all old lists
+sudo rm -rf /var/lib/apt/lists/*
+
+# Clean apt cache
+sudo apt-get clean
+sudo apt-get autoclean
+
+# Update from Jammy repo
+sudo apt-get update -o Acquire::Check-Valid-Until=false
