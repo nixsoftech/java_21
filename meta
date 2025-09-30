@@ -56,6 +56,12 @@
       ignore_errors: yes
       when: current_release.stdout == "bionic"
 
+    - name: Wait for SSH to return after focal upgrade start
+      wait_for_connection:
+        delay: 30
+        timeout: "{{ reboot_wait_timeout }}"
+      when: current_release.stdout == "bionic"
+
     - name: Wait for focal.sh upgrade to finish
       shell: pgrep -f focal.sh
       register: focal_running
@@ -63,12 +69,6 @@
       delay: 60
       until: focal_running.rc != 0
       ignore_errors: yes
-      when: current_release.stdout == "bionic"
-
-    - name: Wait for SSH after focal upgrade
-      wait_for_connection:
-        delay: 30
-        timeout: "{{ reboot_wait_timeout }}"
       when: current_release.stdout == "bionic"
 
     # -------------------------------
@@ -85,6 +85,12 @@
       ignore_errors: yes
       when: (release_after_focal.stdout | default(current_release.stdout)) == "focal"
 
+    - name: Wait for SSH to return after jammy upgrade start
+      wait_for_connection:
+        delay: 30
+        timeout: "{{ reboot_wait_timeout }}"
+      when: (release_after_focal.stdout | default(current_release.stdout)) == "focal"
+
     - name: Wait for jammy.sh upgrade to finish
       shell: pgrep -f jammy.sh
       register: jammy_running
@@ -92,12 +98,6 @@
       delay: 60
       until: jammy_running.rc != 0
       ignore_errors: yes
-      when: (release_after_focal.stdout | default(current_release.stdout)) == "focal"
-
-    - name: Wait for SSH after jammy upgrade
-      wait_for_connection:
-        delay: 30
-        timeout: "{{ reboot_wait_timeout }}"
       when: (release_after_focal.stdout | default(current_release.stdout)) == "focal"
 
     # -------------------------------
