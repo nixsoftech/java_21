@@ -1,4 +1,30 @@
 curl -I http://10.13.0.88:8080/ubuntu/dists/jammy/Release
-curl -I http://10.13.0.90/ubuntu/ubuntu/dists/jammy/Release
+HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Tue, 30 Sep 2025 07:00:44 GMT
+Content-Type: application/octet-stream
+Content-Length: 269219
+Last-Modified: Thu, 21 Apr 2022 17:16:39 GMT
+Connection: keep-alive
+ETag: "62619177-41ba3"
+Accept-Ranges: bytes
 
-curl -I http://10.13.0.88:8080/ubuntu/dists/focal/Release
+root@WS000:/var/lib/apt/lists/partial# curl -I http://10.13.0.90/ubuntu/ubuntu/dists/jammy/Release
+HTTP/1.1 200 OK
+Date: Tue, 30 Sep 2025 07:05:06 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Last-Modified: Thu, 21 Apr 2022 17:16:39 GMT
+ETag: "41ba3-5dd2d45de0bc0"
+Accept-Ranges: bytes
+Content-Length: 269219
+
+root@WS000:/var/lib/apt/lists/partial# curl -I http://10.13.0.88:8080/ubuntu/dists/focal/Release
+HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Tue, 30 Sep 2025 07:01:25 GMT
+Content-Type: application/octet-stream
+Content-Length: 263289
+Last-Modified: Thu, 23 Apr 2020 17:34:17 GMT
+Connection: keep-alive
+ETag: "5ea1d199-40479"
+Accept-Ranges: bytes
