@@ -1,7 +1,22 @@
+TASK [Wait for jammy upgrade to complete (poll log)] *********************************************************************
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (200 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (199 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (198 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (197 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (196 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (195 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete (poll log) (194 retries left).
 fatal: [10.13.0.95]: FAILED! => {"msg": "Timeout (12s) waiting for privilege escalation prompt: \r\n"}
 ...ignoring
 
 TASK [Wait for SSH after jammy upgrade] **********************************************************************************
 ok: [10.13.0.95]
 
-TASK [Reboot after jammy upgrade] ******
+TASK [Reboot after jammy upgrade] ****************************************************************************************
+changed: [10.13.0.95]
+
+TASK [Verify OS version after jammy upgrade] *****************************************************************************
+ok: [10.13.0.95]
+
+PLAY RECAP ***************************************************************************************************************
+10.13.0.95                 : ok=11   changed=3    unreachable=0    failed=0    skipped=5    rescued=0    ignored=1
