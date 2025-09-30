@@ -1,12 +1,7 @@
-# Stop any running apt processes
-sudo fuser -vki /var/lib/dpkg/lock
-
-# Remove all old lists
-sudo rm -rf /var/lib/apt/lists/*
-
-# Clean apt cache
-sudo apt-get clean
-sudo apt-get autoclean
-
-# Update from Jammy repo
-sudo apt-get update -o Acquire::Check-Valid-Until=false
+ apt-cache policy base-files
+base-files:
+  Installed: 11ubuntu5.8
+  Candidate: 11ubuntu5.8
+  Version table:
+ *** 11ubuntu5.8 100
+        100 /var/lib/dpkg/status
