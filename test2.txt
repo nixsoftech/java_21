@@ -1,45 +1,16 @@
-#!/bin/bash
-set -e
+ ansible-playbook -i 10.13.0.95, play9.yml --check --ask-become-pass
+BECOME password:
 
-# Non-interactive flags
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
-export APT_LISTCHANGES_FRONTEND=none
+PLAY [Offline Ubuntu LTS Upgrade 18.04 -> 20.04 -> 22.04] ****************************************************************
 
-##############################################
-# Step 2: Upgrade 20.04 (focal) -> 22.04 (jammy)
-##############################################
-echo "=== Step 1: Writing jammy repositories ==="
-cat > /etc/apt/sources.list <<EOF
-# jammy repositories (amd64)
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
+TASK [Gathering Facts] ***************************************************************************************************
+ok: [10.13.0.95]
 
-# jammy repositories (i386)
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
+TASK [Detect current Ubuntu version] *************************************************************************************
+skipping: [10.13.0.95]
 
-# restricted packages (amd64)
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
-EOF
+TASK [Show current release] **********************************************************************************************
+fatal: [10.13.0.95]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'dict object' has no attribute 'stdout'\n\nThe error appears to be in '/opt/playbook/play9.yml': line 20, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n    - name: Show current release\n      ^ here\n"}
 
-echo "=== Step 2: Updating and upgrading to jammy ==="
-apt-get update -o Acquire::Check-Valid-Until=false -yq || true
-apt-get upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
-
-apt-get dist-upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
-
-apt-get autoremove -yq || true
-apt-get autoclean -yq || true
-
-echo "=== Step 3: Rebooting system ==="
-sleep 10
-reboot
+PLAY RECAP ***************************************************************************************************************
+10.13.0.95                 : ok=1    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0
