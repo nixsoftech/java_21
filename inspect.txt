@@ -1,19 +1,31 @@
 #!/bin/bash
 set -e
 
+# -----------------------------
+# Offline Jammy Upgrade Script
+# -----------------------------
+
 # Non-interactive flags
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_MODE=a
 export APT_LISTCHANGES_FRONTEND=none
 
-# Clean any previous package cache
-apt-get clean || true
-rm -rf /var/lib/apt/lists/* || true
+echo "=== Step 0: Backup current sources.list ==="
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
 
-##############################################
-# Step 1: Configure Jammy repositories
-##############################################
-echo "=== Step 1: Writing Jammy repositories ==="
+echo "=== Step 1: Disable AppStream and Snap hooks ==="
+[ -f /etc/apt/apt.conf.d/50appstream ] && mv /etc/apt/apt.conf.d/50appstream /etc/apt/apt.conf.d/50appstream.disabled
+[ -f /etc/apt/apt.conf.d/20snapd.conf ] && mv /etc/apt/apt.conf.d/20snapd.conf /etc/apt/apt.conf.d/20snapd.conf.disabled
+
+echo "=== Step 2: Hold snap-related packages ==="
+apt-mark hold snapd firefox
+
+echo "=== Step 3: Clean old package lists and cache ==="
+rm -rf /var/lib/apt/lists/*
+apt-get clean
+apt-get autoclean
+
+echo "=== Step 4: Configure Jammy repositories ==="
 cat > /etc/apt/sources.list <<EOF
 # jammy repositories (amd64)
 deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
@@ -31,31 +43,20 @@ deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
 deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
 EOF
 
-##############################################
-# Step 2: Update package lists
-##############################################
-echo "=== Step 2: Updating package lists ==="
+echo "=== Step 5: Update package lists from local repo ==="
 apt-get update -o Acquire::Check-Valid-Until=false -yq || true
 
-##############################################
-# Step 3: Install release upgrader core (optional, for completeness)
-##############################################
-echo "=== Step 3: Installing release upgrader core ==="
-apt-get install -y ubuntu-release-upgrader-core || true
-
-##############################################
-# Step 4: Perform full upgrade
-##############################################
-echo "=== Step 4: Performing full upgrade to Jammy ==="
-apt-get full-upgrade -yq \
+echo "=== Step 6: Upgrade packages ==="
+apt-get upgrade -yq \
   -o Dpkg::Options::="--force-confdef" \
   -o Dpkg::Options::="--force-confold"
 
-##############################################
-# Step 5: Cleanup
-##############################################
-echo "=== Step 5: Autoremove and autoclean ==="
-apt-get autoremove -yq || true
-apt-get autoclean -yq || true
+apt-get dist-upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
 
-echo "=== Jammy upgrade completed successfully ==="
+echo "=== Step 7: Clean up after upgrade ==="
+apt-get autoremove -yq
+apt-get autoclean -yq
+
+echo "=== Jammy offline upgrade completed successfully ==="
