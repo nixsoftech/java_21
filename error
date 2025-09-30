@@ -1,121 +1,37 @@
----
-- name: Offline Ubuntu LTS Upgrade 18.04 -> 20.04 -> 22.04
-  hosts: all
-  become: yes
-  vars:
-    focal_log: /tmp/focal.log
-    jammy_log: /tmp/jammy.log
-    reboot_wait_timeout: 3600  # 1 hour
-    script_execution_timeout: 14400  # 4 hours
-    focal_script: /tmp/focal.sh
-    jammy_script: /tmp/jammy.sh
+ansible-playbook -i 10.13.0.95, play9.yml --ask-become-pass
+BECOME password:
 
-  tasks:
+PLAY [Offline Ubuntu LTS Upgrade 18.04 -> 20.04 -> 22.04] ****************************************************************
 
-    - name: Detect current Ubuntu version
-      command: lsb_release -cs
-      register: current_release
-      changed_when: false
+TASK [Gathering Facts] ***************************************************************************************************
+ok: [10.13.0.95]
 
-    - name: Show current release
-      debug:
-        msg: "Current release: {{ current_release.stdout }}"
+TASK [Detect current Ubuntu version] *************************************************************************************
+ok: [10.13.0.95]
 
-    - name: Copy focal.sh to /tmp
-      copy:
-        src: focal.sh
-        dest: "{{ focal_script }}"
-        mode: '0755'
+TASK [Show current release] **********************************************************************************************
+ok: [10.13.0.95] => {
+    "msg": "Current release: bionic"
+}
 
-    - name: Copy jammy.sh to /tmp
-      copy:
-        src: jammy.sh
-        dest: "{{ jammy_script }}"
-        mode: '0755'
+TASK [Copy focal.sh to /tmp] *********************************************************************************************
+changed: [10.13.0.95]
 
-    # -------------------------------
-    # Upgrade 18.04 -> 20.04 (focal)
-    # -------------------------------
-    - name: Run focal.sh if OS is 18.04
-      shell: "nohup bash {{ focal_script }} > {{ focal_log }} 2>&1 &"
-      async: 0
-      poll: 0
-      ignore_errors: yes
-      when: current_release.stdout == "bionic"
+TASK [Copy jammy.sh to /tmp] *********************************************************************************************
+changed: [10.13.0.95]
 
-    - name: Wait for focal upgrade to complete and SSH to return
-      shell: |
-        grep -q "UPGRADE_COMPLETE" {{ focal_log }} &&
-        ssh -o ConnectTimeout=5 -o BatchMode=yes 10.13.0.95 "true"
-      register: focal_done
-      retries: 120
-      delay: 60
-      until: focal_done.rc == 0
-      ignore_errors: yes
-      when: current_release.stdout == "bionic"
+TASK [Run focal.sh if OS is 18.04] ***************************************************************************************
+changed: [10.13.0.95]
 
-    - name: Reboot after focal upgrade
-      reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: current_release.stdout == "bionic"
+TASK [Wait for focal upgrade to complete and SSH to return] **************************************************************
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (120 retries left).
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (119 retries left).
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (118 retries left).
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (117 retries left).
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (116 retries left).
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (115 retries left).
+FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (114 retries left).
+fatal: [10.13.0.95]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: muxclient: master hello exchange failed\r\nkex_exchange_identification: read: Connection reset by peer\r\nConnection reset by 10.13.0.95 port 22", "unreachable": true}
 
-    - name: Wait for SSH after focal reboot
-      wait_for_connection:
-        delay: 10
-        timeout: "{{ reboot_wait_timeout }}"
-      when: current_release.stdout == "bionic"
-
-    - name: Detect Ubuntu version after focal upgrade
-      command: lsb_release -cs
-      register: release_after_focal
-      changed_when: false
-      when: current_release.stdout == "bionic"
-
-    - name: Show release after focal upgrade
-      debug:
-        msg: "Release after focal upgrade: {{ release_after_focal.stdout | default('') }}"
-      when: current_release.stdout == "bionic"
-
-    # -------------------------------
-    # Upgrade 20.04 -> 22.04 (jammy)
-    # -------------------------------
-    - name: Run jammy.sh if OS is 20.04
-      shell: "nohup bash {{ jammy_script }} > {{ jammy_log }} 2>&1 &"
-      async: 0
-      poll: 0
-      ignore_errors: yes
-      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
-
-    - name: Wait for jammy upgrade to complete and SSH to return
-      shell: |
-        grep -q "UPGRADE_COMPLETE" {{ jammy_log }} &&
-        ssh -o ConnectTimeout=5 -o BatchMode=yes 10.13.0.95 "true"
-      register: jammy_done
-      retries: 120
-      delay: 60
-      until: jammy_done.rc == 0
-      ignore_errors: yes
-      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
-
-    - name: Reboot after jammy upgrade
-      reboot:
-        reboot_timeout: "{{ reboot_wait_timeout }}"
-      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
-
-    - name: Wait for SSH after jammy reboot
-      wait_for_connection:
-        delay: 10
-        timeout: "{{ reboot_wait_timeout }}"
-      when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
-
-    # -------------------------------
-    # Final OS check
-    # -------------------------------
-    - name: Detect Ubuntu version after jammy upgrade
-      command: lsb_release -cs
-      register: final_release
-      changed_when: false
-
-    - name: Show final release
-      debug:
-        msg: "Final Ubuntu release: {{ final_release.stdout }}"
+PLAY RECAP ***************************************************************************************************************
+10.13.0.95                 : ok=6    changed=3    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0
