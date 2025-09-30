@@ -1,8 +1,1 @@
-Setting up snapd (2.68.5+ubuntu22.04.1) ...
-snapd.failure.service is a disabled or a static unit not running, not starting it.
-snapd.snap-repair.service is a disabled or a static unit not running, not starting it.
-(Reading database ... 201364 files and directories currently installed.)
-Preparing to unpack .../00-firefox_1%3a1snap1-0ubuntu2_amd64.deb ...
-=> Installing the firefox snap
-==> Checking connectivity with the snap store
-===> Unable to contact the store, trying every minute for the next 30 minutes
+/etc/apt/apt.conf.d/50appstream.disabled
