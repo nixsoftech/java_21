@@ -1,45 +1,23 @@
-cat jammy.sh
-#!/bin/bash
-set -e
+TASK [Run jammy.sh if OS is 20.04] ***************************************************************************************
+changed: [10.13.0.95]
 
-# Non-interactive flags
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
-export APT_LISTCHANGES_FRONTEND=none
+TASK [Wait for jammy upgrade to complete and SSH to return] **************************************************************
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (120 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (119 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (118 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (117 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (116 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (115 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (114 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (113 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (112 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (111 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (110 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (109 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (108 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (107 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to complete and SSH to return (106 retries left).
+fatal: [10.13.0.95]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: muxclient: master hello exchange failed\r\nssh: connect to host 10.13.0.95 port 22: Connection timed out", "unreachable": true}
 
-##############################################
-# Step 2: Upgrade 20.04 (focal) -> 22.04 (jammy)
-##############################################
-echo "=== Step 1: Writing jammy repositories ==="
-cat > /etc/apt/sources.list <<EOF
-# jammy repositories (amd64)
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
-deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
-
-# jammy repositories (i386)
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
-deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
-
-# restricted packages (amd64)
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
-deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
-EOF
-
-echo "=== Step 2: Updating and upgrading to jammy ==="
-apt-get update -o Acquire::Check-Valid-Until=false -yq || true
-apt-get upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
-
-apt-get dist-upgrade -yq \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold"
-
-apt-get autoremove -yq || true
-apt-get autoclean -yq || true
-
-echo "=== Step 3: Restarting SSH service ==="
-systemctl restart ssh || systemctl restart sshd || true
+PLAY RECAP ***************************************************************************************************************
+10.13.0.95                 : ok=6    changed=3    unreachable=1    failed=0    skipped=6    rescued=0    ignored=0
