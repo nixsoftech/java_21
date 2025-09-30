@@ -60,29 +60,18 @@
       poll: 0
       when: current_release.stdout == "bionic"
 
-    - name: Monitor focal upgrade until completion
-      block:
-        - name: Check if focal.sh is still running
-          shell: pgrep -f focal.sh
-          register: focal_running
-          ignore_errors: yes
-          when: current_release.stdout == "bionic"
-
-        - name: Wait for SSH to return (if reboot happened)
-          wait_for_connection:
-            delay: 30
-            timeout: 120
-          register: ssh_status
-          ignore_errors: yes
-          when: current_release.stdout == "bionic"
-
-        - name: Decide if focal upgrade is done
-          set_fact:
-            focal_done: "{{ (focal_running.rc != 0) and (ssh_status is defined and ssh_status is succeeded) }}"
-          when: current_release.stdout == "bionic"
+    - name: Wait for focal upgrade to finish and SSH to return
+      shell: |
+        if ! pgrep -f focal.sh > /dev/null; then
+          exit 0
+        else
+          exit 1
+        fi
+      register: focal_check
       retries: 120
       delay: 60
-      until: focal_done | default(false)
+      until: focal_check.rc == 0
+      ignore_errors: yes
       when: current_release.stdout == "bionic"
 
     - name: Reboot the server after focal upgrade
@@ -119,29 +108,18 @@
       poll: 0
       when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
 
-    - name: Monitor jammy upgrade until completion
-      block:
-        - name: Check if jammy.sh is still running
-          shell: pgrep -f jammy.sh
-          register: jammy_running
-          ignore_errors: yes
-          when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
-
-        - name: Wait for SSH to return (if reboot happened)
-          wait_for_connection:
-            delay: 30
-            timeout: 120
-          register: ssh_status
-          ignore_errors: yes
-          when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
-
-        - name: Decide if jammy upgrade is done
-          set_fact:
-            jammy_done: "{{ (jammy_running.rc != 0) and (ssh_status is defined and ssh_status is succeeded) }}"
-          when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
+    - name: Wait for jammy upgrade to finish and SSH to return
+      shell: |
+        if ! pgrep -f jammy.sh > /dev/null; then
+          exit 0
+        else
+          exit 1
+        fi
+      register: jammy_check
       retries: 120
       delay: 60
-      until: jammy_done | default(false)
+      until: jammy_check.rc == 0
+      ignore_errors: yes
       when: (release_after_focal.stdout | default('')) == "focal" or current_release.stdout == "focal"
 
     - name: Reboot the server after jammy upgrade
