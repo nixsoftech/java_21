@@ -1,15 +1,2 @@
-TASK [Run focal.sh if OS is 18.04] ***************************************************************************************
-changed: [10.13.0.95]
-
-TASK [Wait for focal upgrade to complete and SSH to return] **************************************************************
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (120 retries left).
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (119 retries left).
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (118 retries left).
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (117 retries left).
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (116 retries left).
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (115 retries left).
-FAILED - RETRYING: Wait for focal upgrade to complete and SSH to return (114 retries left).
-fatal: [10.13.0.95]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: muxclient: master hello exchange failed\r\nkex_exchange_identification: read: Connection reset by peer\r\nConnection reset by 10.13.0.95 port 22", "unreachable": true}
-
-PLAY RECAP ***************************************************************************************************************
-10.13.0.95                 : ok=6    changed=3    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0
+[ssh_connection]
+ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o ServerAliveInterval=10 -o ServerAliveCountMax=180
