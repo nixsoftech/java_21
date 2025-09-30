@@ -1,13 +1,18 @@
-ansible-playbook -i 10.13.0.95, play6.yml --ask-become-pass
-BECOME password:
-ERROR! 'retries' is not a valid attribute for a Block
+TASK [Run jammy.sh if OS is 20.04] ***************************************************************************************
+changed: [10.13.0.95]
 
-The error appears to be in '/opt/playbook/play6.yml': line 63, column 7, but may
-be elsewhere in the file depending on the exact syntax problem.
+TASK [Wait for jammy upgrade to finish and SSH to return] ****************************************************************
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (120 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (119 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (118 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (117 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (116 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (115 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (114 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (113 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (112 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (111 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (110 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (109 retries left).
+FAILED - RETRYING: Wait for jammy upgrade to finish and SSH to return (108 retries left).
 
-The offending line appears to be:
-
-
-    - name: Monitor focal upgrade until completion
-      ^ here
-root@ubuntucentralpatch:/opt/playbook#
