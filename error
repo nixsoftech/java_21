@@ -1,7 +1,4 @@
- apt-cache policy base-files
-base-files:
-  Installed: 11ubuntu5.8
-  Candidate: 11ubuntu5.8
-  Version table:
- *** 11ubuntu5.8 100
-        100 /var/lib/dpkg/status
+curl -I http://10.13.0.88:8080/ubuntu/dists/jammy/Release
+curl -I http://10.13.0.90/ubuntu/ubuntu/dists/jammy/Release
+
+curl -I http://10.13.0.88:8080/ubuntu/dists/focal/Release
