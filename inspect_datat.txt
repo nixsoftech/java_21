@@ -1,227 +1,97 @@
-- name: Upgrade Ubuntu 18.04 to 22.04 with private repository (with logging)
-  hosts: all
-  become: true
-  vars:
-    reboot_wait_timeout: 1800
-    script_execution_timeout: 14400
-    existing_repo_url: "http://10.13.0.88:8080/ubuntu"
-    repo_url: "http://10.13.0.90/ubuntu/ubuntu"
-    ubuntu_version: "bionic"
-    log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
-    repo_content: |
-      # Private Repository for Ubuntu {{ ubuntu_version }}
-      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }} main universe
-      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-updates main universe
-      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-security main universe
-      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }} restricted
-      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-updates restricted
-      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-security restricted
-      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }} main universe
-      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-updates main universe
-      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-security main universe
-
-  tasks:
-    - name: Ensure log directory exists on control node
-      delegate_to: localhost
-      ansible.builtin.file:
-        path: "{{ log_dir }}"
-        state: directory
-        mode: '0755'
-
-    - name: Replace /etc/apt/sources.list with new repositories for bionic
-      ansible.builtin.copy:
-        dest: /etc/apt/sources.list
-        content: "{{ repo_content }}"
-        owner: root
-        group: root
-        mode: '0644'
-        backup: true
-
-    - name: Update apt cache (bionic)
-      ansible.builtin.shell: "apt-get update -yq || true"
-      register: apt_update_bionic
-      ignore_errors: true
-
-    - name: Save and fetch apt update log (bionic)
-      block:
-        - ansible.builtin.copy:
-            dest: /var/log/apt-update-bionic.log
-            content: "{{ apt_update_bionic.stdout }}\n{{ apt_update_bionic.stderr }}"
-            mode: '0644'
-        - ansible.builtin.fetch:
-            src: /var/log/apt-update-bionic.log
-            dest: "{{ log_dir }}/apt-update-bionic.log"
-            flat: true
-
-    - name: Remove lxd package
-      ansible.builtin.apt:
-        name: lxd
-        state: absent
-        purge: true
-
-    - name: Phase 1: Upgrade from 18.04 to 20.04
-      block:
-        - name: Copy auto-upgrade1.sh script
-          ansible.builtin.copy:
-            dest: /tmp/auto-upgrade1.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -yq || true
-              apt-get upgrade -yq
-              apt-get dist-upgrade -yq
-              apt-get autoremove -yq
-              apt-get install -yq update-manager-core
-
-        - name: Run auto-upgrade1.sh
-          ansible.builtin.shell: /tmp/auto-upgrade1.sh > /var/log/auto-upgrade1.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 10
-          register: auto_upgrade1_result
-          ignore_errors: true
-
-        - name: Fetch auto-upgrade1 log
-          ansible.builtin.fetch:
-            src: /var/log/auto-upgrade1.log
-            dest: "{{ log_dir }}/auto-upgrade1.log"
-            flat: true
-
-        - name: Copy and run do-release1.sh
-          ansible.builtin.copy:
-            dest: /tmp/do-release1.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-              apt-get autoremove -yq
-              apt-get clean
-              systemctl restart sshd
-
-        - name: Run do-release1.sh
-          ansible.builtin.shell: /tmp/do-release1.sh > /var/log/do-release1.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 10
-          register: do_release1_result
-          ignore_errors: true
-
-        - name: Fetch do-release1 log
-          ansible.builtin.fetch:
-            src: /var/log/do-release1.log
-            dest: "{{ log_dir }}/do-release1.log"
-            flat: true
-      rescue:
-        - name: Fetch journal logs on failure (phase 1)
-          ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase1-failure.log
-        - name: Fetch failure log
-          ansible.builtin.fetch:
-            src: /var/log/upgrade-phase1-failure.log
-            dest: "{{ log_dir }}/upgrade-phase1-failure.log"
-            flat: true
-        - name: Fail with message
-          ansible.builtin.fail:
-            msg: "Phase 1 upgrade failed, check logs in {{ log_dir }}"
-
-    - name: Replace sources.list for focal
-      ansible.builtin.copy:
-        dest: /etc/apt/sources.list
-        content: "{{ repo_content | replace(ubuntu_version, 'focal') }}"
-        mode: '0644'
-        backup: true
-
-    - name: Update apt cache (focal)
-      ansible.builtin.shell: "apt-get update -yq || true"
-      register: apt_update_focal
-      ignore_errors: true
-
-    - name: Save and fetch apt update log (focal)
-      block:
-        - ansible.builtin.copy:
-            dest: /var/log/apt-update-focal.log
-            content: "{{ apt_update_focal.stdout }}\n{{ apt_update_focal.stderr }}"
-            mode: '0644'
-        - ansible.builtin.fetch:
-            src: /var/log/apt-update-focal.log
-            dest: "{{ log_dir }}/apt-update-focal.log"
-            flat: true
-
-    - name: Phase 2: Upgrade from 20.04 to 22.04
-      block:
-        - name: Copy auto-upgrade2.sh script
-          ansible.builtin.copy:
-            dest: /tmp/auto-upgrade2.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -yq || true
-              apt-get upgrade -yq
-              apt-get dist-upgrade -yq
-              apt-get autoremove -yq
-              apt-get install -yq update-manager-core
-
-        - name: Run auto-upgrade2.sh
-          ansible.builtin.shell: /tmp/auto-upgrade2.sh > /var/log/auto-upgrade2.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 10
-          register: auto_upgrade2_result
-          ignore_errors: true
-
-        - name: Fetch auto-upgrade2 log
-          ansible.builtin.fetch:
-            src: /var/log/auto-upgrade2.log
-            dest: "{{ log_dir }}/auto-upgrade2.log"
-            flat: true
-
-        - name: Replace sources.list for jammy
-          ansible.builtin.copy:
-            dest: /etc/apt/sources.list
-            content: "{{ repo_content | replace(ubuntu_version, 'jammy') }}"
-            mode: '0644'
-            backup: true
-
-        - name: Copy and run do-release2.sh
-          ansible.builtin.copy:
-            dest: /tmp/do-release2.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              yes '' | sudo do-release-upgrade -f DistUpgradeViewNonInteractive
-              apt-get autoremove -yq
-              apt-get clean
-              systemctl restart sshd
-
-        - name: Run do-release2.sh
-          ansible.builtin.shell: /tmp/do-release2.sh > /var/log/do-release2.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 10
-          register: do_release2_result
-          ignore_errors: true
-
-        - name: Fetch do-release2 log
-          ansible.builtin.fetch:
-            src: /var/log/do-release2.log
-            dest: "{{ log_dir }}/do-release2.log"
-            flat: true
-      rescue:
-        - name: Fetch journal logs on failure (phase 2)
-          ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase2-failure.log
-        - name: Fetch failure log
-          ansible.builtin.fetch:
-            src: /var/log/upgrade-phase2-failure.log
-            dest: "{{ log_dir }}/upgrade-phase2-failure.log"
-            flat: true
-        - name: Fail with message
-          ansible.builtin.fail:
-            msg: "Phase 2 upgrade failed, check logs in {{ log_dir }}"
-
-    - name: Check final OS release
-      ansible.builtin.command: lsb_release -a
-      register: os_release
-      changed_when: false
-
-    - name: Print OS release information
-      ansible.builtin.debug:
-        msg: "{{ os_release.stdout_lines }}"
+root@WS000:/opt# cd /var/lib/apt/lists/
+root@WS000:/var/lib/apt/lists# ls -ltr
+total 1948
+-rw-r--r-- 1 root root 1956043 Sep 29 21:07 packages.microsoft.com_ubuntu_18.04_prod_dists_bionic_main_binary-amd64_Packages
+-rw-r--r-- 1 root root   12332 Sep 29 21:07 packages.microsoft.com_ubuntu_18.04_prod_dists_bionic_main_binary-all_Packages
+-rw-r--r-- 1 root root    3638 Sep 29 21:11 packages.microsoft.com_ubuntu_18.04_prod_dists_bionic_InRelease
+-rw-r----- 1 root root       0 Sep 30 12:03 lock
+drwxr-xr-x 2 _apt root    4096 Sep 30 12:03 auxfiles
+drwx------ 2 _apt root   12288 Sep 30 12:03 partial
+root@WS000:/var/lib/apt/lists# cd partial/
+root@WS000:/var/lib/apt/lists/partial# ls -ltr
+total 151928
+-rw-r--r-- 1 root root      488 Apr  1  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_restricted_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root    30288 Apr 19  2022 10.13.0.88:8080_ubuntu_dists_jammy_main_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root   286056 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root   147682 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_main_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    99980 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_main_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   147682 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_main_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    99980 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_main_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   422856 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_main_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root  3447322 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_universe_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root  3447322 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root  7608831 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_universe_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root  7608831 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root  3559468 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root  5651580 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_universe_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  7474244 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_universe_binary-i386_Packages.xz
+-rw-r--r-- 1 root root    18580 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_restricted_i18n_Translation-en.xz
+-rw-r--r-- 1 root root   129256 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_restricted_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   510368 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_main_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  1040312 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_main_binary-i386_Packages.xz
+-rw-r--r-- 1 root root   270087 Apr 21  2022 10.13.0.90_ubuntu_ubuntu_dists_jammy_InRelease
+-rw-r--r-- 1 root root  5651580 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_i18n_Translation-en.xz
+-rw-r--r-- 1 root root 14090084 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root 64332414 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_universe_binary-amd64_Packages
+-rw-r--r-- 1 root root   510368 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_main_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  1394768 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_main_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   270087 Apr 21  2022 10.13.0.88:8080_ubuntu_dists_jammy_InRelease
+-rw-r--r-- 1 root root    22088 Sep  4 14:07 10.13.0.88:8080_ubuntu_dists_jammy-security_universe_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root    29520 Sep  4 20:15 10.13.0.88:8080_ubuntu_dists_jammy-updates_universe_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root    13864 Sep  9 00:21 10.13.0.88:8080_ubuntu_dists_jammy-security_main_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root    18912 Sep  9 03:21 10.13.0.88:8080_ubuntu_dists_jammy-updates_main_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root    54616 Sep  9 06:37 10.13.0.88:8080_ubuntu_dists_jammy-security_main_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root    31633 Sep  9 06:39 10.13.0.88:8080_ubuntu_dists_jammy-security_main_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    20317 Sep  9 06:39 10.13.0.88:8080_ubuntu_dists_jammy-security_main_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   125512 Sep  9 06:40 10.13.0.88:8080_ubuntu_dists_jammy-security_universe_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root    82016 Sep  9 06:42 10.13.0.88:8080_ubuntu_dists_jammy-security_universe_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   122072 Sep  9 06:42 10.13.0.88:8080_ubuntu_dists_jammy-security_universe_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root   111932 Sep  9 06:47 10.13.0.88:8080_ubuntu_dists_jammy-updates_main_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root    56303 Sep  9 06:49 10.13.0.88:8080_ubuntu_dists_jammy-updates_main_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    36993 Sep  9 06:49 10.13.0.88:8080_ubuntu_dists_jammy-updates_main_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   359264 Sep  9 06:49 10.13.0.88:8080_ubuntu_dists_jammy-updates_universe_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root   250023 Sep  9 06:51 10.13.0.88:8080_ubuntu_dists_jammy-updates_universe_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   402382 Sep  9 06:51 10.13.0.88:8080_ubuntu_dists_jammy-updates_universe_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root   217896 Sep  9 15:36 10.13.0.88:8080_ubuntu_dists_jammy-security_universe_i18n_Translation-en.xz
+-rw-r--r-- 1 root root   995964 Sep  9 15:36 10.13.0.88:8080_ubuntu_dists_jammy-security_universe_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   388436 Sep  9 15:36 10.13.0.88:8080_ubuntu_dists_jammy-security_main_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  2640624 Sep  9 15:36 10.13.0.88:8080_ubuntu_dists_jammy-security_main_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   128927 Sep  9 15:36 10.13.0.88:8080_ubuntu_dists_jammy-security_InRelease
+-rw-r--r-- 1 root root   305412 Sep  9 15:40 10.13.0.88:8080_ubuntu_dists_jammy-updates_universe_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  1231084 Sep  9 15:40 10.13.0.88:8080_ubuntu_dists_jammy-updates_universe_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   452184 Sep  9 15:40 10.13.0.88:8080_ubuntu_dists_jammy-updates_main_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  2886956 Sep  9 15:40 10.13.0.88:8080_ubuntu_dists_jammy-updates_main_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   128049 Sep  9 15:40 10.13.0.88:8080_ubuntu_dists_jammy-updates_InRelease
+-rw-r--r-- 1 root root      672 Sep 17 22:13 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_restricted_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root      648 Sep 17 22:18 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_restricted_cnf_Commands-amd64.xz
+-rw-r--r-- 1 root root    31633 Sep 18 06:13 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_main_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    20317 Sep 18 06:13 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_main_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   122072 Sep 18 06:15 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_universe_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    82016 Sep 18 06:15 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_universe_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root      208 Sep 18 06:18 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_restricted_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root       29 Sep 18 06:20 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_restricted_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root       29 Sep 18 06:20 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_restricted_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root    56303 Sep 18 06:24 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_main_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root    36993 Sep 18 06:24 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_main_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   250023 Sep 18 06:27 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_universe_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   402382 Sep 18 06:27 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_universe_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root      212 Sep 18 06:29 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_restricted_dep11_Components-amd64.yml.xz
+-rw-r--r-- 1 root root       29 Sep 18 06:31 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_restricted_dep11_icons-64x64.tar.gz
+-rw-r--r-- 1 root root       29 Sep 18 06:31 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_restricted_dep11_icons-48x48.tar.gz
+-rw-r--r-- 1 root root   217976 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_universe_i18n_Translation-en.xz
+-rw-r--r-- 1 root root   673528 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_universe_binary-i386_Packages.xz
+-rw-r--r-- 1 root root   783332 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_restricted_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  4287536 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_restricted_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   388436 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_main_i18n_Translation-en.xz
+-rw-r--r-- 1 root root   698312 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_main_binary-i386_Packages.xz
+-rw-r--r-- 1 root root   128927 Sep 18 16:23 10.13.0.90_ubuntu_ubuntu_dists_jammy-security_InRelease
+-rw-r--r-- 1 root root   305456 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_universe_i18n_Translation-en.xz
+-rw-r--r-- 1 root root   785528 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_universe_binary-i386_Packages.xz
+-rw-r--r-- 1 root root   820176 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_restricted_i18n_Translation-en.xz
+-rw-r--r-- 1 root root  4472836 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_restricted_binary-amd64_Packages.xz
+-rw-r--r-- 1 root root   454308 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_main_i18n_Translation-en.xz
+-rw-r--r-- 1 root root   874024 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_main_binary-i386_Packages.xz
+-rw-r--r-- 1 root root   128049 Sep 18 16:28 10.13.0.90_ubuntu_ubuntu_dists_jammy-updates_InRelease
+root@WS000:/var/lib/apt/lists/partial# pwd
+/var/lib/apt/lists/partial
+root@WS000:/var/lib/apt/lists/partial#
