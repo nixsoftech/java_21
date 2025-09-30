@@ -1,269 +1,61 @@
----
-- name: Upgrade Ubuntu 18.04 to 22.04 with private repository (SSH resilient)
-  hosts: all
-  become: true
-  vars:
-    reboot_wait_timeout: 3600          # 1 hour, adjust for slow boots
-    script_execution_timeout: 14400    # 4 hours
-    existing_repo_url: "http://10.13.0.88:8080/ubuntu"
-    repo_url: "http://10.13.0.90/ubuntu/ubuntu"
-    ubuntu_version: "bionic"
-    log_dir: "{{ playbook_dir }}/upgrade-logs/{{ inventory_hostname }}"
-    repo_content: |
-      # Private Repository for Ubuntu {{ ubuntu_version }}
-      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }} main universe
-      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-updates main universe
-      deb [arch=amd64] {{ existing_repo_url }} {{ ubuntu_version }}-security main universe
-      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }} restricted
-      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-updates restricted
-      deb [arch=amd64] {{ repo_url }} {{ ubuntu_version }}-security restricted
-      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }} main universe
-      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-updates main universe
-      deb [arch=i386] {{ repo_url }} {{ ubuntu_version }}-security main universe
+#!/bin/bash
+set -e
 
-  tasks:
+# Non-interactive flags
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export APT_LISTCHANGES_FRONTEND=none
 
-    - name: Ensure log directory exists on control node
-      delegate_to: localhost
-      ansible.builtin.file:
-        path: "{{ log_dir }}"
-        state: directory
-        mode: '0755'
+# Clean any previous package cache
+apt-get clean || true
+rm -rf /var/lib/apt/lists/* || true
 
-    - name: Replace /etc/apt/sources.list with private repositories
-      ansible.builtin.copy:
-        dest: /etc/apt/sources.list
-        content: "{{ repo_content }}"
-        owner: root
-        group: root
-        mode: '0644'
-        backup: true
+##############################################
+# Step 1: Configure Jammy repositories
+##############################################
+echo "=== Step 1: Writing Jammy repositories ==="
+cat > /etc/apt/sources.list <<EOF
+# jammy repositories (amd64)
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu jammy-security main universe
 
-    - name: Update apt cache (bionic)
-      ansible.builtin.shell: "apt-get update -yq || true"
-      register: apt_update_bionic
-      ignore_errors: true
+# jammy repositories (i386)
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-updates main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu jammy-security main universe
 
-    - name: Save and fetch apt update log (bionic)
-      block:
-        - ansible.builtin.copy:
-            dest: /var/log/apt-update-bionic.log
-            content: "{{ apt_update_bionic.stdout }}\n{{ apt_update_bionic.stderr }}"
-            mode: '0644'
-        - ansible.builtin.fetch:
-            src: /var/log/apt-update-bionic.log
-            dest: "{{ log_dir }}/apt-update-bionic.log"
-            flat: true
+# restricted packages (amd64)
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu jammy-security restricted
+EOF
 
-    - name: Remove lxd package
-      ansible.builtin.apt:
-        name: lxd
-        state: absent
-        purge: true
+##############################################
+# Step 2: Update package lists
+##############################################
+echo "=== Step 2: Updating package lists ==="
+apt-get update -o Acquire::Check-Valid-Until=false -yq || true
 
-    # -------- PHASE 1: Upgrade 18.04 -> 20.04 --------
-    - name: Phase 1 - Upgrade 18.04 to 20.04
-      block:
+##############################################
+# Step 3: Install release upgrader core (optional, for completeness)
+##############################################
+echo "=== Step 3: Installing release upgrader core ==="
+apt-get install -y ubuntu-release-upgrader-core || true
 
-        - name: Copy auto-upgrade1.sh script
-          ansible.builtin.copy:
-            dest: /tmp/auto-upgrade1.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -yq || true
-              apt-get upgrade -yq
-              apt-get dist-upgrade -yq
-              apt-get autoremove -yq
-              apt-get install -yq update-manager-core
+##############################################
+# Step 4: Perform full upgrade
+##############################################
+echo "=== Step 4: Performing full upgrade to Jammy ==="
+apt-get full-upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
 
-        - name: Run auto-upgrade1.sh
-          ansible.builtin.shell: /tmp/auto-upgrade1.sh > /var/log/auto-upgrade1.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 0
-          register: auto_upgrade1_result
-          ignore_errors: true
+##############################################
+# Step 5: Cleanup
+##############################################
+echo "=== Step 5: Autoremove and autoclean ==="
+apt-get autoremove -yq || true
+apt-get autoclean -yq || true
 
-        - name: Wait for auto-upgrade1.sh to complete
-          ansible.builtin.async_status:
-            jid: "{{ auto_upgrade1_result.ansible_job_id }}"
-          register: auto_upgrade1_status
-          until: auto_upgrade1_status.finished
-          retries: 1000
-          delay: 60
-
-        - name: Fetch auto-upgrade1 log
-          ansible.builtin.fetch:
-            src: /var/log/auto-upgrade1.log
-            dest: "{{ log_dir }}/auto-upgrade1.log"
-            flat: true
-
-        - name: Copy do-release1.sh script
-          ansible.builtin.copy:
-            dest: /tmp/do-release1.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              yes '' | do-release-upgrade -f DistUpgradeViewNonInteractive
-              apt-get autoremove -yq
-              apt-get clean
-
-        - name: Run do-release1.sh
-          ansible.builtin.shell: /tmp/do-release1.sh > /var/log/do-release1.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 0
-          register: do_release1_result
-          ignore_errors: true
-
-        - name: Wait for do-release1.sh to complete
-          ansible.builtin.async_status:
-            jid: "{{ do_release1_result.ansible_job_id }}"
-          register: do_release1_status
-          until: do_release1_status.finished
-          retries: 1000
-          delay: 60
-
-        - name: Wait for SSH after upgrade/reboot
-          ansible.builtin.wait_for_connection:
-            delay: 10
-            timeout: "{{ reboot_wait_timeout }}"
-
-        - name: Fetch do-release1 log
-          ansible.builtin.fetch:
-            src: /var/log/do-release1.log
-            dest: "{{ log_dir }}/do-release1.log"
-            flat: true
-
-      rescue:
-        - name: Fetch journal logs on failure (phase 1)
-          ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase1-failure.log
-        - ansible.builtin.fetch:
-            src: /var/log/upgrade-phase1-failure.log
-            dest: "{{ log_dir }}/upgrade-phase1-failure.log"
-            flat: true
-        - ansible.builtin.fail:
-            msg: "Phase 1 upgrade failed, check logs in {{ log_dir }}"
-
-    # -------- PHASE 2: Upgrade 20.04 -> 22.04 --------
-    - name: Replace sources.list for focal
-      ansible.builtin.copy:
-        dest: /etc/apt/sources.list
-        content: "{{ repo_content | replace(ubuntu_version, 'focal') }}"
-        mode: '0644'
-        backup: true
-
-    - name: Update apt cache (focal)
-      ansible.builtin.shell: "apt-get update -yq || true"
-      register: apt_update_focal
-      ignore_errors: true
-
-    - name: Save and fetch apt update log (focal)
-      block:
-        - ansible.builtin.copy:
-            dest: /var/log/apt-update-focal.log
-            content: "{{ apt_update_focal.stdout }}\n{{ apt_update_focal.stderr }}"
-            mode: '0644'
-        - ansible.builtin.fetch:
-            src: /var/log/apt-update-focal.log
-            dest: "{{ log_dir }}/apt-update-focal.log"
-            flat: true
-
-    - name: Phase 2 - Upgrade 20.04 to 22.04
-      block:
-
-        - name: Copy auto-upgrade2.sh script
-          ansible.builtin.copy:
-            dest: /tmp/auto-upgrade2.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -yq || true
-              apt-get upgrade -yq
-              apt-get dist-upgrade -yq
-              apt-get autoremove -yq
-              apt-get install -yq update-manager-core
-
-        - name: Run auto-upgrade2.sh
-          ansible.builtin.shell: /tmp/auto-upgrade2.sh > /var/log/auto-upgrade2.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 0
-          register: auto_upgrade2_result
-          ignore_errors: true
-
-        - name: Wait for auto-upgrade2.sh to complete
-          ansible.builtin.async_status:
-            jid: "{{ auto_upgrade2_result.ansible_job_id }}"
-          register: auto_upgrade2_status
-          until: auto_upgrade2_status.finished
-          retries: 1000
-          delay: 60
-
-        - name: Replace sources.list for jammy
-          ansible.builtin.copy:
-            dest: /etc/apt/sources.list
-            content: "{{ repo_content | replace(ubuntu_version, 'jammy') }}"
-            mode: '0644'
-            backup: true
-
-        - name: Copy do-release2.sh script
-          ansible.builtin.copy:
-            dest: /tmp/do-release2.sh
-            mode: '0755'
-            content: |
-              #!/bin/bash
-              set -e
-              export DEBIAN_FRONTEND=noninteractive
-              yes '' | do-release-upgrade -f DistUpgradeViewNonInteractive
-              apt-get autoremove -yq
-              apt-get clean
-
-        - name: Run do-release2.sh
-          ansible.builtin.shell: /tmp/do-release2.sh > /var/log/do-release2.log 2>&1
-          async: "{{ script_execution_timeout }}"
-          poll: 0
-          register: do_release2_result
-          ignore_errors: true
-
-        - name: Wait for do-release2.sh to complete
-          ansible.builtin.async_status:
-            jid: "{{ do_release2_result.ansible_job_id }}"
-          register: do_release2_status
-          until: do_release2_status.finished
-          retries: 1000
-          delay: 60
-
-        - name: Wait for SSH after upgrade/reboot
-          ansible.builtin.wait_for_connection:
-            delay: 10
-            timeout: "{{ reboot_wait_timeout }}"
-
-        - name: Fetch do-release2 log
-          ansible.builtin.fetch:
-            src: /var/log/do-release2.log
-            dest: "{{ log_dir }}/do-release2.log"
-            flat: true
-
-      rescue:
-        - name: Fetch journal logs on failure (phase 2)
-          ansible.builtin.shell: journalctl -xe > /var/log/upgrade-phase2-failure.log
-        - ansible.builtin.fetch:
-            src: /var/log/upgrade-phase2-failure.log
-            dest: "{{ log_dir }}/upgrade-phase2-failure.log"
-            flat: true
-        - ansible.builtin.fail:
-            msg: "Phase 2 upgrade failed, check logs in {{ log_dir }}"
-
-    - name: Check final OS release
-      ansible.builtin.command: lsb_release -a
-      register: os_release
-      changed_when: false
-
-    - name: Print OS release information
-      ansible.builtin.debug:
-        msg: "{{ os_release.stdout_lines }}"
+echo "=== Jammy upgrade completed successfully ==="
