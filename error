@@ -1,11 +1,17 @@
-cat /etc/ansible/ansible.cfg
 [defaults]
 inventory = /etc/ansible/hosts
 remote_user = linuxadmin
 host_key_checking = False
 deprecation_warnings = False
-
+timeout = 90
+gathering = smart
+fact_caching = memory
+retry_files_enabled = False
 
 [ssh_connection]
-ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o ServerAliveInterval=10 -o ServerAliveCountMax=180
-
+# Very aggressive SSH settings for problematic upgrades
+ssh_args = -o ControlMaster=auto -o ControlPersist=60m -o ServerAliveInterval=5 -o ServerAliveCountMax=60 -o ConnectTimeout=20 -o TCPKeepAlive=yes -o BatchMode=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+pipelining = True
+control_path = ~/.ssh/ansible-%%r@%%h:%%p
+scp_if_ssh = True
+retries = 5
