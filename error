@@ -1,16 +1,23 @@
-FAILED - RETRYING: Check if upgrade process is still running and log progress (5 retries left).
-FAILED - RETRYING: Check if upgrade process is still running and log progress (4 retries left).
-FAILED - RETRYING: Check if upgrade process is still running and log progress (3 retries left).
-FAILED - RETRYING: Check if upgrade process is still running and log progress (2 retries left).
-FAILED - RETRYING: Check if upgrade process is still running and log progress (1 retries left).
+root@WS000:/home/linuxadmin# cat /etc/os-release
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+========================================
+TASK [Detect Ubuntu version after focal upgrade] *************************************************************************
 ok: [10.13.0.95]
 
-TASK [Display upgrade status] ********************************************************************************************
-fatal: [10.13.0.95]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'dict object' has no attribute 'stdout'\n\nThe error appears to be in '/opt/playbook/play10.yml': line 85, column 11, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n        - name: Display upgrade status\n          ^ here\n"}
-
-TASK [Handle focal upgrade failures] *************************************************************************************
+TASK [Show release after focal upgrade] **********************************************************************************
 ok: [10.13.0.95] => {
-    "msg": "Focal upgrade may have issues. Check /tmp/focal.log on the target system. Continuing anyway..."
+    "msg": "Release after focal upgrade: \r\nfocal\r\n"
 }
 
 TASK [Run jammy.sh if OS is 20.04] ***************************************************************************************
@@ -19,20 +26,36 @@ skipping: [10.13.0.95]
 TASK [Wait briefly for script to start] **********************************************************************************
 skipping: [10.13.0.95]
 
-TASK [Check if upgrade process is still running and log progress] ********************************************************
+TASK [Monitor jammy upgrade progress with immediate completion] **********************************************************
 skipping: [10.13.0.95]
 
-TASK [Display upgrade status] ********************************************************************************************
+TASK [Display final jammy upgrade status] ********************************************************************************
 skipping: [10.13.0.95]
 
-TASK [Verify SSH is stable after jammy upgrade] **************************************************************************
+TASK [Verify SSH is stable before jammy reboot] **************************************************************************
 skipping: [10.13.0.95]
 
-TASK [Force wait after jammy upgrade completion] *************************************************************************
+TASK [Force wait before jammy reboot] ************************************************************************************
+skipping: [10.13.0.95]
+
+TASK [Reboot after jammy upgrade] ****************************************************************************************
+skipping: [10.13.0.95]
+
+TASK [Wait for system to stabilize after final reboot] *******************************************************************
 skipping: [10.13.0.95]
 
 TASK [Detect Ubuntu version after upgrades] ******************************************************************************
-fatal: [10.13.0.95]: FAILED! => {"changed": false, "module_stderr": "/bin/sh: 1: /usr/bin/python: not found\n", "module_stdout": "", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127}
+ok: [10.13.0.95]
+
+TASK [Show final release] ************************************************************************************************
+ok: [10.13.0.95] => {
+    "msg": "Final Ubuntu release: \r\nfocal\r\n"
+}
+
+TASK [Display upgrade summary] *******************************************************************************************
+ok: [10.13.0.95] => {
+    "msg": "Upgrade process completed!\nInitial release: bionic\nFinal release: \r\nfocal\r\n"
+}
 
 PLAY RECAP ***************************************************************************************************************
-10.13.0.95                 : ok=9    changed=3    unreachable=0    failed=1    skipped=6    rescued=1    ignored=0
+10.13.0.95                 : ok=18   changed=4    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0
