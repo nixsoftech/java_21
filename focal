@@ -1,0 +1,133 @@
+#!/bin/bash
+set -e
+
+# Non-interactive flags
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export APT_LISTCHANGES_FRONTEND=none
+
+# ==================== SSH PROTECTION SECTION ====================
+echo "=== Configuring SSH for resilient upgrade ==="
+
+# Backup SSH config
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup.$(date +%Y%m%d_%H%M%S)
+
+# Function to ensure setting exists
+ensure_ssh_setting() {
+    local setting="$1"
+    local value="$2"
+    
+    if grep -q "^$setting" /etc/ssh/sshd_config; then
+        # Setting exists, update it
+        sed -i "s/^$setting.*/$setting $value/" /etc/ssh/sshd_config
+        echo "Updated $setting to $value"
+    else
+        # Setting doesn't exist, append it
+        echo "$setting $value" >> /etc/ssh/sshd_config
+        echo "Added $setting $value"
+    fi
+}
+
+# Ensure SSH settings exist with our values
+ensure_ssh_setting "ClientAliveInterval" "30"
+ensure_ssh_setting "ClientAliveCountMax" "10" 
+ensure_ssh_setting "MaxSessions" "50"
+ensure_ssh_setting "MaxStartups" "50"
+ensure_ssh_setting "LoginGraceTime" "60"
+ensure_ssh_setting "TCPKeepAlive" "yes"
+
+# Special handling for PermitRootLogin - be careful with this one!
+if ! grep -q "^PermitRootLogin" /etc/ssh/sshd_config; then
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+    echo "Added PermitRootLogin yes"
+else
+    # Update existing PermitRootLogin setting
+    sed -i "s/^PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    echo "Updated PermitRootLogin to yes"
+fi
+
+# Add our comment marker
+if ! grep -q "Ansible Upgrade Protection" /etc/ssh/sshd_config; then
+    echo "" >> /etc/ssh/sshd_config
+    echo "# Ansible Upgrade Protection - Added by focal.sh" >> /etc/ssh/sshd_config
+    echo "Added Ansible Upgrade Protection comment marker"
+fi
+
+# Reload SSH config (NOT restart) to apply new settings
+systemctl reload ssh 2>/dev/null || systemctl reload sshd 2>/dev/null || true
+echo "SSH configuration reloaded"
+
+# Ensure SSH services are enabled to survive upgrades
+systemctl enable ssh 2>/dev/null || true
+systemctl enable sshd 2>/dev/null || true
+echo "SSH services enabled"
+
+echo "SSH protection configured successfully"
+
+# ==================== LXD REMOVAL SECTION ====================
+# Try removing LXD and LXD-client via apt
+echo "Attempting to remove lxd and lxd-client via apt..."
+if ! apt-get remove --purge -y lxd lxd-client; then
+    echo "apt remove failed. Forcing removal with dpkg..."
+    dpkg --remove --force-remove-reinstreq lxd || true
+    dpkg --remove --force-remove-reinstreq lxd-client || true
+fi
+
+# Clean leftover files
+rm -rf /var/lib/lxd /etc/lxd || true
+apt-get clean || true
+echo "LXD removal completed"
+
+##############################################
+# Step 1: Upgrade 18.04 (bionic) -> 20.04 (focal)
+##############################################
+echo "=== Step 1: Writing focal repositories ==="
+cat > /etc/apt/sources.list <<EOF
+# focal repositories (amd64)
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal-updates main universe
+deb [arch=amd64] http://10.13.0.88:8080/ubuntu focal-security main universe
+
+# focal repositories (i386)
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu focal main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu focal-updates main universe
+deb [arch=i386] http://10.13.0.90/ubuntu/ubuntu focal-security main universe
+
+# restricted packages (amd64)
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal-updates restricted
+deb [arch=amd64] http://10.13.0.90/ubuntu/ubuntu focal-security restricted
+EOF
+
+echo "=== Step 2: Updating and upgrading to focal ==="
+apt-get update -o Acquire::Check-Valid-Until=false -yq || true
+
+# Use needrestart to avoid interactive prompts during upgrades
+echo "=== Starting package upgrades ==="
+apt-get upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
+
+echo "=== Starting distribution upgrade ==="
+apt-get dist-upgrade -yq \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold"
+
+echo "=== Cleaning up after upgrade ==="
+apt-get autoremove -yq || true
+apt-get autoclean -yq || true
+
+# ==================== POST-UPGRADE SSH VERIFICATION ====================
+echo "=== Verifying SSH service status ==="
+if systemctl is-active ssh 2>/dev/null || systemctl is-active sshd 2>/dev/null; then
+    echo "SSH service is active and running"
+else
+    echo "Warning: SSH service is not active"
+    # Try to start SSH if it's not running
+    systemctl start ssh 2>/dev/null || systemctl start sshd 2>/dev/null || true
+    echo "Attempted to start SSH service"
+fi
+
+# Final completion marker
+echo "UPGRADE_COMPLETE"
+echo "=== Focal upgrade completed successfully ==="
