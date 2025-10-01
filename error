@@ -1,17 +1,12 @@
-[defaults]
-inventory = /etc/ansible/hosts
-remote_user = linuxadmin
-host_key_checking = False
-deprecation_warnings = False
-timeout = 90
-gathering = smart
-fact_caching = memory
-retry_files_enabled = False
+ansible-playbook -i 10.13.0.95, play10.yml --ask-become-pass
+BECOME password:
+ERROR! 'retries' is not a valid attribute for a Block
 
-[ssh_connection]
-# Very aggressive SSH settings for problematic upgrades
-ssh_args = -o ControlMaster=auto -o ControlPersist=60m -o ServerAliveInterval=5 -o ServerAliveCountMax=60 -o ConnectTimeout=20 -o TCPKeepAlive=yes -o BatchMode=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
-pipelining = True
-control_path = ~/.ssh/ansible-%%r@%%h:%%p
-scp_if_ssh = True
-retries = 5
+The error appears to be in '/opt/playbook/play10.yml': line 53, column 11, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+        - name: Monitor focal upgrade with aggressive connection recovery
+          ^ here
